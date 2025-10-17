@@ -3,16 +3,15 @@ package projeto.salf.model;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Embeddable
-public class NecessidadeProdutoId implements Serializable {
+public class NecessidadeCestaId implements Serializable {
     private String pessoaCpf;
-    private Integer produtoId;
+    private Integer cestaId;
 
     public String getPessoaCpf() { return pessoaCpf; }
     public void setPessoaCpf(String pessoaCpf) { this.pessoaCpf = pessoaCpf; }
 
-    public Integer getProdutoId() { return produtoId; }
-    public void setProdutoId(Integer produtoId) { this.produtoId = produtoId; }
+    public Integer getCestaId() { return cestaId; }
+    public void setCestaId(Integer cestaId) { this.cestaId = cestaId; }
 }

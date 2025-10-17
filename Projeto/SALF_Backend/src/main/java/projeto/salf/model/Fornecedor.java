@@ -2,44 +2,25 @@ package projeto.salf.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 /* Fornecedor */
 @Entity
 @Table(name = "fornecedor")
-public class Fornecedor {
-
+public class Fornecedor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idfornecedor")
-    private Integer idFornecedor;
+    private Integer id;
 
-    @Column(name = "nome", length = 45, nullable = false)
     private String nome;
-
-    @Column(name = "email", length = 45, nullable = false)
     private String email;
-
-    @Column(name = "telefone", length = 20, nullable = false)
     private String telefone;
-
-    @Column(name = "contato", length = 45, nullable = false)
     private String contato;
-
-    @Column(name = "descricao", length = 45, nullable = false)
     private String descricao;
 
-    public Fornecedor() {}
-
-    public Fornecedor(Integer idFornecedor, String nome, String email, String telefone, String contato, String descricao) {
-        this.idFornecedor = idFornecedor;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.contato = contato;
-        this.descricao = descricao;
-    }
-
-    public Integer getIdFornecedor() { return idFornecedor; }
-    public void setIdFornecedor(Integer idFornecedor) { this.idFornecedor = idFornecedor; }
+    // Getters e Setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

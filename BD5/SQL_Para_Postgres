@@ -1,0 +1,201 @@
+-- PostgreSQL Script gerado a partir do modelo MySQL
+-- Banco: salf_db
+-- Compatível com Spring Boot + JPA/Hibernate
+
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+
+SET search_path TO public;
+
+-- ==============================
+-- Tabela: Funcionario
+-- ==============================
+CREATE TABLE funcionario (
+    func_cpf VARCHAR(14) PRIMARY KEY,
+    func_nome VARCHAR(60) NOT NULL,
+    func_senha VARCHAR(20) NOT NULL,
+    func_email VARCHAR(30) NOT NULL,
+    func_telefone VARCHAR(20) NOT NULL,
+    tipo_acesso INT NOT NULL,
+    data_admissao DATE NOT NULL,
+    data_demissao DATE,
+    rua VARCHAR(45) NOT NULL,
+    bairro VARCHAR(45) NOT NULL,
+    cidade VARCHAR(45) NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    cep VARCHAR(10) NOT NULL,
+    cargo VARCHAR(45) NOT NULL
+);
+
+-- ==============================
+-- Tabela: CategoriaProduto
+-- ==============================
+CREATE TABLE categoria_produto (
+    cat_cod SERIAL PRIMARY KEY,
+    cat_descr VARCHAR(100) NOT NULL
+);
+
+-- ==============================
+-- Tabela: Produto
+-- ==============================
+CREATE TABLE produto (
+    prod_cod SERIAL PRIMARY KEY,
+    prod_descr VARCHAR(100) NOT NULL,
+    categoria_id INT NOT NULL REFERENCES categoria_produto(cat_cod)
+);
+
+-- ==============================
+-- Tabela: ListaCompra
+-- ==============================
+CREATE TABLE lista_compra (
+    lc_cod SERIAL PRIMARY KEY,
+    func_cpf VARCHAR(14) NOT NULL REFERENCES funcionario(func_cpf),
+    data_criacao DATE NOT NULL,
+    descricao VARCHAR(45) NOT NULL,
+    status_atendimento INT NOT NULL
+);
+
+-- ==============================
+-- Tabela: ItensDaLista
+-- ==============================
+CREATE TABLE itens_lista (
+    produto_id INT REFERENCES produto(prod_cod),
+    lista_id INT REFERENCES lista_compra(lc_cod),
+    quantidade INT,
+    PRIMARY KEY (produto_id, lista_id)
+);
+
+-- ==============================
+-- Tabela: Fornecedor
+-- ==============================
+CREATE TABLE fornecedor (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(45) NOT NULL,
+    email VARCHAR(45) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    contato VARCHAR(45) NOT NULL,
+    descricao VARCHAR(45)
+);
+
+-- ==============================
+-- Tabela: Cotacao
+-- ==============================
+CREATE TABLE cotacao (
+    id SERIAL PRIMARY KEY,
+    data_abertura DATE NOT NULL,
+    data_fechamento DATE NOT NULL
+);
+
+-- ==============================
+-- Tabela: FornecCotacao
+-- ==============================
+CREATE TABLE fornec_cotacao (
+    fornecedor_id INT REFERENCES fornecedor(id),
+    cotacao_id INT REFERENCES cotacao(id),
+    status_realizou INT NOT NULL,
+    PRIMARY KEY (fornecedor_id, cotacao_id)
+);
+
+-- ==============================
+-- Tabela: Compra
+-- ==============================
+CREATE TABLE compra (
+    id SERIAL PRIMARY KEY,
+    valor_total FLOAT NOT NULL,
+    data_compra DATE NOT NULL,
+    fornecedor_id INT REFERENCES fornecedor(id),
+    cotacao_id INT REFERENCES cotacao(id),
+    func_cpf VARCHAR(14) REFERENCES funcionario(func_cpf)
+);
+
+-- ==============================
+-- Tabela: PessoaCarente
+-- ==============================
+CREATE TABLE pessoa_carente (
+    pc_cpf VARCHAR(14) PRIMARY KEY,
+    pc_nome VARCHAR(60) NOT NULL,
+    pc_data_nasc DATE NOT NULL,
+    pc_telefone VARCHAR(20) NOT NULL,
+    rua VARCHAR(45) NOT NULL,
+    bairro VARCHAR(45) NOT NULL,
+    cidade VARCHAR(45) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    cep VARCHAR(10) NOT NULL
+);
+
+-- ==============================
+-- Tabela: Doacao
+-- ==============================
+CREATE TABLE doacao (
+    doa_cod SERIAL PRIMARY KEY,
+    pessoa_cpf VARCHAR(14) REFERENCES pessoa_carente(pc_cpf),
+    data DATE NOT NULL,
+    observacao VARCHAR(100)
+);
+
+-- ==============================
+-- Tabela: Voluntario
+-- ==============================
+CREATE TABLE voluntario (
+    vol_cpf VARCHAR(14) PRIMARY KEY,
+    vol_nome VARCHAR(60) NOT NULL,
+    vol_telefone VARCHAR(20) NOT NULL,
+    rua VARCHAR(45) NOT NULL,
+    bairro VARCHAR(45) NOT NULL,
+    cidade VARCHAR(45) NOT NULL,
+    email VARCHAR(45) NOT NULL,
+    tipo_acesso INT NOT NULL,
+    senha VARCHAR(30) NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE,
+    uf CHAR(2) NOT NULL,
+    cep VARCHAR(10) NOT NULL,
+    username VARCHAR(20) NOT NULL
+);
+
+-- ==============================
+-- Tabela: Campanha
+-- ==============================
+CREATE TABLE campanha (
+    id SERIAL PRIMARY KEY,
+    descr VARCHAR(100) NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
+    total_arrecadado FLOAT DEFAULT 0,
+    observacao VARCHAR(100),
+    func_cpf VARCHAR(14) REFERENCES funcionario(func_cpf)
+);
+
+-- ==============================
+-- Tabela: CestaBasica
+-- ==============================
+CREATE TABLE cesta_basica (
+    cb_cod SERIAL PRIMARY KEY,
+    descricao VARCHAR(100) NOT NULL
+);
+
+-- ==============================
+-- Tabela: NecessidadeProduto
+-- ==============================
+CREATE TABLE necessidade_produto (
+    pessoa_cpf VARCHAR(14) REFERENCES pessoa_carente(pc_cpf),
+    produto_id INT REFERENCES produto(prod_cod),
+    data DATE NOT NULL,
+    quantidade INT NOT NULL,
+    observacao VARCHAR(100),
+    PRIMARY KEY (pessoa_cpf, produto_id)
+);
+
+-- ==============================
+-- Tabela: NecessidadeCesta
+-- ==============================
+CREATE TABLE necessidade_cesta (
+    pessoa_cpf VARCHAR(14) REFERENCES pessoa_carente(pc_cpf),
+    cesta_id INT REFERENCES cesta_basica(cb_cod),
+    data DATE NOT NULL,
+    quantidade INT NOT NULL,
+    observacao VARCHAR(100),
+    func_cpf VARCHAR(14) REFERENCES funcionario(func_cpf),
+    PRIMARY KEY (pessoa_cpf, cesta_id)
+);
