@@ -9,7 +9,6 @@ public class ItensListaId implements Serializable {
     private Integer produtoId;
     private Integer listaId;
 
-    // Getters e Setters
     public Integer getProdutoId() { return produtoId; }
     public void setProdutoId(Integer produtoId) { this.produtoId = produtoId; }
 

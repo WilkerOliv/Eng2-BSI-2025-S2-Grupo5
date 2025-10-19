@@ -1,5 +1,6 @@
 package projeto.salf.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.CategoriaProduto;
@@ -12,39 +13,24 @@ import java.util.Optional;
 @RequestMapping("/api/categorias")
 @CrossOrigin(origins = "*")
 public class CategoriaProdutoController {
-
-    private final CategoriaProdutoService service;
-
-    public CategoriaProdutoController(CategoriaProdutoService service) {
-        this.service = service;
-    }
+    @Autowired
+    private CategoriaProdutoService service;
 
     @GetMapping
-    public List<CategoriaProduto> listarCategorias() {
-        return service.listarTodas();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> buscarPorId(@PathVariable Integer id) {
-        Optional<CategoriaProduto> categoria = service.buscarPorId(id);
-        return categoria.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    public List<CategoriaProduto> listarTodas() { return service.listarTodas(); }
 
     @PostMapping
-    public ResponseEntity<CategoriaProduto> criarCategoria(@RequestBody CategoriaProduto categoria) {
+    public CategoriaProduto salvar(@RequestBody CategoriaProduto categoria) { return service.salvar(categoria); }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoriaProduto> atualizar(@PathVariable Integer id, @RequestBody CategoriaProduto categoria) {
+        categoria.setCatCod(id);
         return ResponseEntity.ok(service.salvar(categoria));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> atualizarCategoria(@PathVariable Integer id, @RequestBody CategoriaProduto categoriaAtualizada) {
-        CategoriaProduto atualizado = service.atualizar(id, categoriaAtualizada);
-        return (atualizado != null) ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCategoria(@PathVariable Integer id) {
-        boolean removido = service.excluir(id);
-        return removido ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
+        service.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -3,7 +3,7 @@ package projeto.salf.model;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
-/* FornecCotacao (join Fornecedor x Cotacao) */
+/* FornecCotacao (Fornecedor x Cotacao) */
 @Embeddable
 public class FornecCotacaoId implements Serializable {
 

@@ -2,7 +2,6 @@ package projeto.salf.model;
 
 import jakarta.persistence.*;
 
-/* CestaBasica_has_Produto */
 @Entity
 @Table(name = "cestabasica_has_produto")
 public class CestaBasicaProduto {

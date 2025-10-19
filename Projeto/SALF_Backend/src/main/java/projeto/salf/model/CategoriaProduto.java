@@ -1,10 +1,8 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
-/* CategoriaProduto */
 @Entity
 @Table(name = "categoria_produto")
 public class CategoriaProduto implements Serializable {

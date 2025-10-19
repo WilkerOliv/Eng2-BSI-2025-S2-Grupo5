@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 
-/* Fornecedor */
 @Entity
 @Table(name = "fornecedor")
 public class Fornecedor implements Serializable {
@@ -18,7 +17,6 @@ public class Fornecedor implements Serializable {
     private String contato;
     private String descricao;
 
-    // Getters e Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

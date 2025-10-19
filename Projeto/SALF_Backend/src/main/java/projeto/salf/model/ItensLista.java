@@ -13,7 +13,6 @@ public class ItensLista implements Serializable {
 
     private Integer quantidade;
 
-    // Getters e Setters
     public ItensListaId getId() { return id; }
     public void setId(ItensListaId id) { this.id = id; }
 

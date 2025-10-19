@@ -3,7 +3,6 @@ package projeto.salf.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
-/* Estoque */
 @Entity
 @Table(name = "estoque")
 public class Estoque {

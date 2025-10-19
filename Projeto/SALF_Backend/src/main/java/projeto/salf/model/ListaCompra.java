@@ -3,11 +3,8 @@ package projeto.salf.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
-/* ListaCompra */
 @Entity
 @Table(name = "lista_compra")
 public class ListaCompra implements Serializable {
