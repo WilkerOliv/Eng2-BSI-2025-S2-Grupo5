@@ -61,6 +61,8 @@ CREATE TABLE lista_compra (
     funcionario_func_cpf1 VARCHAR(14)
 );
 
+ALTER TABLE lista_compra
+ADD CONSTRAINT uq_lista_compra UNIQUE (lc_cod, funcionario_func_cpf);
 -- fk depois (para lidar com possíveis ordem): add constraints
 ALTER TABLE lista_compra
     ADD CONSTRAINT fk_listacompra_funcionario FOREIGN KEY (funcionario_func_cpf)
