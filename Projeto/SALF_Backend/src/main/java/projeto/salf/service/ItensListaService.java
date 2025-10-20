@@ -10,8 +10,11 @@ import java.util.List;
 
 @Service
 public class ItensListaService {
-    @Autowired
-    private ItensDaListaRepository repository;
+    private final ItensDaListaRepository repository;
+
+    public ItensListaService(ItensDaListaRepository repository) {
+        this.repository = repository;
+    }
 
     public List<ItensDaLista> listarTodos() { return repository.findAll(); }
     public ItensDaLista salvar(ItensDaLista i) { return repository.save(i); }

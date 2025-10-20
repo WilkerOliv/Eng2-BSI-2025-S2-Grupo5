@@ -9,8 +9,11 @@ import java.util.List;
 
 @Service
 public class PessoaCarenteService {
-    @Autowired
-    private PessoaCarenteRepository repository;
+    private final PessoaCarenteRepository repository;
+
+    public PessoaCarenteService(PessoaCarenteRepository repository) {
+        this.repository = repository;
+    }
 
     public List<PessoaCarente> listarTodas() { return repository.findAll(); }
     public PessoaCarente salvar(PessoaCarente p) { return repository.save(p); }

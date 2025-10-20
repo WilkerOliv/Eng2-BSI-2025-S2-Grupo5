@@ -24,7 +24,8 @@ public class Funcionario implements Serializable {
     @Column(name = "func_telefone", nullable = false, length = 20)
     private String funcTelefone;
 
-    @OneToMany(mappedBy = "funcionarioFuncCpf", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
+    @JoinColumn(name = "funcionario_func_cpf", referencedColumnName = "func_cpf")
     private List<ListaCompra> listasCompra;
 
     public Funcionario() {}

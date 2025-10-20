@@ -10,8 +10,11 @@ import java.util.List;
 
 @Service
 public class NecessidadeProdutoService {
-    @Autowired
-    private NecessidadeProdutoRepository repository;
+    private final NecessidadeProdutoRepository repository;
+
+    public NecessidadeProdutoService(NecessidadeProdutoRepository repository) {
+        this.repository = repository;
+    }
 
     public List<NecessidadeProduto> listarTodas() { return repository.findAll(); }
     public NecessidadeProduto salvar(NecessidadeProduto n) { return repository.save(n); }

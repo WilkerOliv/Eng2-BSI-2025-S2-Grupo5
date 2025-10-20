@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-@Setter
-@Getter
 @Entity
 @Table(name = "lista_compra")
 public class ListaCompra implements Serializable {
@@ -36,4 +34,51 @@ public class ListaCompra implements Serializable {
 
     public ListaCompra() {}
 
+    public Integer getLcCod() {
+        return lcCod;
+    }
+
+    public void setLcCod(Integer lcCod) {
+        this.lcCod = lcCod;
+    }
+
+    public String getFuncionarioFuncCpf() {
+        return funcionarioFuncCpf;
+    }
+
+    public void setFuncionarioFuncCpf(String funcionarioFuncCpf) {
+        this.funcionarioFuncCpf = funcionarioFuncCpf;
+    }
+
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Integer getStatusAtendimento() {
+        return statusAtendimento;
+    }
+
+    public void setStatusAtendimento(Integer statusAtendimento) {
+        this.statusAtendimento = statusAtendimento;
+    }
+
+    public List<ItensDaLista> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItensDaLista> itens) {
+        this.itens = itens;
+    }
 }

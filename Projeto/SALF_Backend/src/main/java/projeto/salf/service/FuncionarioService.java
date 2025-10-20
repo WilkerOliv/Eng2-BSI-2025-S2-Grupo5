@@ -9,8 +9,11 @@ import projeto.salf.repository.*;
 
 @Service
 public class FuncionarioService {
-    @Autowired
-    private FuncionarioRepository repository;
+    private final FuncionarioRepository repository;
+
+    public FuncionarioService(FuncionarioRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Funcionario> listarTodos() { return repository.findAll(); }
     public Optional<Funcionario> buscarPorCpf(String cpf) { return repository.findById(cpf); }
