@@ -1,28 +1,30 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-/* FornecCotacao (Fornecedor x Cotacao) */
-@Embeddable
 public class FornecCotacaoId implements Serializable {
-
-    @Column(name = "fornecedor_idfornecedor")
-    private Integer fornecedorIdFornecedor;
-
-    @Column(name = "cotacao_idcotacao")
-    private Integer cotacaoIdCotacao;
+    private Integer fornecedorId;
+    private Integer cotacaoId;
 
     public FornecCotacaoId() {}
 
-    public FornecCotacaoId(Integer fornecedorIdFornecedor, Integer cotacaoIdCotacao) {
-        this.fornecedorIdFornecedor = fornecedorIdFornecedor;
-        this.cotacaoIdCotacao = cotacaoIdCotacao;
+    public FornecCotacaoId(Integer fornecedorId, Integer cotacaoId) {
+        this.fornecedorId = fornecedorId;
+        this.cotacaoId = cotacaoId;
     }
 
-    public Integer getFornecedorIdFornecedor() { return fornecedorIdFornecedor; }
-    public void setFornecedorIdFornecedor(Integer fornecedorIdFornecedor) { this.fornecedorIdFornecedor = fornecedorIdFornecedor; }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FornecCotacaoId)) return false;
+        FornecCotacaoId that = (FornecCotacaoId) o;
+        return Objects.equals(fornecedorId, that.fornecedorId) &&
+                Objects.equals(cotacaoId, that.cotacaoId);
+    }
 
-    public Integer getCotacaoIdCotacao() { return cotacaoIdCotacao; }
-    public void setCotacaoIdCotacao(Integer cotacaoIdCotacao) { this.cotacaoIdCotacao = cotacaoIdCotacao; }
+    @Override
+    public int hashCode() {
+        return Objects.hash(fornecedorId, cotacaoId);
+    }
 }

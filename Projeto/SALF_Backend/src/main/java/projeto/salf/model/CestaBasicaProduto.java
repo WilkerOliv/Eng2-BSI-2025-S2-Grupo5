@@ -1,45 +1,45 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "cestabasica_has_produto")
-public class CestaBasicaProduto {
+@Table(name = "cesta_basica_produto")
+@IdClass(CestaBasicaProdutoId.class)
+public class CestaBasicaProduto implements Serializable {
 
-    @EmbeddedId
-    private CestaBasicaProdutoId id;
+    @Id
+    @Column(name = "cesta_basica_cb_cod")
+    private Integer cestaBasicaCbCod;
 
-    @ManyToOne
-    @MapsId("cestaBasicaCbCod")
-    @JoinColumn(name = "cestabasica_cb_cod")
-    private CestaBasica cestaBasica;
-
-    @ManyToOne
-    @MapsId("produtoProdCod")
-    @JoinColumn(name = "produto_prod_cod")
-    private Produto produto;
+    @Id
+    @Column(name = "produto_prod_cod")
+    private Integer produtoProdCod;
 
     @Column(name = "quantidade")
     private Integer quantidade;
 
-    public CestaBasicaProduto() {}
-
-    public CestaBasicaProduto(CestaBasicaProdutoId id, CestaBasica cestaBasica, Produto produto, Integer quantidade) {
-        this.id = id;
-        this.cestaBasica = cestaBasica;
-        this.produto = produto;
-        this.quantidade = quantidade;
+    public Integer getCestaBasicaCbCod() {
+        return cestaBasicaCbCod;
     }
 
-    public CestaBasicaProdutoId getId() { return id; }
-    public void setId(CestaBasicaProdutoId id) { this.id = id; }
+    public void setCestaBasicaCbCod(Integer cestaBasicaCbCod) {
+        this.cestaBasicaCbCod = cestaBasicaCbCod;
+    }
 
-    public CestaBasica getCestaBasica() { return cestaBasica; }
-    public void setCestaBasica(CestaBasica cestaBasica) { this.cestaBasica = cestaBasica; }
+    public Integer getProdutoProdCod() {
+        return produtoProdCod;
+    }
 
-    public Produto getProduto() { return produto; }
-    public void setProduto(Produto produto) { this.produto = produto; }
+    public void setProdutoProdCod(Integer produtoProdCod) {
+        this.produtoProdCod = produtoProdCod;
+    }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
 }

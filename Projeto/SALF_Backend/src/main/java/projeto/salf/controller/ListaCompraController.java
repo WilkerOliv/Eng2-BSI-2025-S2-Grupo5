@@ -17,20 +17,20 @@ public class ListaCompraController {
     private ListaCompraService service;
 
     @GetMapping
-    public List<ListaCompra> listarTodas() { return service.listarTodas(); }
+    public List<ListaCompra> listarTodas() { return service.listarListas(); }
 
     @PostMapping
-    public ListaCompra salvar(@RequestBody ListaCompra lista) { return service.salvar(lista); }
+    public ListaCompra salvar(@RequestBody ListaCompra lista) { return service.salvarLista(lista); }
 
     @PutMapping("/{id}")
     public ResponseEntity<ListaCompra> atualizar(@PathVariable Integer id, @RequestBody ListaCompra lista) {
         lista.setLcCod(id);
-        return ResponseEntity.ok(service.salvar(lista));
+        return ResponseEntity.ok(service.salvarLista(lista));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Integer id) {
-        service.excluir(id);
+        service.excluirLista(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,66 +1,53 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "compra")
-public class Compra {
+public class Compra implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "compra_cod")
     private Integer compraCod;
 
-    @Column(name = "compra_valortt", nullable = false)
-    private Double compraValorTT;
+    @Column(name = "compra_valor_tt", nullable = false)
+    private Double compraValorTt;
 
-    @Column(name = "datacompra", nullable = false)
+    @Column(name = "data_compra", nullable = false)
     private LocalDate dataCompra;
 
-    @Column(name = "forneccotacao_fornecedor_idfornecedor", nullable = false)
-    private Integer fornecCotFornecedorId;
+    @Column(name = "fornec_cotacao_fornecedor_id")
+    private Integer fornecCotacaoFornecedorId;
 
-    @Column(name = "forneccotacao_cotacao_idcotacao", nullable = false)
-    private Integer fornecCotCotacaoId;
+    @Column(name = "fornec_cotacao_cotacao_id")
+    private Integer fornecCotacaoCotacaoId;
 
-    @ManyToOne
-    @JoinColumn(name = "fornecedor_idfornecedor", nullable = false)
-    private Fornecedor fornecedor;
+    @Column(name = "fornecedor_id")
+    private Integer fornecedorId;
 
-    @Column(name = "funcionario_func_cpf", length = 14, nullable = false)
+    @Column(name = "funcionario_func_cpf", length = 14)
     private String funcionarioFuncCpf;
-
-    public Compra() {}
-
-    public Compra(Integer compraCod, Double compraValorTT, LocalDate dataCompra, Integer fornecCotFornecedorId,
-                  Integer fornecCotCotacaoId, Fornecedor fornecedor, String funcionarioFuncCpf) {
-        this.compraCod = compraCod;
-        this.compraValorTT = compraValorTT;
-        this.dataCompra = dataCompra;
-        this.fornecCotFornecedorId = fornecCotFornecedorId;
-        this.fornecCotCotacaoId = fornecCotCotacaoId;
-        this.fornecedor = fornecedor;
-        this.funcionarioFuncCpf = funcionarioFuncCpf;
-    }
 
     public Integer getCompraCod() { return compraCod; }
     public void setCompraCod(Integer compraCod) { this.compraCod = compraCod; }
 
-    public Double getCompraValorTT() { return compraValorTT; }
-    public void setCompraValorTT(Double compraValorTT) { this.compraValorTT = compraValorTT; }
+    public Double getCompraValorTt() { return compraValorTt; }
+    public void setCompraValorTt(Double compraValorTt) { this.compraValorTt = compraValorTt; }
 
     public LocalDate getDataCompra() { return dataCompra; }
     public void setDataCompra(LocalDate dataCompra) { this.dataCompra = dataCompra; }
 
-    public Integer getFornecCotFornecedorId() { return fornecCotFornecedorId; }
-    public void setFornecCotFornecedorId(Integer fornecCotFornecedorId) { this.fornecCotFornecedorId = fornecCotFornecedorId; }
+    public Integer getFornecCotacaoFornecedorId() { return fornecCotacaoFornecedorId; }
+    public void setFornecCotacaoFornecedorId(Integer fornecCotacaoFornecedorId) { this.fornecCotacaoFornecedorId = fornecCotacaoFornecedorId; }
 
-    public Integer getFornecCotCotacaoId() { return fornecCotCotacaoId; }
-    public void setFornecCotCotacaoId(Integer fornecCotCotacaoId) { this.fornecCotCotacaoId = fornecCotCotacaoId; }
+    public Integer getFornecCotacaoCotacaoId() { return fornecCotacaoCotacaoId; }
+    public void setFornecCotacaoCotacaoId(Integer fornecCotacaoCotacaoId) { this.fornecCotacaoCotacaoId = fornecCotacaoCotacaoId; }
 
-    public Fornecedor getFornecedor() { return fornecedor; }
-    public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }
+    public Integer getFornecedorId() { return fornecedorId; }
+    public void setFornecedorId(Integer fornecedorId) { this.fornecedorId = fornecedorId; }
 
     public String getFuncionarioFuncCpf() { return funcionarioFuncCpf; }
     public void setFuncionarioFuncCpf(String funcionarioFuncCpf) { this.funcionarioFuncCpf = funcionarioFuncCpf; }

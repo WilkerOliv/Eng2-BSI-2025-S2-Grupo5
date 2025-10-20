@@ -1,36 +1,36 @@
 package projeto.salf.model;
 
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "doacao_necessidade_cesta")
-public class DoacaoNecessidadeCesta {
+@IdClass(DoacaoNecessidadeCestaId.class)
+public class DoacaoNecessidadeCesta implements Serializable {
 
-    @EmbeddedId
-    private DoacaoNecessidadeCestaId id;
+    @Id
+    @Column(name = "doacao_doa_cod")
+    private Integer doacaoDoaCod;
 
-    @ManyToOne
-    @MapsId("doacaoDoaCod")
-    @JoinColumn(name = "doacao_doa_cod")
-    private Doacao doacao;
+    @Id
+    @Column(name = "necessidade_cesta_pessoa_carente_pc_cpf", length = 14)
+    private String necessidadeCestaPessoaCarentePcCpf;
+
+    @Id
+    @Column(name = "necessidade_cesta_cesta_basica_cb_cod")
+    private Integer necessidadeCestaCestaBasicaCbCod;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 
-    public DoacaoNecessidadeCesta() {}
+    public Integer getDoacaoDoaCod() { return doacaoDoaCod; }
+    public void setDoacaoDoaCod(Integer doacaoDoaCod) { this.doacaoDoaCod = doacaoDoaCod; }
 
-    public DoacaoNecessidadeCesta(DoacaoNecessidadeCestaId id, Doacao doacao, Integer quantidade) {
-        this.id = id;
-        this.doacao = doacao;
-        this.quantidade = quantidade;
-    }
+    public String getNecessidadeCestaPessoaCarentePcCpf() { return necessidadeCestaPessoaCarentePcCpf; }
+    public void setNecessidadeCestaPessoaCarentePcCpf(String v) { this.necessidadeCestaPessoaCarentePcCpf = v; }
 
-    public DoacaoNecessidadeCestaId getId() { return id; }
-    public void setId(DoacaoNecessidadeCestaId id) { this.id = id; }
-
-    public Doacao getDoacao() { return doacao; }
-    public void setDoacao(Doacao doacao) { this.doacao = doacao; }
+    public Integer getNecessidadeCestaCestaBasicaCbCod() { return necessidadeCestaCestaBasicaCbCod; }
+    public void setNecessidadeCestaCestaBasicaCbCod(Integer v) { this.necessidadeCestaCestaBasicaCbCod = v; }
 
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }

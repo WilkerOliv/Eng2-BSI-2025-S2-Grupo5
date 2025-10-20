@@ -1,35 +1,33 @@
 package projeto.salf.model;
 
-
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
 public class DoacaoNecessidadeProdutoId implements Serializable {
-
-    @Column(name = "doacao_doa_cod")
     private Integer doacaoDoaCod;
-
-    @Column(name = "necessidadeproduto_pessoacarente_pc_cpf", length = 18)
-    private String necessidadePessoaCpf;
-
-    @Column(name = "necessidadeproduto_produto_prod_cod")
-    private Integer necessidadeProdutoCod;
+    private String necessidadeProdutoPessoaCarentePcCpf;
+    private Integer necessidadeProdutoProdutoProdCod;
 
     public DoacaoNecessidadeProdutoId() {}
+    public DoacaoNecessidadeProdutoId(Integer a, String b, Integer c) { this.doacaoDoaCod = a; this.necessidadeProdutoPessoaCarentePcCpf = b; this.necessidadeProdutoProdutoProdCod = c; }
 
-    public DoacaoNecessidadeProdutoId(Integer doacaoDoaCod, String necessidadePessoaCpf, Integer necessidadeProdutoCod) {
-        this.doacaoDoaCod = doacaoDoaCod;
-        this.necessidadePessoaCpf = necessidadePessoaCpf;
-        this.necessidadeProdutoCod = necessidadeProdutoCod;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DoacaoNecessidadeProdutoId)) return false;
+        DoacaoNecessidadeProdutoId that = (DoacaoNecessidadeProdutoId) o;
+        return Objects.equals(doacaoDoaCod, that.doacaoDoaCod) &&
+                Objects.equals(necessidadeProdutoPessoaCarentePcCpf, that.necessidadeProdutoPessoaCarentePcCpf) &&
+                Objects.equals(necessidadeProdutoProdutoProdCod, that.necessidadeProdutoProdutoProdCod);
     }
 
+    @Override
+    public int hashCode() { return Objects.hash(doacaoDoaCod, necessidadeProdutoPessoaCarentePcCpf, necessidadeProdutoProdutoProdCod); }
+
     public Integer getDoacaoDoaCod() { return doacaoDoaCod; }
-    public void setDoacaoDoaCod(Integer doacaoDoaCod) { this.doacaoDoaCod = doacaoDoaCod; }
-
-    public String getNecessidadePessoaCpf() { return necessidadePessoaCpf; }
-    public void setNecessidadePessoaCpf(String necessidadePessoaCpf) { this.necessidadePessoaCpf = necessidadePessoaCpf; }
-
-    public Integer getNecessidadeProdutoCod() { return necessidadeProdutoCod; }
-    public void setNecessidadeProdutoCod(Integer necessidadeProdutoCod) { this.necessidadeProdutoCod = necessidadeProdutoCod; }
+    public void setDoacaoDoaCod(Integer v) { this.doacaoDoaCod = v; }
+    public String getNecessidadeProdutoPessoaCarentePcCpf() { return necessidadeProdutoPessoaCarentePcCpf; }
+    public void setNecessidadeProdutoPessoaCarentePcCpf(String v) { this.necessidadeProdutoPessoaCarentePcCpf = v; }
+    public Integer getNecessidadeProdutoProdutoProdCod() { return necessidadeProdutoProdutoProdCod; }
+    public void setNecessidadeProdutoProdutoProdCod(Integer v) { this.necessidadeProdutoProdutoProdCod = v; }
 }

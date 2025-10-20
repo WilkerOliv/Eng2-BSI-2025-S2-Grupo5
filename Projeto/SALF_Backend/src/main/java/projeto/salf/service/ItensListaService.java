@@ -2,18 +2,18 @@ package projeto.salf.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import projeto.salf.model.ItensLista;
-import projeto.salf.model.ItensListaId;
-import projeto.salf.repository.ItensListaRepository;
+import projeto.salf.model.ItensDaLista;
+import projeto.salf.model.ItensDaListaId;
+import projeto.salf.repository.ItensDaListaRepository;
 
 import java.util.List;
 
 @Service
 public class ItensListaService {
     @Autowired
-    private ItensListaRepository repository;
+    private ItensDaListaRepository repository;
 
-    public List<ItensLista> listarTodos() { return repository.findAll(); }
-    public ItensLista salvar(ItensLista i) { return repository.save(i); }
-    public void excluir(ItensListaId id) { repository.deleteById(id); }
+    public List<ItensDaLista> listarTodos() { return repository.findAll(); }
+    public ItensDaLista salvar(ItensDaLista i) { return repository.save(i); }
+    public void excluir(ItensDaListaId id) { repository.deleteById(id); }
 }
