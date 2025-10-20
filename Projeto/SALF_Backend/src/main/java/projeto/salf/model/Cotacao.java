@@ -1,30 +1,23 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "cotacao")
-public class Cotacao {
+public class Cotacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idcotacao")
+    @Column(name = "id_cotacao")
     private Integer idCotacao;
 
-    @Column(name = "dataabertura", nullable = false)
+    @Column(name = "data_abertura", nullable = false)
     private LocalDate dataAbertura;
 
-    @Column(name = "datafechamento", nullable = false)
+    @Column(name = "data_fechamento", nullable = false)
     private LocalDate dataFechamento;
-
-    public Cotacao() {}
-
-    public Cotacao(Integer idCotacao, LocalDate dataAbertura, LocalDate dataFechamento) {
-        this.idCotacao = idCotacao;
-        this.dataAbertura = dataAbertura;
-        this.dataFechamento = dataFechamento;
-    }
 
     public Integer getIdCotacao() { return idCotacao; }
     public void setIdCotacao(Integer idCotacao) { this.idCotacao = idCotacao; }

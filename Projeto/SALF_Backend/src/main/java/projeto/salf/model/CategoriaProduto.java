@@ -6,11 +6,13 @@ import java.io.Serializable;
 @Entity
 @Table(name = "categoria_produto")
 public class CategoriaProduto implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cat_cod")
     private Integer catCod;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "cat_descr", nullable = false, length = 100)
     private String catDescr;
 
     public Integer getCatCod() { return catCod; }

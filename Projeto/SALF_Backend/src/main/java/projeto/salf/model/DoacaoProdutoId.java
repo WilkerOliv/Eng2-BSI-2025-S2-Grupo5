@@ -1,16 +1,10 @@
 package projeto.salf.model;
 
-
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
 public class DoacaoProdutoId implements Serializable {
-
-    @Column(name = "doacao_doa_cod")
     private Integer doacaoDoaCod;
-
-    @Column(name = "produto_prod_cod")
     private Integer produtoProdCod;
 
     public DoacaoProdutoId() {}
@@ -20,9 +14,15 @@ public class DoacaoProdutoId implements Serializable {
         this.produtoProdCod = produtoProdCod;
     }
 
-    public Integer getDoacaoDoaCod() { return doacaoDoaCod; }
-    public void setDoacaoDoaCod(Integer doacaoDoaCod) { this.doacaoDoaCod = doacaoDoaCod; }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DoacaoProdutoId)) return false;
+        DoacaoProdutoId that = (DoacaoProdutoId) o;
+        return Objects.equals(doacaoDoaCod, that.doacaoDoaCod) &&
+                Objects.equals(produtoProdCod, that.produtoProdCod);
+    }
 
-    public Integer getProdutoProdCod() { return produtoProdCod; }
-    public void setProdutoProdCod(Integer produtoProdCod) { this.produtoProdCod = produtoProdCod; }
+    @Override
+    public int hashCode() { return Objects.hash(doacaoDoaCod, produtoProdCod); }
 }

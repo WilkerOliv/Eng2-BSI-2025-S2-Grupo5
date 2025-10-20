@@ -56,6 +56,7 @@
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.SalfBackendApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Wilker&quot;,
@@ -106,6 +107,9 @@
       <workItem from="1760709465613" duration="5192000" />
       <workItem from="1760839171085" duration="2104000" />
       <workItem from="1760843352791" duration="1223000" />
+      <workItem from="1760917468717" duration="7945000" />
+      <workItem from="1760936047239" duration="4989000" />
+      <workItem from="1760981644797" duration="2629000" />
     </task>
     <servers />
   </component>

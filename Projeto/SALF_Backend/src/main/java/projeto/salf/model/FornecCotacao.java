@@ -1,44 +1,29 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "fornec_cotacao")
-public class FornecCotacao {
+@IdClass(FornecCotacaoId.class)
+public class FornecCotacao implements Serializable {
 
-    @EmbeddedId
-    private FornecCotacaoId id;
+    @Id
+    @Column(name = "fornecedor_id")
+    private Integer fornecedorId;
 
-    @ManyToOne
-    @MapsId("fornecedorIdFornecedor")
-    @JoinColumn(name = "fornecedor_idfornecedor")
-    private Fornecedor fornecedor;
+    @Id
+    @Column(name = "cotacao_id")
+    private Integer cotacaoId;
 
-    @ManyToOne
-    @MapsId("cotacaoIdCotacao")
-    @JoinColumn(name = "cotacao_idcotacao")
-    private Cotacao cotacao;
-
-    @Column(name = "statusrealizou", nullable = false)
+    @Column(name = "status_realizou", nullable = false)
     private Integer statusRealizou;
 
-    public FornecCotacao() {}
+    public Integer getFornecedorId() { return fornecedorId; }
+    public void setFornecedorId(Integer fornecedorId) { this.fornecedorId = fornecedorId; }
 
-    public FornecCotacao(FornecCotacaoId id, Fornecedor fornecedor, Cotacao cotacao, Integer statusRealizou) {
-        this.id = id;
-        this.fornecedor = fornecedor;
-        this.cotacao = cotacao;
-        this.statusRealizou = statusRealizou;
-    }
-
-    public FornecCotacaoId getId() { return id; }
-    public void setId(FornecCotacaoId id) { this.id = id; }
-
-    public Fornecedor getFornecedor() { return fornecedor; }
-    public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }
-
-    public Cotacao getCotacao() { return cotacao; }
-    public void setCotacao(Cotacao cotacao) { this.cotacao = cotacao; }
+    public Integer getCotacaoId() { return cotacaoId; }
+    public void setCotacaoId(Integer cotacaoId) { this.cotacaoId = cotacaoId; }
 
     public Integer getStatusRealizou() { return statusRealizou; }
     public void setStatusRealizou(Integer statusRealizou) { this.statusRealizou = statusRealizou; }

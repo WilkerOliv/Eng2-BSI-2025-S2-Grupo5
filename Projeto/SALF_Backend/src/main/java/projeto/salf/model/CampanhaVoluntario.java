@@ -1,44 +1,29 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "campanha_has_voluntario")
-public class CampanhaVoluntario {
+@Table(name = "campanha_voluntario")
+@IdClass(CampanhaVoluntarioId.class)
+public class CampanhaVoluntario implements Serializable {
 
-    @EmbeddedId
-    private CampanhaVoluntarioId id;
+    @Id
+    @Column(name = "campanha_id_campanha")
+    private Integer campanhaIdCampanha;
 
-    @ManyToOne
-    @MapsId("campanhaIdCampanha")
-    @JoinColumn(name = "campanha_idcampanha")
-    private Campanha campanha;
+    @Id
+    @Column(name = "voluntario_vol_cpf", length = 14)
+    private String voluntarioVolCpf;
 
-    @ManyToOne
-    @MapsId("voluntarioVolCpf")
-    @JoinColumn(name = "voluntario_vol_cpf")
-    private Voluntario voluntario;
-
-    @Column(name = "cargocampanha", length = 50)
+    @Column(name = "cargo_campanha", length = 50)
     private String cargoCampanha;
 
-    public CampanhaVoluntario() {}
+    public Integer getCampanhaIdCampanha() { return campanhaIdCampanha; }
+    public void setCampanhaIdCampanha(Integer campanhaIdCampanha) { this.campanhaIdCampanha = campanhaIdCampanha; }
 
-    public CampanhaVoluntario(CampanhaVoluntarioId id, Campanha campanha, Voluntario voluntario, String cargoCampanha) {
-        this.id = id;
-        this.campanha = campanha;
-        this.voluntario = voluntario;
-        this.cargoCampanha = cargoCampanha;
-    }
-
-    public CampanhaVoluntarioId getId() { return id; }
-    public void setId(CampanhaVoluntarioId id) { this.id = id; }
-
-    public Campanha getCampanha() { return campanha; }
-    public void setCampanha(Campanha campanha) { this.campanha = campanha; }
-
-    public Voluntario getVoluntario() { return voluntario; }
-    public void setVoluntario(Voluntario voluntario) { this.voluntario = voluntario; }
+    public String getVoluntarioVolCpf() { return voluntarioVolCpf; }
+    public void setVoluntarioVolCpf(String voluntarioVolCpf) { this.voluntarioVolCpf = voluntarioVolCpf; }
 
     public String getCargoCampanha() { return cargoCampanha; }
     public void setCargoCampanha(String cargoCampanha) { this.cargoCampanha = cargoCampanha; }

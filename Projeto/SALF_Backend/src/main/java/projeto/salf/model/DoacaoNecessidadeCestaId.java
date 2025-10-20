@@ -1,35 +1,33 @@
 package projeto.salf.model;
 
-
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
 public class DoacaoNecessidadeCestaId implements Serializable {
-
-    @Column(name = "doacao_doa_cod")
     private Integer doacaoDoaCod;
-
-    @Column(name = "necessidadecesta_pessoacarente_pc_cpf", length = 18)
-    private String necessidadePessoaCpf;
-
-    @Column(name = "necessidadecesta_cestabasica_cb_cod")
-    private Integer necessidadeCestaCod;
+    private String necessidadeCestaPessoaCarentePcCpf;
+    private Integer necessidadeCestaCestaBasicaCbCod;
 
     public DoacaoNecessidadeCestaId() {}
+    public DoacaoNecessidadeCestaId(Integer a, String b, Integer c) { this.doacaoDoaCod = a; this.necessidadeCestaPessoaCarentePcCpf = b; this.necessidadeCestaCestaBasicaCbCod = c; }
 
-    public DoacaoNecessidadeCestaId(Integer doacaoDoaCod, String necessidadePessoaCpf, Integer necessidadeCestaCod) {
-        this.doacaoDoaCod = doacaoDoaCod;
-        this.necessidadePessoaCpf = necessidadePessoaCpf;
-        this.necessidadeCestaCod = necessidadeCestaCod;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DoacaoNecessidadeCestaId)) return false;
+        DoacaoNecessidadeCestaId that = (DoacaoNecessidadeCestaId) o;
+        return Objects.equals(doacaoDoaCod, that.doacaoDoaCod) &&
+                Objects.equals(necessidadeCestaPessoaCarentePcCpf, that.necessidadeCestaPessoaCarentePcCpf) &&
+                Objects.equals(necessidadeCestaCestaBasicaCbCod, that.necessidadeCestaCestaBasicaCbCod);
     }
 
+    @Override
+    public int hashCode() { return Objects.hash(doacaoDoaCod, necessidadeCestaPessoaCarentePcCpf, necessidadeCestaCestaBasicaCbCod); }
+
     public Integer getDoacaoDoaCod() { return doacaoDoaCod; }
-    public void setDoacaoDoaCod(Integer doacaoDoaCod) { this.doacaoDoaCod = doacaoDoaCod; }
-
-    public String getNecessidadePessoaCpf() { return necessidadePessoaCpf; }
-    public void setNecessidadePessoaCpf(String necessidadePessoaCpf) { this.necessidadePessoaCpf = necessidadePessoaCpf; }
-
-    public Integer getNecessidadeCestaCod() { return necessidadeCestaCod; }
-    public void setNecessidadeCestaCod(Integer necessidadeCestaCod) { this.necessidadeCestaCod = necessidadeCestaCod; }
+    public void setDoacaoDoaCod(Integer v) { this.doacaoDoaCod = v; }
+    public String getNecessidadeCestaPessoaCarentePcCpf() { return necessidadeCestaPessoaCarentePcCpf; }
+    public void setNecessidadeCestaPessoaCarentePcCpf(String v) { this.necessidadeCestaPessoaCarentePcCpf = v; }
+    public Integer getNecessidadeCestaCestaBasicaCbCod() { return necessidadeCestaCestaBasicaCbCod; }
+    public void setNecessidadeCestaCestaBasicaCbCod(Integer v) { this.necessidadeCestaCestaBasicaCbCod = v; }
 }

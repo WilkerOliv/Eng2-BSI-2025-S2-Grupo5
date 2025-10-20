@@ -1,19 +1,19 @@
 package projeto.salf.model;
 
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "campanha")
-public class Campanha {
+public class Campanha implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idcampanha")
+    @Column(name = "id_campanha")
     private Integer idCampanha;
 
-    @Column(name = "campanha_descr", length = 100, nullable = false)
+    @Column(name = "campanha_descr", nullable = false, length = 100)
     private String campanhaDescr;
 
     @Column(name = "campanha_dtini", nullable = false)
@@ -22,28 +22,14 @@ public class Campanha {
     @Column(name = "campanha_dtfim", nullable = false)
     private LocalDate campanhaDtFim;
 
-    @Column(name = "campanha_totalarrecado", nullable = false)
-    private Double campanhaTotalArrecado;
+    @Column(name = "campanha_total_arrecadado", nullable = false)
+    private Double campanhaTotalArrecadado;
 
     @Column(name = "observacao", length = 100)
     private String observacao;
 
-    @ManyToOne
-    @JoinColumn(name = "funcionario_func_cpf", nullable = false)
-    private Funcionario funcionario;
-
-    public Campanha() {}
-
-    public Campanha(Integer idCampanha, String campanhaDescr, LocalDate campanhaDtIni, LocalDate campanhaDtFim,
-                    Double campanhaTotalArrecado, String observacao, Funcionario funcionario) {
-        this.idCampanha = idCampanha;
-        this.campanhaDescr = campanhaDescr;
-        this.campanhaDtIni = campanhaDtIni;
-        this.campanhaDtFim = campanhaDtFim;
-        this.campanhaTotalArrecado = campanhaTotalArrecado;
-        this.observacao = observacao;
-        this.funcionario = funcionario;
-    }
+    @Column(name = "funcionario_func_cpf", length = 14)
+    private String funcionarioFuncCpf;
 
     public Integer getIdCampanha() { return idCampanha; }
     public void setIdCampanha(Integer idCampanha) { this.idCampanha = idCampanha; }
@@ -57,12 +43,12 @@ public class Campanha {
     public LocalDate getCampanhaDtFim() { return campanhaDtFim; }
     public void setCampanhaDtFim(LocalDate campanhaDtFim) { this.campanhaDtFim = campanhaDtFim; }
 
-    public Double getCampanhaTotalArrecado() { return campanhaTotalArrecado; }
-    public void setCampanhaTotalArrecado(Double campanhaTotalArrecado) { this.campanhaTotalArrecado = campanhaTotalArrecado; }
+    public Double getCampanhaTotalArrecadado() { return campanhaTotalArrecadado; }
+    public void setCampanhaTotalArrecadado(Double campanhaTotalArrecadado) { this.campanhaTotalArrecadado = campanhaTotalArrecadado; }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
 
-    public Funcionario getFuncionario() { return funcionario; }
-    public void setFuncionario(Funcionario funcionario) { this.funcionario = funcionario; }
+    public String getFuncionarioFuncCpf() { return funcionarioFuncCpf; }
+    public void setFuncionarioFuncCpf(String funcionarioFuncCpf) { this.funcionarioFuncCpf = funcionarioFuncCpf; }
 }

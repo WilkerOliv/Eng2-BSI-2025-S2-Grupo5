@@ -1,28 +1,30 @@
 package projeto.salf.model;
 
-
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
 public class EstoqueSaidaRefeicaoId implements Serializable {
-
-    @Column(name = "estoque_est_cod")
     private Integer estoqueEstCod;
-
-    @Column(name = "saida_refeicao_idsaida_refeicao")
-    private Integer saidaRefeicaoId;
+    private Integer saidaRefeicaoIdSaidaRefeicao;
 
     public EstoqueSaidaRefeicaoId() {}
 
-    public EstoqueSaidaRefeicaoId(Integer estoqueEstCod, Integer saidaRefeicaoId) {
-        this.estoqueEstCod = estoqueEstCod;
-        this.saidaRefeicaoId = saidaRefeicaoId;
+    public EstoqueSaidaRefeicaoId(Integer e, Integer s) { this.estoqueEstCod = e; this.saidaRefeicaoIdSaidaRefeicao = s; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EstoqueSaidaRefeicaoId)) return false;
+        EstoqueSaidaRefeicaoId that = (EstoqueSaidaRefeicaoId) o;
+        return Objects.equals(estoqueEstCod, that.estoqueEstCod) &&
+                Objects.equals(saidaRefeicaoIdSaidaRefeicao, that.saidaRefeicaoIdSaidaRefeicao);
     }
 
-    public Integer getEstoqueEstCod() { return estoqueEstCod; }
-    public void setEstoqueEstCod(Integer estoqueEstCod) { this.estoqueEstCod = estoqueEstCod; }
+    @Override
+    public int hashCode() { return Objects.hash(estoqueEstCod, saidaRefeicaoIdSaidaRefeicao); }
 
-    public Integer getSaidaRefeicaoId() { return saidaRefeicaoId; }
-    public void setSaidaRefeicaoId(Integer saidaRefeicaoId) { this.saidaRefeicaoId = saidaRefeicaoId; }
+    public Integer getEstoqueEstCod() { return estoqueEstCod; }
+    public void setEstoqueEstCod(Integer v) { this.estoqueEstCod = v; }
+    public Integer getSaidaRefeicaoIdSaidaRefeicao() { return saidaRefeicaoIdSaidaRefeicao; }
+    public void setSaidaRefeicaoIdSaidaRefeicao(Integer v) { this.saidaRefeicaoIdSaidaRefeicao = v; }
 }

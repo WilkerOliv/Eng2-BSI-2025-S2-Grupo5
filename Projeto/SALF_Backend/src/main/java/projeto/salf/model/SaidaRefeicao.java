@@ -10,10 +10,10 @@ public class SaidaRefeicao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idsaidarefeicao")
+    @Column(name = "id_saida_refeicao")
     private Integer idSaidaRefeicao;
 
-    @Column(name = "dataregistro", nullable = false)
+    @Column(name = "data_registro", nullable = false)
     private LocalDate dataRegistro;
 
     @ManyToOne
