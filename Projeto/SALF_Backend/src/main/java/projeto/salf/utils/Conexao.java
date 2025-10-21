@@ -1,84 +1,137 @@
-package projetoSalf.mvc.util;
+package projeto.salf.utils;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Conexao
-{
+public class Conexao {
     private Connection connect;
     private String erro;
-    public Conexao()
-    {   erro="";
-        connect=null;
+
+    public Conexao() {
+        this.erro = "";
+        this.connect = null;
     }
 
     public Connection getConnect() {
         return connect;
     }
 
-    public boolean conectar(String local, String banco, String usuario, String senha)
-    {   boolean conectado=false;
+    public boolean conectar(String local, String banco, String usuario, String senha) {
+        boolean conectado = false;
         try {
-            //Class.forName(driver); "org.postgresql.Driver");
-            String url = local+banco; //"jdbc:postgresql://localhost/"+banco;
-            connect = DriverManager.getConnection( url, usuario,senha);
-            conectado=true;
+            String url = local + banco; // ex: jdbc:postgresql://localhost:5432/salf_db
+            connect = DriverManager.getConnection(url, usuario, senha);
+            connect.setAutoCommit(true); // mantenho autocommit; ajuste se precisar de transação
+            conectado = true;
+        } catch (SQLException sqlex) {
+            erro = "Impossível conectar com a base de dados: " + sqlex;
+        } catch (Exception ex) {
+            erro = "Outro erro: " + ex;
         }
-        catch ( SQLException sqlex )
-        { erro="Impossivel conectar com a base de dados: " + sqlex.toString(); }
-        catch ( Exception ex )
-        { erro="Outro erro: " + ex.toString(); }
         return conectado;
     }
+
     public String getMensagemErro() {
         return erro;
     }
+
     public boolean getEstadoConexao() {
-        return (connect!=null);
-    }
-    public boolean manipular(String sql) // inserir, alterar,excluir
-    {   boolean executou=false;
         try {
-            Statement statement = connect.createStatement();
-            int result = statement.executeUpdate( sql );
-            statement.close();
-            if(result>=1)
-                executou=true;
+            return connect != null && !connect.isClosed();
+        } catch (SQLException e) {
+            return false;
         }
-        catch ( SQLException sqlex )
-        {  erro="Erro: "+sqlex.toString();
-        }
-        return executou;
     }
-    public ResultSet consultar(String sql)
-    {   ResultSet rs=null;
+
+    /** Execuções DML (INSERT/UPDATE/DELETE) */
+    public boolean manipular(String sql) {
+        try (Statement st = connect.createStatement()) {
+            int result = st.executeUpdate(sql);
+            return result >= 1;
+        } catch (SQLException e) {
+            erro = "Erro: " + e;
+            return false;
+        }
+    }
+
+    /**
+     * CONSULTA SEGURA que já consome o ResultSet e fecha recursos.
+     * Retorna uma lista de maps (coluna->valor). Evita leak de Statement/ResultSet.
+     */
+    public List<Map<String, Object>> consultar(String sql) {
+        List<Map<String, Object>> lista = new ArrayList<>();
+        try (Statement st = connect.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            ResultSetMetaData md = rs.getMetaData();
+            int cols = md.getColumnCount();
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>(cols);
+                for (int i = 1; i <= cols; i++) {
+                    String col = md.getColumnLabel(i);
+                    row.put(col, rs.getObject(i));
+                }
+                lista.add(row);
+            }
+        } catch (SQLException e) {
+            erro = "Erro: " + e;
+            return List.of();
+        }
+        return lista;
+    }
+
+    /** Versão que permite parâmetros com PreparedStatement */
+    public List<Map<String, Object>> consultar(String sql, Object... params) {
+        List<Map<String, Object>> lista = new ArrayList<>();
+        try (PreparedStatement ps = connect.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData md = rs.getMetaData();
+                int cols = md.getColumnCount();
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>(cols);
+                    for (int i = 1; i <= cols; i++) {
+                        String col = md.getColumnLabel(i);
+                        row.put(col, rs.getObject(i));
+                    }
+                    lista.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            erro = "Erro: " + e;
+            return List.of();
+        }
+        return lista;
+    }
+
+    public int getMaxPK(String tabela, String chave) {
+        String sql = "select max(" + chave + ") as max_pk from " + tabela;
+        try (Statement st = connect.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("max_pk");
+            }
+            return 0;
+        } catch (SQLException e) {
+            erro = "Erro: " + e;
+            return -1;
+        }
+    }
+
+    public void close() {
         try {
-            Statement statement = connect.createStatement();
-            //ResultSet.TYPE_SCROLL_INSENSITIVE,
-            //ResultSet.CONCUR_READ_ONLY);
-            rs = statement.executeQuery( sql );
-            //statement.close();
+            if (connect != null && !connect.isClosed()) {
+                connect.close();
+            }
+        } catch (SQLException e) {
+            // loga e segue
+        } finally {
+            connect = null;
         }
-        catch ( SQLException sqlex )
-        { erro="Erro: "+sqlex.toString();
-            rs = null;
-        }
-        return rs;
-    }
-    public int getMaxPK(String tabela,String chave)
-    {
-        String sql="select max("+chave+") from "+tabela;
-        int max=0;
-        ResultSet rs= consultar(sql);
-        try
-        {
-            if(rs.next())
-                max=rs.getInt(1);
-        }
-        catch (SQLException sqlex)
-        {
-            erro="Erro: " + sqlex.toString();
-            max = -1;
-        }
-        return max;
     }
 }

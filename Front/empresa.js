@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/salf/param?email=${encodeURIComponent(emailEmpresa)}`);
+      const response = await fetch(`http://localhost:8080/api/parametrizacao?email=${encodeURIComponent(emailEmpresa)}`);
 
       if (response.status === 404) {
-        const existeResp = await fetch('http://localhost:8080/salf/param/existeEmpresa');
+        const existeResp = await fetch('http://localhost:8080/api/parametrizacao/existeEmpresa');
         const existeEmpresa = await existeResp.json();
 
         if (existeEmpresa) {
