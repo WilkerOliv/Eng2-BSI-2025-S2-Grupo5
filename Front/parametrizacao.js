@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (res.ok) {
         empresaExistente = await res.json();
 
-        f.razao_social.value  = empresaExistente.razaoSocial  ?? '';
-        f.nome_fantasia.value = empresaExistente.nomeFantasia ?? '';
+        f.razaoSocial.value  = empresaExistente.razaoSocial  ?? '';
+        f.nomeFantasia.value = empresaExistente.nomeFantasia ?? '';
         f.telefone.value      = empresaExistente.telefone     ?? '';
         f.email.value         = empresaExistente.email        ?? f.email.value;
         f.site.value          = empresaExistente.site         ?? '';
