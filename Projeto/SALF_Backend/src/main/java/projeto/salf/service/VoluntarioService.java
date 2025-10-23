@@ -5,27 +5,32 @@ import org.springframework.transaction.annotation.Transactional;
 import projeto.salf.model.Voluntario;
 import projeto.salf.repository.VoluntarioRepository;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VoluntarioService {
 
-    private final VoluntarioRepository voluntarioRepository;
+    private final VoluntarioRepository repo;
 
-    public VoluntarioService(VoluntarioRepository voluntarioRepository) {
-        this.voluntarioRepository = voluntarioRepository;
+    public VoluntarioService(VoluntarioRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<Voluntario> listarTodos() {
+        return repo.findAll();
+    }
+
+    public Voluntario buscarPorCpf(String cpf) {
+        return repo.findById(cpf).orElse(null);
     }
 
     @Transactional
-    public Voluntario criarOuAtualizar(Voluntario v) {
-        // regra mínima: garantir datas
-        if (v.getDataInicioVoluntario() == null) {
-            v.setDataInicioVoluntario(LocalDate.now());
-        }
-        return voluntarioRepository.save(v);
+    public Voluntario salvar(Voluntario v) {
+        return repo.save(v);
     }
 
-    public Voluntario buscar(String cpf) {
-        return voluntarioRepository.findById(cpf).orElse(null);
+    @Transactional
+    public void excluir(String cpf) {
+        repo.deleteById(cpf);
     }
 }
