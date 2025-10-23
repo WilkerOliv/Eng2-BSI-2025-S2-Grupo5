@@ -48,7 +48,7 @@ public class CampanhaController {
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<Campanha> finalizar(@PathVariable Integer id, @RequestBody Campanha payload) {
         // usa apenas o campo total (ignora demais, pois a ideia é lançar resultado)
-        Campanha c = service.finalizar(id, payload.getCampanhaTotalArrecado());
+        Campanha c = service.finalizar(id, payload.getCampanhaTotalArrecadado());
         return c == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(c);
     }
 }
