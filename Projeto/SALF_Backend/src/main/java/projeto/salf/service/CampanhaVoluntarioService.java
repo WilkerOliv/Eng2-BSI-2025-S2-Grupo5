@@ -17,19 +17,19 @@ public class CampanhaVoluntarioService {
         this.repo = repo;
     }
 
+    @Transactional(readOnly = true)
     public List<CampanhaVoluntario> listarPorCampanha(Integer idCampanha) {
-        return repo.findById_CampanhaIdCampanha(idCampanha);
+        return repo.findByCampanhaIdCampanha(idCampanha);
     }
 
     @Transactional
     public CampanhaVoluntario vincular(CampanhaVoluntario entidade) {
-        // entidade já deve vir com o ID composto preenchido (idCampanha e cpfVoluntario)
         return repo.save(entidade);
     }
 
     @Transactional
     public void desvincular(Integer idCampanha, String cpfVoluntario) {
-        CampanhaVoluntarioId id = new CampanhaVoluntarioId(idCampanha, cpfVoluntario);
-        repo.deleteById(id);
+        repo.deleteByCampanhaIdCampanhaAndVoluntarioVolCpf(idCampanha, cpfVoluntario);
+
     }
 }

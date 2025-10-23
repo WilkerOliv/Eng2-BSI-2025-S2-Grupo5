@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CampanhaVoluntarioRepository extends JpaRepository<CampanhaVoluntario, CampanhaVoluntarioId> {
-    List<CampanhaVoluntario> findById_CampanhaIdCampanha(Integer idCampanha);
+    List<CampanhaVoluntario> findByCampanhaIdCampanha(Integer campanhaIdCampanha);
+    void deleteByCampanhaIdCampanhaAndVoluntarioVolCpf(Integer campanhaIdCampanha, String voluntarioVolCpf);
 }

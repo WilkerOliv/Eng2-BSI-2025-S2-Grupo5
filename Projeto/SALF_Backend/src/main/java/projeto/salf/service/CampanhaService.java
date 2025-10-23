@@ -27,8 +27,8 @@ public class CampanhaService {
     @Transactional
     public Campanha salvar(Campanha c) {
         // regra simples: se totalArrecadado vier null, zera
-        if (c.getCampanhaTotalArrecado() == null) {
-            c.setCampanhaTotalArrecado(0.0);
+        if (c.getCampanhaTotalArrecadado() == null) {
+            c.setCampanhaTotalArrecadado(0.0);
         }
         return repo.save(c);
     }
@@ -42,7 +42,7 @@ public class CampanhaService {
     public Campanha finalizar(Integer id, Double totalArrecadado) {
         Campanha c = repo.findById(id).orElse(null);
         if (c == null) return null;
-        c.setCampanhaTotalArrecado(totalArrecadado != null ? totalArrecadado : 0.0);
+        c.setCampanhaTotalArrecadado(totalArrecadado != null ? totalArrecadado : 0.0);
         return repo.save(c);
     }
 }
