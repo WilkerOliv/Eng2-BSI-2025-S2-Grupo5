@@ -1,0 +1,12 @@
+:root { --salf-red:#dc3545; --line:#e9ecef; }
+body { background: #f8f9fa; }
+.logo { height:36px; width:auto; filter: brightness(0) invert(1); }
+.text-primary { color: var(--salf-red) !important; }
+
+.card { border-radius: 12px; box-shadow: 0 3px 15px rgba(0,0,0,0.06); border: 1px solid var(--line); }
+.module-divider {
+  margin: 1rem 0; padding: .5rem .75rem; background: #f8d7da;
+  border-left: 4px solid var(--salf-red); border-radius: 8px;
+}
+.table td, .table th { vertical-align: middle; }
+#cmp-form-card .form-label, #cmp-detalhe-card .form-label { font-weight: 600; }

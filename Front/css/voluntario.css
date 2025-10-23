@@ -1,0 +1,8 @@
+:root { --salf-red:#dc3545; --line:#e9ecef; }
+body { background: #f8f9fa; }
+.logo { height:36px; width:auto; filter: brightness(0) invert(1); }
+.text-primary { color: var(--salf-red) !important; }
+
+.card { border-radius: 12px; box-shadow: 0 3px 15px rgba(0,0,0,0.06); border: 1px solid var(--line); }
+.table td, .table th { vertical-align: middle; }
+#vol-form-card .form-label { font-weight: 600; }
