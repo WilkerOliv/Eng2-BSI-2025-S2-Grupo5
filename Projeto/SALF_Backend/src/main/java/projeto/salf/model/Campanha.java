@@ -23,7 +23,7 @@ public class Campanha implements Serializable {
     private LocalDate campanhaDtFim;
 
     @Column(name = "campanha_total_arrecadado", nullable = false)
-    private Double campanhaTotalArrecadado;
+    private Double campanhaTotalArrecadado = 0.0; // evita null
 
     @Column(name = "observacao", length = 100)
     private String observacao;
@@ -44,7 +44,9 @@ public class Campanha implements Serializable {
     public void setCampanhaDtFim(LocalDate campanhaDtFim) { this.campanhaDtFim = campanhaDtFim; }
 
     public Double getCampanhaTotalArrecadado() { return campanhaTotalArrecadado; }
-    public void setCampanhaTotalArrecadado(Double campanhaTotalArrecadado) { this.campanhaTotalArrecadado = campanhaTotalArrecadado; }
+    public void setCampanhaTotalArrecadado(Double campanhaTotalArrecadado) {
+        this.campanhaTotalArrecadado = (campanhaTotalArrecadado == null ? 0.0 : campanhaTotalArrecadado);
+    }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
