@@ -2,44 +2,34 @@ package projeto.salf.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import projeto.salf.model.*;
-import projeto.salf.repository.CampanhaRepository;
+import projeto.salf.model.CampanhaVoluntario;
+import projeto.salf.model.CampanhaVoluntarioId;
 import projeto.salf.repository.CampanhaVoluntarioRepository;
-import projeto.salf.repository.VoluntarioRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class CampanhaVoluntarioService {
 
-    private final CampanhaRepository campanhaRepository;
-    private final VoluntarioRepository voluntarioRepository;
-    private final CampanhaVoluntarioRepository campanhaVoluntarioRepository;
+    private final CampanhaVoluntarioRepository repo;
 
-    public CampanhaVoluntarioService(CampanhaRepository campanhaRepository,
-                                     VoluntarioRepository voluntarioRepository,
-                                     CampanhaVoluntarioRepository campanhaVoluntarioRepository) {
-        this.campanhaRepository = campanhaRepository;
-        this.voluntarioRepository = voluntarioRepository;
-        this.campanhaVoluntarioRepository = campanhaVoluntarioRepository;
+    public CampanhaVoluntarioService(CampanhaVoluntarioRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<CampanhaVoluntario> listarPorCampanha(Integer idCampanha) {
+        return repo.findById_CampanhaIdCampanha(idCampanha);
     }
 
     @Transactional
-    public List<CampanhaVoluntario> atribuir(Integer idCampanha, List<CampanhaVoluntario> itens) {
-        Campanha c = campanhaRepository.findById(idCampanha)
-                .orElseThrow(() -> new NoSuchElementException("Campanha não encontrada: " + idCampanha));
+    public CampanhaVoluntario vincular(CampanhaVoluntario entidade) {
+        // entidade já deve vir com o ID composto preenchido (idCampanha e cpfVoluntario)
+        return repo.save(entidade);
+    }
 
-        List<CampanhaVoluntario> salvos = new ArrayList<>();
-        for (CampanhaVoluntario cv : itens) {
-            Voluntario v = voluntarioRepository.findById(cv.getId().getVoluntarioVolCpf())
-                    .orElseThrow(() -> new NoSuchElementException("Voluntário não encontrado: " + cv.getId().getVoluntarioVolCpf()));
-
-            cv.setCampanha(c);
-            cv.setVoluntario(v);
-            salvos.add(campanhaVoluntarioRepository.save(cv));
-        }
-        return salvos;
+    @Transactional
+    public void desvincular(Integer idCampanha, String cpfVoluntario) {
+        CampanhaVoluntarioId id = new CampanhaVoluntarioId(idCampanha, cpfVoluntario);
+        repo.deleteById(id);
     }
 }
