@@ -1,13 +1,15 @@
+// parametrizacao.js
 document.addEventListener('DOMContentLoaded', async () => {
-  const form = document.getElementById('paramForm');
-  const msg = document.getElementById('msg');
-  const errorBox = document.getElementById('error');
-  const submitBtn = document.getElementById('submitBtn');
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('pt-BR');
 
-  // Campos (ids batendo com o HTML em camelCase)
+  const form      = document.getElementById('paramForm');
+  const msg       = document.getElementById('msg');
+  const errorBox  = document.getElementById('error');
+
   const f = {
-    razao_social:   document.getElementById('razaoSocial'),
-    nome_fantasia:  document.getElementById('nomeFantasia'),
+    razao_social:   document.getElementById('razao_social'),
+    nome_fantasia:  document.getElementById('nome_fantasia'),
     telefone:       document.getElementById('telefone'),
     email:          document.getElementById('email'),
     site:           document.getElementById('site'),
@@ -16,89 +18,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     cidade:         document.getElementById('cidade'),
     uf:             document.getElementById('uf'),
     cep:            document.getElementById('cep'),
-    logotipo_small: document.getElementById('logotipoSmall'),
-    logotipo_big:   document.getElementById('logotipoBig'),
+    logotipo_small: document.getElementById('logotipo_small'),
+    logotipo_big:   document.getElementById('logotipo_big'),
     prevSmall:      document.getElementById('logoPreviewSmall'),
     prevBig:        document.getElementById('logoPreviewBig'),
   };
 
-  // ===== ENDPOINTS =====
-  const API_BASE = 'http://localhost:8080';
-  const GET_ENDPOINT = `${API_BASE}/api/parametrizacao`; // GET ?email=
-  const UPSERT_ENDPOINT = `${API_BASE}/api/parametrizacao`; // POST multipart (upsert)
+  // --- estado global ---
+  let existeEmpresaFlag = false; // se existe alguma empresa no banco
+  let empresaExistente  = null;  // objeto retornado (por e-mail ou única)
 
-  // ===== URL params =====
-  const urlParams = new URLSearchParams(window.location.search);
-  const emailEmpresa = urlParams.get('emailEmpresa');
-  const nivel = urlParams.get('nivel'); // '1' pode editar
-  if (emailEmpresa) f.email.value = emailEmpresa;
-
-  // ===== Máscaras e UX =====
+  // --- util: máscaras ---
   if (window.IMask) {
     IMask(f.telefone, { mask: '(00) 00000-0000' });
-    IMask(f.cep, { mask: '00000-000' });
+    IMask(f.cep,      { mask: '00000-000' });
   }
   f.uf.addEventListener('input', () => { f.uf.value = f.uf.value.toUpperCase(); });
 
-  // ===== Preview de imagens =====
+  // --- util: preview de imagem ---
   function previewFile(input, imgEl) {
     const file = input?.files?.[0];
-    if (!file) { imgEl.removeAttribute('src'); return; }
+    if (!file) { imgEl?.removeAttribute('src'); return; }
     const fr = new FileReader();
-    fr.onload = e => imgEl.src = e.target.result;
+    fr.onload = e => { if (imgEl) imgEl.src = e.target.result; };
     fr.readAsDataURL(file);
   }
   f.logotipo_small.addEventListener('change', () => previewFile(f.logotipo_small, f.prevSmall));
   f.logotipo_big.addEventListener('change',   () => previewFile(f.logotipo_big,   f.prevBig));
 
-  // ===== Buscar empresa existente =====
-  let empresaExistente = null;
-  async function loadEmpresa() {
-    if (!f.email.value) return;
-    try {
-      const res = await fetch(`${GET_ENDPOINT}?email=${encodeURIComponent(f.email.value)}`);
-      if (res.ok) {
-        empresaExistente = await res.json();
-
-        f.razaoSocial.value  = empresaExistente.razaoSocial  ?? '';
-        f.nomeFantasia.value = empresaExistente.nomeFantasia ?? '';
-        f.telefone.value      = empresaExistente.telefone     ?? '';
-        f.email.value         = empresaExistente.email        ?? f.email.value;
-        f.site.value          = empresaExistente.site         ?? '';
-        f.rua.value           = empresaExistente.rua          ?? '';
-        f.bairro.value        = empresaExistente.bairro       ?? '';
-        f.cidade.value        = empresaExistente.cidade       ?? '';
-        f.uf.value            = (empresaExistente.uf || '').toUpperCase();
-        f.cep.value           = empresaExistente.cep          ?? '';
-
-        // Se o back expõe URLs dos logos
-        if (empresaExistente.logotipo_small_url) f.prevSmall.src = empresaExistente.logotipo_small_url;
-        if (empresaExistente.logotipo_big_url)   f.prevBig.src   = empresaExistente.logotipo_big_url;
-
-        // Se já existe, o big deixa de ser estritamente obrigatório em runtime
-        f.logotipo_big.removeAttribute('required');
-      }
-    } catch (e) {
-      console.warn('Falha ao buscar empresa:', e);
-    }
+  // --- util: File -> dataURL (Base64) ---
+  function toDataURL(file) {
+    return new Promise((resolve) => {
+      if (!file) return resolve(null);
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = () => resolve(null);
+      fr.readAsDataURL(file);
+    });
   }
-  await loadEmpresa();
 
-  // ============================================================
-  // ===== CONTROLE DE PERMISSÃO (DESLIGADO POR ENQUANTO) =======
-  // *** IMPORTANTE: a permissão REAL deve ser validada no BACKEND. ***
-  // const podeEditar = (nivel === '1');
-  // if (!podeEditar) {
-  //   Array.from(form.elements).forEach(el => el.disabled = true);
-  //   if (submitBtn) submitBtn.style.display = 'none';
-  //   const aviso = document.createElement('div');
-  //   aviso.className = 'alert alert-info mt-3';
-  //   aviso.innerHTML = '<i class="bi bi-eye"></i> Acesso somente leitura.';
-  //   form.prepend(aviso);
-  // }
-  // ============================================================
-
-  // ===== Helpers de validação (data-validation) =====
+  // --- validação (mantida) ---
   const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const regexPhone = /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
 
@@ -122,7 +81,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const errEl = document.querySelector(`.error-text[data-for="${input.id}"]`);
     if (errEl) errEl.textContent = '';
   }
-
   function validateField(input) {
     clearFieldError(input);
     const rulesStr = input.getAttribute('data-validation');
@@ -138,7 +96,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (name === 'required') {
         if (input.type === 'file') {
-          const isRuntimeRequired = input.hasAttribute('required') && !empresaExistente;
+          // arquivo obrigatório só no primeiro cadastro global
+          const isRuntimeRequired = input.hasAttribute('required') && !existeEmpresaFlag && !empresaExistente;
           if (isRuntimeRequired && !value) { setFieldError(input, customMsg || 'Campo obrigatório.'); return false; }
         } else if (!value) { setFieldError(input, customMsg || 'Campo obrigatório.'); return false; }
       }
@@ -156,12 +115,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     return true;
   }
-
   function validateForm() {
     errorBox.textContent = '';
-    let firstInvalid = null;
+    let firstInvalid = null, ok = true;
     const inputs = Array.from(form.querySelectorAll('[data-validation]'));
-    let ok = true;
     for (const el of inputs) {
       const valid = validateField(el);
       if (!valid && !firstInvalid) firstInvalid = el;
@@ -171,18 +128,91 @@ document.addEventListener('DOMContentLoaded', async () => {
     return ok;
   }
 
-  // valida on-blur/input para UX melhor
-  form.querySelectorAll('[data-validation]').forEach(el => {
-    el.addEventListener('blur', () => validateField(el));
-    el.addEventListener('input', () => { if (el.classList.contains('error')) validateField(el); });
-    if (el.type === 'file') el.addEventListener('change', () => validateField(el));
-  });
+  // --- API calls explícitos (como você pediu) ---
 
-  // ===== Helper simples: monta e envia o FormData (camelCase!) =====
-  async function enviarParametrizacao() {
-    const fd = new FormData();
+  // Boolean: existe alguma empresa?
+  async function checkExisteEmpresa() {
+    try {
+      const r = await fetch("http://localhost:8080/api/parametrizacao/existeEmpresa", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+      if (!r.ok) return (existeEmpresaFlag = false);
+      const bool = await r.json();
+      return (existeEmpresaFlag = !!bool);
+    } catch {
+      return (existeEmpresaFlag = false);
+    }
+  }
 
-    // Campos de texto — agora com as CHAVES em camelCase (iguais à entidade)
+  // Retorna a única empresa (novo endpoint no backend)
+  async function loadEmpresaUnica({ fill = true } = {}) {
+    try {
+      const r = await fetch("http://localhost:8080/api/parametrizacao/unica", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+      if (!r.ok) { empresaExistente = null; return; }
+      empresaExistente = await r.json();
+      if (fill) preencherFormularioFromEmpresa(empresaExistente);
+    } catch {
+      empresaExistente = null;
+    }
+  }
+
+  // Busca por e-mail (para validar no submit; fill=false no submit)
+  async function loadEmpresaPorEmail(email, { fill = true } = {}) {
+    const e = (email || f.email.value || '').trim();
+    if (!e) { empresaExistente = null; return; }
+    try {
+      const qs = new URLSearchParams({ email: e }).toString();
+      const r = await fetch(`http://localhost:8080/api/parametrizacao?${qs}`, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+      if (!r.ok) { empresaExistente = null; return; }
+      empresaExistente = await r.json();
+      if (fill) preencherFormularioFromEmpresa(empresaExistente);
+    } catch {
+      empresaExistente = null;
+    }
+  }
+
+  function preencherFormularioFromEmpresa(emp) {
+    if (!emp) return;
+    f.razao_social.value  = emp.razaoSocial  ?? '';
+    f.nome_fantasia.value = emp.nomeFantasia ?? '';
+    f.telefone.value      = emp.telefone     ?? '';
+    f.email.value         = emp.email        ?? '';
+    f.site.value          = emp.site         ?? '';
+    f.rua.value           = emp.rua          ?? '';
+    f.bairro.value        = emp.bairro       ?? '';
+    f.cidade.value        = emp.cidade       ?? '';
+    f.uf.value            = (emp.uf || '').toUpperCase();
+    f.cep.value           = emp.cep          ?? '';
+
+    if (typeof emp.logotipoSmall === 'string') f.prevSmall.src = emp.logotipoSmall;
+    if (typeof emp.logotipoBig   === 'string') f.prevBig.src   = emp.logotipoBig;
+
+    // edição: logo big não obrigatório
+    f.logotipo_big.removeAttribute('required');
+  }
+
+  // --- Ao abrir a tela ---
+  // 1) Se já existe empresa -> carrega a ÚNICA e preenche
+  // 2) Senão, se veio ?emailEmpresa=... na URL, tenta carregar por e-mail
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailEmpresa = urlParams.get('emailEmpresa');
+  await checkExisteEmpresa();
+  if (existeEmpresaFlag) {
+    await loadEmpresaUnica({ fill: true });
+  } else if (emailEmpresa) {
+    f.email.value = emailEmpresa;
+    await loadEmpresaPorEmail(emailEmpresa, { fill: true });
+  }
+
+  // --- Envio (POST JSON) ---
+  async function enviarParametrizacaoJSON() {
     const camposTexto = {
       razaoSocial:  f.razao_social.value.trim(),
       nomeFantasia: f.nome_fantasia.value.trim(),
@@ -195,24 +225,45 @@ document.addEventListener('DOMContentLoaded', async () => {
       uf:           f.uf.value.trim().toUpperCase(),
       cep:          f.cep.value.trim(),
     };
-    Object.entries(camposTexto).forEach(([k, v]) => fd.append(k, v));
 
-    // Arquivos — camelCase também
-    if (f.logotipo_small.files[0]) fd.append('logotipoSmall', f.logotipo_small.files[0]);
-    if (f.logotipo_big.files[0])   fd.append('logotipoBig',   f.logotipo_big.files[0]);
+    const fileSmall = f.logotipo_small.files[0] || null;
+    const fileBig   = f.logotipo_big.files[0]   || null;
 
-    const resp = await fetch(UPSERT_ENDPOINT, { method: 'POST', body: fd });
-    if (!resp.ok) throw new Error(await resp.text());
-    return resp.text();
+    const [smallB64, bigB64] = await Promise.all([
+      fileSmall ? toDataURL(fileSmall) : (empresaExistente?.logotipoSmall ?? null),
+      fileBig   ? toDataURL(fileBig)   : (empresaExistente?.logotipoBig   ?? null),
+    ]);
+
+    const payload = { ...camposTexto, logotipoSmall: smallB64, logotipoBig: bigB64 };
+
+    const r = await fetch("http://localhost:8080/api/parametrizacao", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const text = await r.text();
+    if (!r.ok) throw new Error(text || 'Erro ao salvar.');
+    return text;
   }
 
-  // ===== Submit (bem simples) =====
+  // --- Submit ---
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     msg.textContent = '';
     errorBox.textContent = '';
 
-    // if (!podeEditar) { errorBox.textContent = 'Você não tem permissão para editar.'; return; }
+    // Revalida existência e verifica se o e-mail digitado corresponde à empresa
+    await checkExisteEmpresa();
+
+    if (existeEmpresaFlag) {
+      // Só deixa atualizar se o e-mail do form bater com a empresa existente.
+      // (Não preenche o form aqui para não apagar edições do usuário.)
+      await loadEmpresaPorEmail(f.email.value, { fill: false });
+      if (!empresaExistente) {
+        errorBox.textContent = 'Já existe uma empresa cadastrada. Informe o e-mail correto para atualizar a existente.';
+        return;
+      }
+    }
 
     if (!validateForm()) {
       errorBox.textContent = 'Corrija os campos destacados.';
@@ -220,11 +271,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      await enviarParametrizacao();
-      msg.textContent = 'Empresa cadastrada/atualizada com sucesso!';
-      setTimeout(() => {
-        window.location.href = `empresa.html?funcEmail=${encodeURIComponent(f.email.value.trim())}&nivel=${nivel ?? ''}`;
-      }, 1200);
+      const texto = await enviarParametrizacaoJSON();
+      msg.textContent = texto || 'Empresa cadastrada/atualizada com sucesso!';
+      // Após salvar, garante que estamos com o registro atualizado no estado/local
+      await checkExisteEmpresa();
+      await loadEmpresaPorEmail(f.email.value, { fill: true });
     } catch (err) {
       errorBox.textContent = err.message || 'Erro ao salvar dados.';
     }

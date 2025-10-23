@@ -34,4 +34,9 @@ public class ParametrizacaoService {
     public boolean existeEmpresa() {
         return paDAO.ExisteEmpresas();
     }
+
+    public Parametrizacao getUnica(){
+        return paDAO.getUnicaEmp();
+    }
+
 }

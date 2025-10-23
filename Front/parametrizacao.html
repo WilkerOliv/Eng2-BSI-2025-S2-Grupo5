@@ -45,7 +45,7 @@
       <div class="container mt-4">
         <h2 class="mb-4"><i class="bi bi-building"></i> Configuração da Empresa</h2>
 
-        <!-- IMPORTANTE: names/ids batendo com o back -->
+        <!-- IMPORTANTE: ids/names mantidos -->
         <form id="paramForm" enctype="multipart/form-data">
           <!-- Identidade/contato -->
           <div class="mb-3">
@@ -187,41 +187,8 @@
     <i class="bi bi-heart-fill"></i> SALF v1.0 © 2025 | Lar Santa Filomena
   </div>
 
-  <script>
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR');
-  </script>
+  <!-- Bibliotecas e seu JS -->
   <script src="https://unpkg.com/imask"></script>
-
-  <!-- Seu JS com validação por data-validation e envio via FormData -->
   <script src="parametrizacao.js"></script>
-
-  <script>
-    // Máscaras básicas (opcional)
-    if (window.IMask) {
-      IMask(document.getElementById('telefone'), { mask: '(00) 00000-0000' });
-      IMask(document.getElementById('cep'), { mask: '00000-000' });
-      // UF em maiúsculas automaticamente
-      const uf = document.getElementById('uf');
-      uf.addEventListener('input', () => { uf.value = uf.value.toUpperCase(); });
-    }
-
-    // Previews rápidos (se não fizer no parametrizacao.js)
-    (function(){
-      const small = document.getElementById('logotipo_small');
-      const big = document.getElementById('logotipo_big');
-      const prevS = document.getElementById('logoPreviewSmall');
-      const prevB = document.getElementById('logoPreviewBig');
-
-      function preview(input, imgEl) {
-        const f = input.files?.[0];
-        if (!f) { imgEl.removeAttribute('src'); return; }
-        const fr = new FileReader();
-        fr.onload = e => imgEl.src = e.target.result;
-        fr.readAsDataURL(f);
-      }
-      small.addEventListener('change', () => preview(small, prevS));
-      big.addEventListener('change', () => preview(big, prevB));
-    })();
-  </script>
 </body>
 </html>

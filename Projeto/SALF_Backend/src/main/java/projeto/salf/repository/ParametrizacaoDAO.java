@@ -64,8 +64,6 @@ public class ParametrizacaoDAO {
 
 
     public Parametrizacao alterar(Parametrizacao pa) {
-
-
         String sql = "UPDATE parametrizacao SET " +
                 "razao_social = ?, nome_fantasia = ?, telefone = ?, site = ?, " +
                 "rua = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, " +
@@ -79,21 +77,23 @@ public class ParametrizacaoDAO {
             stmt.setString(2,  pa.getNomeFantasia());
             stmt.setString(3,  pa.getTelefone());
             stmt.setString(4,  pa.getSite());
-            stmt.setString(6,  pa.getRua());
-            stmt.setString(7,  pa.getBairro());
-            stmt.setString(8,  pa.getCidade());
-            stmt.setString(9,  pa.getUf());
-            stmt.setString(10, pa.getCep());
-            stmt.setString(11, pa.getLogotipoSmall());
-            stmt.setString(12, pa.getLogotipoBig());
-            stmt.setString(13, pa.getEmail());
+            stmt.setString(5,  pa.getRua());              // ← estava faltando esse índice!
+            stmt.setString(6,  pa.getBairro());
+            stmt.setString(7,  pa.getCidade());
+            stmt.setString(8,  pa.getUf());
+            stmt.setString(9,  pa.getCep());
+            stmt.setString(10, pa.getLogotipoSmall());
+            stmt.setString(11, pa.getLogotipoBig());
+            stmt.setString(12, pa.getEmail());            // WHERE email = ?
 
             if (stmt.executeUpdate() > 0) return pa;
             return null;
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao atualizar parametrização", e);
         }
     }
+
 
 
     public boolean ExisteEmpresas() {
@@ -116,7 +116,7 @@ public class ParametrizacaoDAO {
     }
 
     public Parametrizacao getRegistroEmail(String email) {
-        String SQL = "SELECT * FROM parametrizacao WHERE pa_email = ?";
+        String SQL = "SELECT * FROM parametrizacao WHERE email = ?";
 
         try {
             Connection con = SingletonDB.getConexao().getConnect();
@@ -127,7 +127,17 @@ public class ParametrizacaoDAO {
 
             if (rs.next()) {
                 Parametrizacao pa = new Parametrizacao();
-
+                pa.setEmail(rs.getString("razao_social"));
+                pa.setNomeFantasia(rs.getString("nome_fantasia"));
+                pa.setTelefone(rs.getString("telefone"));
+                pa.setSite(rs.getString("site"));
+                pa.setRua(rs.getString("rua"));
+                pa.setBairro(rs.getString("bairro"));
+                pa.setCidade(rs.getString("cidade"));
+                pa.setUf(rs.getString("uf"));
+                pa.setCep(rs.getString("cep"));
+                pa.setLogotipoSmall(rs.getString("logotipo_small"));
+                pa.setLogotipoBig(rs.getString("logotipo_big"));
 
                 return pa;
             }
@@ -138,4 +148,37 @@ public class ParametrizacaoDAO {
 
         return null;
     }
+
+
+    public Parametrizacao getUnicaEmp() {
+        String SQL = "SELECT * FROM parametrizacao LIMIT 1"; // ou TOP 1, dependendo do seu banco
+
+        try (Connection con = SingletonDB.getConexao().getConnect();
+             PreparedStatement stmt = con.prepareStatement(SQL);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                Parametrizacao pa = new Parametrizacao();
+                pa.setRazaoSocial(rs.getString("razao_social"));
+                pa.setNomeFantasia(rs.getString("nome_fantasia"));
+                pa.setTelefone(rs.getString("telefone"));
+                pa.setSite(rs.getString("site"));
+                pa.setEmail(rs.getString("email"));
+                pa.setRua(rs.getString("rua"));
+                pa.setBairro(rs.getString("bairro"));
+                pa.setCidade(rs.getString("cidade"));
+                pa.setUf(rs.getString("uf"));
+                pa.setCep(rs.getString("cep"));
+                pa.setLogotipoSmall(rs.getString("logotipo_small"));
+                pa.setLogotipoBig(rs.getString("logotipo_big"));
+                return pa;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar parametrização única", e);
+        }
+
+        return null;
+    }
+
 }
