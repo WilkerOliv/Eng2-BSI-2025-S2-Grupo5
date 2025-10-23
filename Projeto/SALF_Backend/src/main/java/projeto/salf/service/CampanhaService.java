@@ -3,63 +3,46 @@ package projeto.salf.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projeto.salf.model.Campanha;
-import projeto.salf.model.Funcionario;
 import projeto.salf.repository.CampanhaRepository;
-import projeto.salf.repository.FuncionarioRepository;
 
-import java.time.LocalDate;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 @Service
 public class CampanhaService {
 
-    private final CampanhaRepository campanhaRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final CampanhaRepository repo;
 
-    public CampanhaService(CampanhaRepository campanhaRepository,
-                           FuncionarioRepository funcionarioRepository) {
-        this.campanhaRepository = campanhaRepository;
-        this.funcionarioRepository = funcionarioRepository;
+    public CampanhaService(CampanhaRepository repo) {
+        this.repo = repo;
     }
 
-    @Transactional
-    public Campanha criarCampanha(String descricao, LocalDate dtIni, LocalDate dtFim,
-                                  String funcionarioCpf, String observacao) {
-
-        Funcionario func = funcionarioRepository.findById(funcionarioCpf)
-                .orElseThrow(() -> new NoSuchElementException("Funcionário não encontrado: " + funcionarioCpf));
-
-        Campanha c = new Campanha();
-        c.setCampanhaDescr(descricao);
-        c.setCampanhaDtIni(dtIni);
-        c.setCampanhaDtFim(dtFim);
-        c.setCampanhaTotalArrecado(0.0);
-        c.setObservacao(observacao);
-        c.setFuncionario(func);
-
-        return campanhaRepository.save(c);
-    }
-
-    @Transactional
-    public Campanha finalizarCampanha(Integer idCampanha, Double totalArrecadado,
-                                      LocalDate dataFim, String observacao) {
-
-        Campanha c = campanhaRepository.findById(idCampanha)
-                .orElseThrow(() -> new NoSuchElementException("Campanha não encontrada: " + idCampanha));
-
-        if (dataFim != null) {
-            c.setCampanhaDtFim(dataFim);
-        }
-        if (observacao != null) {
-            c.setObservacao(observacao);
-        }
-        c.setCampanhaTotalArrecado(totalArrecadado != null ? totalArrecadado : 0.0);
-
-        return campanhaRepository.save(c);
+    public List<Campanha> listarTodos() {
+        return repo.findAll();
     }
 
     public Campanha buscarPorId(Integer id) {
-        return campanhaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Campanha não encontrada: " + id));
+        return repo.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Campanha salvar(Campanha c) {
+        // regra simples: se totalArrecadado vier null, zera
+        if (c.getCampanhaTotalArrecado() == null) {
+            c.setCampanhaTotalArrecado(0.0);
+        }
+        return repo.save(c);
+    }
+
+    @Transactional
+    public void excluir(Integer id) {
+        repo.deleteById(id);
+    }
+
+    @Transactional
+    public Campanha finalizar(Integer id, Double totalArrecadado) {
+        Campanha c = repo.findById(id).orElse(null);
+        if (c == null) return null;
+        c.setCampanhaTotalArrecado(totalArrecadado != null ? totalArrecadado : 0.0);
+        return repo.save(c);
     }
 }

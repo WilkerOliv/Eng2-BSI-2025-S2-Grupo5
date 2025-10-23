@@ -1,71 +1,54 @@
 package projeto.salf.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import projeto.salf.controller.dto.AtribuirVoluntariosDTO;
-import projeto.salf.controller.dto.CriarCampanhaDTO;
-import projeto.salf.controller.dto.FinalizarCampanhaDTO;
-import projeto.salf.model.*;
+import projeto.salf.model.Campanha;
 import projeto.salf.service.CampanhaService;
-import projeto.salf.service.CampanhaVoluntarioService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/campanhas")
-@CrossOrigin
+@RequestMapping("/api/campanhas")
+@CrossOrigin(origins = {"*"})
 public class CampanhaController {
 
-    private final CampanhaService campanhaService;
-    private final CampanhaVoluntarioService campanhaVoluntarioService;
+    @Autowired
+    private CampanhaService service;
 
-    public CampanhaController(CampanhaService campanhaService,
-                              CampanhaVoluntarioService campanhaVoluntarioService) {
-        this.campanhaService = campanhaService;
-        this.campanhaVoluntarioService = campanhaVoluntarioService;
-    }
-
-    @PostMapping
-    public ResponseEntity<Campanha> criar(@RequestBody CriarCampanhaDTO dto) {
-        Campanha c = campanhaService.criarCampanha(
-                dto.descricao,
-                dto.dataInicio,
-                dto.dataFim,
-                dto.funcionarioCpf,
-                dto.observacao
-        );
-        return ResponseEntity.ok(c);
-    }
-
-    @PostMapping("/{id}/responsaveis")
-    public ResponseEntity<List<CampanhaVoluntario>> atribuirVoluntarios(@PathVariable Integer id,
-                                                                        @RequestBody AtribuirVoluntariosDTO dto) {
-        List<CampanhaVoluntario> itens = new ArrayList<>();
-        for (AtribuirVoluntariosDTO.Item it : dto.voluntarios) {
-            CampanhaVoluntarioId key = new CampanhaVoluntarioId(id, it.cpfVoluntario);
-            CampanhaVoluntario cv = new CampanhaVoluntario();
-            cv.setId(key);
-            cv.setCargoCampanha(it.cargo);
-            itens.add(cv);
-        }
-        return ResponseEntity.ok(campanhaVoluntarioService.atribuir(id, itens));
-    }
-
-    @PutMapping("/{id}/finalizar")
-    public ResponseEntity<Campanha> finalizar(@PathVariable Integer id,
-                                              @RequestBody FinalizarCampanhaDTO dto) {
-        Campanha c = campanhaService.finalizarCampanha(
-                id,
-                dto.totalArrecadado,
-                dto.dataFim,
-                dto.observacao
-        );
-        return ResponseEntity.ok(c);
+    @GetMapping
+    public List<Campanha> listarTodos() {
+        return service.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Campanha> get(@PathVariable Integer id) {
-        return ResponseEntity.ok(campanhaService.buscarPorId(id));
+    public ResponseEntity<Campanha> buscar(@PathVariable Integer id) {
+        Campanha c = service.buscarPorId(id);
+        return c == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(c);
+    }
+
+    @PostMapping
+    public Campanha salvar(@RequestBody Campanha campanha) {
+        return service.salvar(campanha);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Campanha> atualizar(@PathVariable Integer id, @RequestBody Campanha campanha) {
+        campanha.setIdCampanha(id); // ajuste conforme o nome do getter/setter no teu Model
+        return ResponseEntity.ok(service.salvar(campanha));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
+        service.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // FINALIZAR (lançar resultado)
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<Campanha> finalizar(@PathVariable Integer id, @RequestBody Campanha payload) {
+        // usa apenas o campo total (ignora demais, pois a ideia é lançar resultado)
+        Campanha c = service.finalizar(id, payload.getCampanhaTotalArrecado());
+        return c == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(c);
     }
 }
