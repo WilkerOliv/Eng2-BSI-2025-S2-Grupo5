@@ -303,8 +303,6 @@ input[type="email"], input[type="password"], input[type="text"] {
   display: flex;
   gap: 15px;
 }
-
-/* --- ROLAGEM DA SIDEBAR ---*/
 .sidebar {
     height: calc(100vh - 70px);;
     overflow-y: auto;
@@ -315,7 +313,7 @@ input[type="email"], input[type="password"], input[type="text"] {
 }
 
 .content {
-
+    margin-left: 240px;
     height: 100vh;
     overflow-y: auto;
 }
@@ -345,3 +343,4 @@ sidebar::-webkit-scrollbar{
     width: 100%;
   }
 }
+

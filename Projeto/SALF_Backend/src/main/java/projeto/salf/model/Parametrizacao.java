@@ -42,11 +42,11 @@ public class Parametrizacao implements Serializable {
     @Column(name = "cep", length = 10)
     private String cep;
 
-    @Column(name = "logotipo_small", length = 255)
+    @Column(name="logotipo_small", columnDefinition="text")
     private String logotipoSmall;
-
-    @Column(name = "logotipo_big", length = 255)
+    @Column(name="logotipo_big", columnDefinition="text")
     private String logotipoBig;
+
 
 
     public Integer getIdParametrizacao() {
