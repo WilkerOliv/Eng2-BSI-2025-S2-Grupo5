@@ -9,8 +9,11 @@ import java.util.List;
 
 @Service
 public class ProdutoService {
-    @Autowired
-    private ProdutoRepository repository;
+    private final ProdutoRepository repository;
+
+    public ProdutoService(ProdutoRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Produto> listarTodos() { return repository.findAll(); }
     public Produto salvar(Produto p) { return repository.save(p); }

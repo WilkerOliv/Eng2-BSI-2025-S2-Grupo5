@@ -1,39 +1,24 @@
 package projeto.salf.model;
 
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "doacao_has_produto")
-public class DoacaoProduto {
+@Table(name = "doacao_produto")
+@IdClass(DoacaoProdutoId.class)
+public class DoacaoProduto implements Serializable {
 
-    @EmbeddedId
-    private DoacaoProdutoId id;
+    @Id
+    @Column(name = "doacao_doa_cod")
+    private Integer doacaoDoaCod;
 
-    @ManyToOne
-    @MapsId("doacaoDoaCod")
-    @JoinColumn(name = "doacao_doa_cod")
-    private Doacao doacao;
+    @Id
+    @Column(name = "produto_prod_cod")
+    private Integer produtoProdCod;
 
-    @ManyToOne
-    @MapsId("produtoProdCod")
-    @JoinColumn(name = "produto_prod_cod")
-    private Produto produto;
+    public Integer getDoacaoDoaCod() { return doacaoDoaCod; }
+    public void setDoacaoDoaCod(Integer doacaoDoaCod) { this.doacaoDoaCod = doacaoDoaCod; }
 
-    public DoacaoProduto() {}
-
-    public DoacaoProduto(DoacaoProdutoId id, Doacao doacao, Produto produto) {
-        this.id = id;
-        this.doacao = doacao;
-        this.produto = produto;
-    }
-
-    public DoacaoProdutoId getId() { return id; }
-    public void setId(DoacaoProdutoId id) { this.id = id; }
-
-    public Doacao getDoacao() { return doacao; }
-    public void setDoacao(Doacao doacao) { this.doacao = doacao; }
-
-    public Produto getProduto() { return produto; }
-    public void setProduto(Produto produto) { this.produto = produto; }
+    public Integer getProdutoProdCod() { return produtoProdCod; }
+    public void setProdutoProdCod(Integer produtoProdCod) { this.produtoProdCod = produtoProdCod; }
 }

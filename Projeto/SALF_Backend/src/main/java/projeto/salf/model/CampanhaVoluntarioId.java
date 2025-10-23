@@ -1,28 +1,29 @@
 package projeto.salf.model;
 
-
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Embeddable
 public class CampanhaVoluntarioId implements Serializable {
-
-    @Column(name = "campanha_idcampanha")
     private Integer campanhaIdCampanha;
-
-    @Column(name = "voluntario_vol_cpf", length = 28)
     private String voluntarioVolCpf;
 
     public CampanhaVoluntarioId() {}
+    public CampanhaVoluntarioId(Integer c, String v) { this.campanhaIdCampanha = c; this.voluntarioVolCpf = v; }
 
-    public CampanhaVoluntarioId(Integer campanhaIdCampanha, String voluntarioVolCpf) {
-        this.campanhaIdCampanha = campanhaIdCampanha;
-        this.voluntarioVolCpf = voluntarioVolCpf;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CampanhaVoluntarioId)) return false;
+        CampanhaVoluntarioId that = (CampanhaVoluntarioId) o;
+        return Objects.equals(campanhaIdCampanha, that.campanhaIdCampanha) &&
+                Objects.equals(voluntarioVolCpf, that.voluntarioVolCpf);
     }
 
-    public Integer getCampanhaIdCampanha() { return campanhaIdCampanha; }
-    public void setCampanhaIdCampanha(Integer campanhaIdCampanha) { this.campanhaIdCampanha = campanhaIdCampanha; }
+    @Override
+    public int hashCode() { return Objects.hash(campanhaIdCampanha, voluntarioVolCpf); }
 
+    public Integer getCampanhaIdCampanha() { return campanhaIdCampanha; }
+    public void setCampanhaIdCampanha(Integer v) { this.campanhaIdCampanha = v; }
     public String getVoluntarioVolCpf() { return voluntarioVolCpf; }
-    public void setVoluntarioVolCpf(String voluntarioVolCpf) { this.voluntarioVolCpf = voluntarioVolCpf; }
+    public void setVoluntarioVolCpf(String v) { this.voluntarioVolCpf = v; }
 }
