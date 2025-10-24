@@ -1,6 +1,5 @@
 package projeto.salf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.ListaCompra;
@@ -8,13 +7,11 @@ import projeto.salf.service.ListaCompraService;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/listas")
 @CrossOrigin(origins = "*")
 public class ListaCompraController {
-    @Autowired
-    private ListaCompraService service;
+    private final ListaCompraService service = new ListaCompraService();
 
     @GetMapping
     public List<ListaCompra> listarTodas() { return service.listarListas(); }

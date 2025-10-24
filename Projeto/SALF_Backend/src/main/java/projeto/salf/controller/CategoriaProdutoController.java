@@ -1,20 +1,17 @@
 package projeto.salf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.CategoriaProduto;
 import projeto.salf.service.CategoriaProdutoService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categorias")
 @CrossOrigin(origins = "*")
 public class CategoriaProdutoController {
-    @Autowired
-    private CategoriaProdutoService service;
+    private final CategoriaProdutoService service = new CategoriaProdutoService();
 
     @GetMapping
     public List<CategoriaProduto> listarTodas() { return service.listarTodas(); }

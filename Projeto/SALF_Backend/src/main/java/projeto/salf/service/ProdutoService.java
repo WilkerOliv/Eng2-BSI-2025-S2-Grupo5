@@ -1,21 +1,17 @@
 package projeto.salf.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import projeto.salf.model.Produto;
-import projeto.salf.repository.ProdutoRepository;
+import projeto.salf.dao.ProdutoDAO;
 
 import java.util.List;
 
-@Service
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoDAO dao = new ProdutoDAO();
 
-    public ProdutoService(ProdutoRepository repository) {
-        this.repository = repository;
+    public List<Produto> listarTodos() { return dao.findAll(); }
+    public Produto salvar(Produto p) {
+        dao.save(p);
+        return p;
     }
-
-    public List<Produto> listarTodos() { return repository.findAll(); }
-    public Produto salvar(Produto p) { return repository.save(p); }
-    public void excluir(Integer id) { repository.deleteById(id); }
+    public void excluir(Integer id) { dao.deleteById(id); }
 }

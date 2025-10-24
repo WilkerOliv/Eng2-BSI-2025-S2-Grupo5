@@ -1,23 +1,9 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
-
-@Entity
-@Table(name = "produto")
-public class Produto implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "prod_cod")
+public class Produto {
     private Integer prodCod;
-
-    @Column(name = "prod_descr", nullable = false, length = 100)
     private String prodDescr;
-
-    @ManyToOne
-    @JoinColumn(name = "categoria_produto_cat_cod", nullable = false)
-    private CategoriaProduto categoria;
+    private Integer categoriaProdCod; // FK -> categoria_produto(cat_cod)
 
     public Integer getProdCod() { return prodCod; }
     public void setProdCod(Integer prodCod) { this.prodCod = prodCod; }
@@ -25,6 +11,6 @@ public class Produto implements Serializable {
     public String getProdDescr() { return prodDescr; }
     public void setProdDescr(String prodDescr) { this.prodDescr = prodDescr; }
 
-    public CategoriaProduto getCategoria() { return categoria; }
-    public void setCategoria(CategoriaProduto categoria) { this.categoria = categoria; }
+    public Integer getCategoriaProdCod() { return categoriaProdCod; }
+    public void setCategoriaProdCod(Integer categoriaProdCod) { this.categoriaProdCod = categoriaProdCod; }
 }

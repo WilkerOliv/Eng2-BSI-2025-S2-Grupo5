@@ -72,6 +72,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="projeto.salf.controller.bd" />
+      <recent name="projeto.salf.controller" />
       <recent name="projeto.salf.model" />
     </key>
   </component>
@@ -88,8 +90,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -111,6 +113,11 @@
       <workItem from="1760936047239" duration="4989000" />
       <workItem from="1760981644797" duration="2629000" />
       <workItem from="1761009404192" duration="224000" />
+      <workItem from="1761065873634" duration="2736000" />
+      <workItem from="1761085805689" duration="1857000" />
+      <workItem from="1761150600443" duration="1509000" />
+      <workItem from="1761250596085" duration="3865000" />
+      <workItem from="1761254877532" duration="1653000" />
     </task>
     <servers />
   </component>

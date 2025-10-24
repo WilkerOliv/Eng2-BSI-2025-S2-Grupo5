@@ -1,22 +1,18 @@
 package projeto.salf.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import projeto.salf.model.NecessidadeProduto;
 import projeto.salf.model.NecessidadeProdutoId;
-import projeto.salf.repository.NecessidadeProdutoRepository;
+import projeto.salf.dao.NecessidadeProdutoDAO;
 
 import java.util.List;
 
-@Service
 public class NecessidadeProdutoService {
-    private final NecessidadeProdutoRepository repository;
+    private final NecessidadeProdutoDAO dao = new NecessidadeProdutoDAO();
 
-    public NecessidadeProdutoService(NecessidadeProdutoRepository repository) {
-        this.repository = repository;
+    public List<NecessidadeProduto> listarTodas() { return dao.findAll(); }
+    public NecessidadeProduto salvar(NecessidadeProduto n) {
+        dao.save(n);
+        return n;
     }
-
-    public List<NecessidadeProduto> listarTodas() { return repository.findAll(); }
-    public NecessidadeProduto salvar(NecessidadeProduto n) { return repository.save(n); }
-    public void excluir(NecessidadeProdutoId id) { repository.deleteById(id); }
+    public void excluir(NecessidadeProdutoId id) { dao.deleteById(id); }
 }

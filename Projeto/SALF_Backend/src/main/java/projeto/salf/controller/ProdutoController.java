@@ -1,6 +1,5 @@
 package projeto.salf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.Produto;
@@ -12,8 +11,7 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 @CrossOrigin(origins = "*")
 public class ProdutoController {
-    @Autowired
-    private ProdutoService service;
+    private final ProdutoService service = new ProdutoService();
 
     @GetMapping
     public List<Produto> listarTodos() { return service.listarTodos(); }

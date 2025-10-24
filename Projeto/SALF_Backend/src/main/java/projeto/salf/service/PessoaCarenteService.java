@@ -1,21 +1,17 @@
 package projeto.salf.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import projeto.salf.model.PessoaCarente;
-import projeto.salf.repository.PessoaCarenteRepository;
+import projeto.salf.dao.PessoaCarenteDAO;
 
 import java.util.List;
 
-@Service
 public class PessoaCarenteService {
-    private final PessoaCarenteRepository repository;
+    private final PessoaCarenteDAO dao = new PessoaCarenteDAO();
 
-    public PessoaCarenteService(PessoaCarenteRepository repository) {
-        this.repository = repository;
+    public List<PessoaCarente> listarTodas() { return dao.findAll(); }
+    public PessoaCarente salvar(PessoaCarente p) {
+        dao.save(p);
+        return p;
     }
-
-    public List<PessoaCarente> listarTodas() { return repository.findAll(); }
-    public PessoaCarente salvar(PessoaCarente p) { return repository.save(p); }
-    public void excluir(String cpf) { repository.deleteById(cpf); }
+    public void excluir(String cpf) { dao.deleteById(cpf); }
 }

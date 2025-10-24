@@ -1,6 +1,5 @@
 package projeto.salf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.Funcionario;
@@ -12,19 +11,7 @@ import java.util.List;
 @RequestMapping("/api/funcionarios")
 @CrossOrigin(origins = "*")
 public class FuncionarioController {
-    @Autowired
-    private FuncionarioService service;
-
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String senha) {
-        Funcionario f = service.getFuncionarioPorEmail(email.trim());
-        if (f == null)
-            return ResponseEntity.status(404).body("Funcionário não encontrado");
-        if (!f.getFuncSenha().equals(senha))
-            return ResponseEntity.status(401).body("Senha incorreta");
-        return ResponseEntity.ok(f);
-    }
+    private final FuncionarioService service = new FuncionarioService();
 
     @GetMapping
     public List<Funcionario> listarTodos() { return service.listarTodos(); }
