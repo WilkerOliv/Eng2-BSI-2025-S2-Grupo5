@@ -1,3 +1,7 @@
+document.querySelector("#btnCategorias").addEventListener("click", () => {
+  window.location.href = "front-Wilker/categorias-produto.html";
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const emailEmpresa = urlParams.get('emailEmpresa');

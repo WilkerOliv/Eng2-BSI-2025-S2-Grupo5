@@ -4,27 +4,43 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ItensCompraId implements Serializable {
-    private Integer produtoProdCod;
-    private Integer compraCompraCod;
+    private Integer lcCod;
+    private Integer produtoCod;
 
     public ItensCompraId() {}
 
-    public ItensCompraId(Integer p1, Integer p2) { this.produtoProdCod = p1; this.compraCompraCod = p2; }
+    public ItensCompraId(Integer lcCod, Integer produtoCod) {
+        this.lcCod = lcCod;
+        this.produtoCod = produtoCod;
+    }
+
+    public Integer getLcCod() {
+        return lcCod;
+    }
+
+    public void setLcCod(Integer lcCod) {
+        this.lcCod = lcCod;
+    }
+
+    public Integer getProdutoCod() {
+        return produtoCod;
+    }
+
+    public void setProdutoCod(Integer produtoCod) {
+        this.produtoCod = produtoCod;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ItensCompraId)) return false;
         ItensCompraId that = (ItensCompraId) o;
-        return Objects.equals(produtoProdCod, that.produtoProdCod) &&
-                Objects.equals(compraCompraCod, that.compraCompraCod);
+        return Objects.equals(lcCod, that.lcCod) &&
+                Objects.equals(produtoCod, that.produtoCod);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(produtoProdCod, compraCompraCod); }
-
-    public Integer getProdutoProdCod() { return produtoProdCod; }
-    public void setProdutoProdCod(Integer v) { this.produtoProdCod = v; }
-    public Integer getCompraCompraCod() { return compraCompraCod; }
-    public void setCompraCompraCod(Integer v) { this.compraCompraCod = v; }
+    public int hashCode() {
+        return Objects.hash(lcCod, produtoCod);
+    }
 }

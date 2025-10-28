@@ -6,7 +6,6 @@ public class Funcionario {
     private String funcSenha;
     private String funcEmail;
     private String funcTelefone;
-    // campos adicionais não necessários nas rotas simples; acrescente se quiser
 
     public String getFuncCpf() { return funcCpf; }
     public void setFuncCpf(String funcCpf) { this.funcCpf = funcCpf; }

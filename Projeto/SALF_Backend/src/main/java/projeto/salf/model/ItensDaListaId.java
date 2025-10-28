@@ -4,16 +4,30 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class ItensDaListaId implements Serializable {
-    private Integer produtoProdCod;
-    private Integer listaCompraLcCod;
-    private String listaCompraFuncionarioFuncCpf;
+    private Integer listaCod;
+    private Integer produtoCod;
 
     public ItensDaListaId() {}
 
-    public ItensDaListaId(Integer produtoProdCod, Integer listaCompraLcCod, String listaCompraFuncionarioFuncCpf) {
-        this.produtoProdCod = produtoProdCod;
-        this.listaCompraLcCod = listaCompraLcCod;
-        this.listaCompraFuncionarioFuncCpf = listaCompraFuncionarioFuncCpf;
+    public ItensDaListaId(Integer listaCod, Integer produtoCod) {
+        this.listaCod = listaCod;
+        this.produtoCod = produtoCod;
+    }
+
+    public Integer getListaCod() {
+        return listaCod;
+    }
+
+    public void setListaCod(Integer listaCod) {
+        this.listaCod = listaCod;
+    }
+
+    public Integer getProdutoCod() {
+        return produtoCod;
+    }
+
+    public void setProdutoCod(Integer produtoCod) {
+        this.produtoCod = produtoCod;
     }
 
     @Override
@@ -21,20 +35,12 @@ public class ItensDaListaId implements Serializable {
         if (this == o) return true;
         if (!(o instanceof ItensDaListaId)) return false;
         ItensDaListaId that = (ItensDaListaId) o;
-        return Objects.equals(produtoProdCod, that.produtoProdCod) &&
-                Objects.equals(listaCompraLcCod, that.listaCompraLcCod) &&
-                Objects.equals(listaCompraFuncionarioFuncCpf, that.listaCompraFuncionarioFuncCpf);
+        return Objects.equals(listaCod, that.listaCod) &&
+                Objects.equals(produtoCod, that.produtoCod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(produtoProdCod, listaCompraLcCod, listaCompraFuncionarioFuncCpf);
+        return Objects.hash(listaCod, produtoCod);
     }
-
-    public Integer getProdutoProdCod() { return produtoProdCod; }
-    public void setProdutoProdCod(Integer produtoProdCod) { this.produtoProdCod = produtoProdCod; }
-    public Integer getListaCompraLcCod() { return listaCompraLcCod; }
-    public void setListaCompraLcCod(Integer listaCompraLcCod) { this.listaCompraLcCod = listaCompraLcCod; }
-    public String getListaCompraFuncionarioFuncCpf() { return listaCompraFuncionarioFuncCpf; }
-    public void setListaCompraFuncionarioFuncCpf(String listaCompraFuncionarioFuncCpf) { this.listaCompraFuncionarioFuncCpf = listaCompraFuncionarioFuncCpf; }
 }

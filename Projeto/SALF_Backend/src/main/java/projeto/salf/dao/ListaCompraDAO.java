@@ -1,7 +1,6 @@
 package projeto.salf.dao;
 
 import projeto.salf.model.ListaCompra;
-import projeto.salf.controller.bd.SingletonDB;
 import projeto.salf.controller.bd.Conexao;
 
 import java.sql.Date;
@@ -10,7 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ListaCompraDAO {
-    private final Conexao conexao = SingletonDB.getConexao();
+    private final Conexao conexao;
+
+    public ListaCompraDAO(Conexao conexao) {
+        this.conexao = conexao;
+    }
 
     public List<ListaCompra> findAll() {
         String sql = "select lc_cod, funcionario_func_cpf, data_criacao, descricao, status_atendimento from lista_compra";

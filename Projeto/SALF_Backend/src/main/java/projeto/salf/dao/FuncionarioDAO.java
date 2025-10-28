@@ -1,27 +1,32 @@
 package projeto.salf.dao;
 
-import org.springframework.stereotype.Repository;
 import projeto.salf.model.Funcionario;
 import projeto.salf.controller.bd.Conexao;
-import projeto.salf.controller.bd.SingletonDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Repository
 public class FuncionarioDAO {
-    private final Conexao conexao = SingletonDB.getConexao();
+    private final Conexao conexao;
 
+    public FuncionarioDAO(Conexao conexao) {
+        this.conexao = conexao;
+    }
+
+    /**
+     * Busca básica por email. Observação: usa a conexão 'raw' para prepared statements
+     * porque a classe Conexao fornece accesso a Connection via getConnect().
+     */
     public Funcionario buscaFuncEmail(String email) {
         String SQL = "SELECT func_nome, func_email, func_senha FROM funcionario WHERE func_email = ?";
-        try (Connection con = SingletonDB.getConexao().getConnect();
+        try (Connection con = conexao.getConnect();
              PreparedStatement stmt = con.prepareStatement(SQL)) {
 
-            stmt.setString(1, email.trim());
+            stmt.setString(1, email == null ? "" : email.trim());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Funcionario func = new Funcionario();
@@ -32,11 +37,11 @@ public class FuncionarioDAO {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // ideal: trocar por log
+            e.printStackTrace();
         }
         return null;
     }
-    
+
     public List<Funcionario> findAll() {
         String sql = "select func_cpf, func_nome, func_senha, func_email, func_telefone from funcionario";
         List<Funcionario> lista = new ArrayList<>();
@@ -81,4 +86,3 @@ public class FuncionarioDAO {
         return conexao.manipular(sql, cpf);
     }
 }
-

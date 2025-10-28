@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Front/principal.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/principal.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,6 +63,7 @@
     &quot;Spring Boot.SalfBackendApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Wilker&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Engenharia de software/2/Grupo 5/Front&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -118,6 +121,18 @@
       <workItem from="1761150600443" duration="1509000" />
       <workItem from="1761250596085" duration="3865000" />
       <workItem from="1761254877532" duration="1653000" />
+      <workItem from="1761310290974" duration="1649000" />
+      <workItem from="1761316465530" duration="2101000" />
+      <workItem from="1761319206735" duration="648000" />
+      <workItem from="1761336444375" duration="693000" />
+      <workItem from="1761338112585" duration="3890000" />
+      <workItem from="1761344083472" duration="522000" />
+      <workItem from="1761384168941" duration="754000" />
+      <workItem from="1761392104035" duration="2693000" />
+      <workItem from="1761593785124" duration="2578000" />
+      <workItem from="1761674596360" duration="1061000" />
+      <workItem from="1761685705211" duration="436000" />
+      <workItem from="1761690712485" duration="1995000" />
     </task>
     <servers />
   </component>

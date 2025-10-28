@@ -1,7 +1,6 @@
 package projeto.salf.utils;
 
 import java.text.Normalizer;
-import java.util.regex.Pattern;
 
 public class FormatUtils {
 
@@ -53,7 +52,7 @@ public class FormatUtils {
         return telefone.matches("\\d{10,11}");
     }
 
-    /** 🔹 NOVO: remove acentos e espaços extras */
+    /** remove acentos e espaços extras */
     public static String limparTexto(String texto) {
         if (texto == null) return "";
         texto = texto.trim();
@@ -61,18 +60,16 @@ public class FormatUtils {
         return nfdNormalizedString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
     }
 
-    /** 🔹 NOVO: formata texto para maiúsculo padrão */
+    /** padronizar maiúsculo */
     public static String padronizarMaiusculo(String texto) {
         return limparTexto(texto).toUpperCase();
     }
 
-    /** 🔹 NOVO: formata CPF */
     public static String limparCPF(String cpf) {
         if (cpf == null) return "";
         return cpf.replaceAll("[^0-9]", "");
     }
 
-    /** 🔹 NOVO: valida CPF */
     public static boolean validarCPF(String cpf) {
         cpf = limparCPF(cpf);
         if (cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) return false;
@@ -94,13 +91,13 @@ public class FormatUtils {
         }
     }
 
-    /** 🔹 NOVO: formata string para SQL segura */
+    /** formata string para SQL segura */
     public static String sqlSafe(String input) {
         if (input == null) return "";
         return input.replace("'", "''");
     }
 
-    /** 🔹 NOVO: máscara para CNPJ */
+    /** máscara para CNPJ */
     public static String formatarCNPJ(String cnpj) {
         cnpj = limparCNPJ(cnpj);
         if (cnpj.length() != 14) return cnpj;
@@ -112,7 +109,7 @@ public class FormatUtils {
                 cnpj.substring(12));
     }
 
-    /** 🔹 NOVO: máscara para telefone */
+    /** máscara para telefone */
     public static String formatarTelefone(String telefone) {
         telefone = limparTelefone(telefone);
         if (telefone.length() == 10) {
@@ -123,7 +120,6 @@ public class FormatUtils {
         return telefone;
     }
 
-    /** 🔹 NOVO: verifica string nula ou vazia */
     public static boolean vazio(String s) {
         return s == null || s.trim().isEmpty();
     }

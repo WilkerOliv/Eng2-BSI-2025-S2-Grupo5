@@ -112,7 +112,7 @@ public class Conexao {
         return lista;
     }
 
-    /** 🔹 NOVO: executa uma query que retorna apenas 1 valor (ex: count, max) */
+    /** executa uma query que retorna apenas 1 valor (ex: count, max) */
     public Object consultarValorUnico(String sql, Object... params) {
         try (PreparedStatement ps = connect.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) ps.setObject(i + 1, params[i]);
@@ -125,7 +125,7 @@ public class Conexao {
         return null;
     }
 
-    /** 🔹 NOVO: retorna true se existir pelo menos 1 resultado */
+    /** retorna true se existir pelo menos 1 resultado */
     public boolean existe(String sql, Object... params) {
         try (PreparedStatement ps = connect.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) ps.setObject(i + 1, params[i]);
@@ -152,7 +152,7 @@ public class Conexao {
         }
     }
 
-    /** 🔹 NOVO: inicia transação manual */
+    /** inicia transação manual */
     public void iniciarTransacao() {
         try {
             connect.setAutoCommit(false);
@@ -161,7 +161,7 @@ public class Conexao {
         }
     }
 
-    /** 🔹 NOVO: confirma transação */
+    /** confirma transação */
     public void commit() {
         try {
             connect.commit();
@@ -170,7 +170,7 @@ public class Conexao {
         }
     }
 
-    /** 🔹 NOVO: desfaz transação */
+    /** desfaz transação */
     public void rollback() {
         try {
             connect.rollback();

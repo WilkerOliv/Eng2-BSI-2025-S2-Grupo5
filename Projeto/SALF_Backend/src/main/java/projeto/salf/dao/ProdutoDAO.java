@@ -1,6 +1,6 @@
 package projeto.salf.dao;
+
 import projeto.salf.model.Produto;
-import projeto.salf.controller.bd.SingletonDB;
 import projeto.salf.controller.bd.Conexao;
 
 import java.util.ArrayList;
@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ProdutoDAO {
-    private final Conexao conexao = SingletonDB.getConexao();
+    private final Conexao conexao;
+
+    public ProdutoDAO(Conexao conexao) {
+        this.conexao = conexao;
+    }
 
     public List<Produto> findAll() {
         String sql = "select prod_cod, prod_descr, categoria_produto_cat_cod from produto";

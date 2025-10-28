@@ -1,7 +1,6 @@
 package projeto.salf.dao;
 
 import projeto.salf.model.PessoaCarente;
-import projeto.salf.controller.bd.SingletonDB;
 import projeto.salf.controller.bd.Conexao;
 
 import java.sql.Date;
@@ -10,7 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class PessoaCarenteDAO {
-    private final Conexao conexao = SingletonDB.getConexao();
+    private final Conexao conexao;
+
+    public PessoaCarenteDAO(Conexao conexao) {
+        this.conexao = conexao;
+    }
 
     public List<PessoaCarente> findAll() {
         String sql = "select pc_cpf, pc_nome, pc_data_nasc, pc_telefone, rua, bairro, cidade, uf, cep from pessoa_carente";
