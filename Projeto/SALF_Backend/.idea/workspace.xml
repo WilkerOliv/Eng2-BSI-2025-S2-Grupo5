@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Front/principal.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/principal.js" afterDir="false" />
-    </list>
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,6 +14,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Jsp File" />
         <option value="Class" />
       </list>
     </option>
@@ -74,6 +73,9 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="projeto.salf.controller.bd" />
       <recent name="projeto.salf.controller" />
@@ -133,6 +135,11 @@
       <workItem from="1761674596360" duration="1061000" />
       <workItem from="1761685705211" duration="436000" />
       <workItem from="1761690712485" duration="1995000" />
+      <workItem from="1761698456151" duration="1053000" />
+      <workItem from="1761704095877" duration="611000" />
+      <workItem from="1761708868032" duration="2131000" />
+      <workItem from="1761755780976" duration="4384000" />
+      <workItem from="1761776210884" duration="324000" />
     </task>
     <servers />
   </component>

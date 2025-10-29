@@ -17,47 +17,67 @@
     <artifactId>SALF_Backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
+
     <name>SALF_Backend</name>
-    <description>Sistema de Armazenamento Lar Filomena - Backend (versão JDBC Singleton)</description>
+    <description>Sistema de Armazenamento Lar Filomena - Backend (versão JDBC Singleton com JSP MVC Puro)</description>
 
     <properties>
         <java.version>25</java.version>
     </properties>
 
     <dependencies>
-        <!-- 🔹 Spring Web (mantém os endpoints REST) -->
+
+        <!-- Spring Web (controladores e endpoints REST) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- 🔹 JDBC Driver PostgreSQL -->
+        <!-- Suporte a JSP (necessário no Spring Boot 3+) -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+
+        <!-- JSTL (Taglibs JSP Jakarta EE 10) -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Driver JDBC PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 🔹 Log4j2 para logs melhores (opcional mas recomendado) -->
+        <!-- Log4j2 (melhor logging, opcional mas recomendado) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-        <!-- 🔹 Spring Validation (caso use @Valid nos DTOs) -->
+        <!-- Spring Validation (para @Valid e validações simples) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- 🔹 Lombok (ajuda em models e DTOs) -->
+        <!-- Lombok (facilita em models e DTOs) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- 🔹 DevTools (recarrega automaticamente em dev) -->
+        <!-- DevTools (recarrega automaticamente em desenvolvimento) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -65,7 +85,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- 🔹 Testes -->
+        <!-- Testes -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -74,8 +94,10 @@
     </dependencies>
 
     <build>
+        <finalName>SALF_Backend</finalName>
+
         <plugins>
-            <!-- Compilador -->
+            <!-- Compilador Java 25 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -85,7 +107,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Runner -->
+            <!-- Empacotamento Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

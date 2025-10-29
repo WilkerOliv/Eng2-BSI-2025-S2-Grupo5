@@ -24,7 +24,6 @@ public class CategoriaProdutoDAO {
             c.setCatDescr((String) r.get("cat_descr"));
             lista.add(c);
         }
-
         return lista;
     }
 

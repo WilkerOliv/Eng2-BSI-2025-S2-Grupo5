@@ -10,6 +10,8 @@ import projeto.salf.model.CategoriaProduto;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.out;
+
 @RestController
 @RequestMapping("/api/categorias")
 @CrossOrigin(origins = "*")
@@ -18,66 +20,50 @@ public class CategoriaProdutoController {
     private Conexao conexao;
     private CategoriaProdutoDAO dao;
 
-    private void abrirConexao() {
-        if (SingletonDB.getConexao() == null || !SingletonDB.getConexao().getEstadoConexao()) {
-            SingletonDB.conectar();
-        }
+    private void verificarConexao() {
         conexao = SingletonDB.getConexao();
-        dao = new CategoriaProdutoDAO(conexao);
-    }
 
-    private void fecharConexao() {
-        // fecha a conexão gerenciada pelo Singleton
-        SingletonDB.close();
-        conexao = null;
-        dao = null;
+        if (conexao == null || !conexao.getEstadoConexao()) {
+            out.println("🔄 Nenhuma conexão ativa. Conectando...");
+            SingletonDB.conectar();
+            conexao = SingletonDB.getConexao();
+        } else {
+            out.println("✅ Conexão já ativa, reutilizando.");
+        }
+
+        dao = new CategoriaProdutoDAO(conexao);
     }
 
     @GetMapping
     public ResponseEntity<List<CategoriaProduto>> listarTodas() {
-        try {
-            abrirConexao();
-            List<CategoriaProduto> result = dao.findAll();
-            return ResponseEntity.ok(result);
-        } finally {
-            fecharConexao();
-        }
+        verificarConexao();
+        List<CategoriaProduto> result = dao.findAll();
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping
     public ResponseEntity<CategoriaProduto> salvar(@RequestBody CategoriaProduto categoria) {
-        try {
-            abrirConexao();
-            boolean ok = dao.save(categoria);
-            if (!ok) return ResponseEntity.status(500).build();
-            return ResponseEntity.ok(categoria);
-        } finally {
-            fecharConexao();
-        }
+        verificarConexao();
+        boolean ok = dao.save(categoria);
+        if (!ok) return ResponseEntity.status(500).build();
+        return ResponseEntity.ok(categoria);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaProduto> atualizar(@PathVariable Integer id, @RequestBody CategoriaProduto categoria) {
-        try {
-            abrirConexao();
-            categoria.setCatCod(id);
-            boolean ok = dao.save(categoria);
-            if (!ok) return ResponseEntity.status(500).build();
-            return ResponseEntity.ok(categoria);
-        } finally {
-            fecharConexao();
-        }
+        verificarConexao();
+        categoria.setCatCod(id);
+        boolean ok = dao.save(categoria);
+        if (!ok) return ResponseEntity.status(500).build();
+        return ResponseEntity.ok(categoria);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> excluir(@PathVariable Integer id) {
-        try {
-            abrirConexao();
-            boolean ok = dao.deleteById(id);
-            if (!ok) return ResponseEntity.status(500).body(Map.of("mensagem", "Erro ao excluir"));
-            return ResponseEntity.ok(Map.of("mensagem", "Categoria excluída com sucesso"));
-        } finally {
-            fecharConexao();
-        }
+        verificarConexao();
+        boolean ok = dao.deleteById(id);
+        if (!ok)
+            return ResponseEntity.status(500).body(Map.of("mensagem", "Erro ao excluir categoria"));
+        return ResponseEntity.ok(Map.of("mensagem", "Categoria excluída com sucesso"));
     }
 }
