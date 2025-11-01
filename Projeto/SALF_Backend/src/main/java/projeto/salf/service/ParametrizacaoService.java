@@ -3,7 +3,7 @@ package projeto.salf.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projeto.salf.model.Parametrizacao;
-import projeto.salf.repository.ParametrizacaoDAO;
+import projeto.salf.dao.ParametrizacaoDAO;
 
 
 @Service

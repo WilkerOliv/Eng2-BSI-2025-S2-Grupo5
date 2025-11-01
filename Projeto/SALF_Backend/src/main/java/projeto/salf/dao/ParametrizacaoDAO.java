@@ -1,4 +1,4 @@
-package projeto.salf.repository;
+package projeto.salf.dao;
 
 import org.springframework.stereotype.Repository;
 import projeto.salf.model.Parametrizacao;

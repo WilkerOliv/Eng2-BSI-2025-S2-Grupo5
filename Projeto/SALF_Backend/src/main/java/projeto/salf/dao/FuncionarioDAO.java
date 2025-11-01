@@ -1,10 +1,9 @@
-package projeto.salf.repository;
+package projeto.salf.dao;
 
 import org.springframework.stereotype.Repository;
 import projeto.salf.model.Funcionario;
 import projeto.salf.utils.SingletonDB;
 
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
