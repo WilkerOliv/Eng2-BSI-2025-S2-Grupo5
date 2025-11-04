@@ -1,4 +1,4 @@
-package projeto.salf.repository;
+package projeto.salf.dao;
 
 import org.springframework.stereotype.Repository;
 import projeto.salf.model.Parametrizacao;
@@ -11,27 +11,19 @@ import java.sql.ResultSet;
 @Repository
 public class ParametrizacaoDAO {
 
+    public boolean existeRegistro(Parametrizacao pa) {
+        String SQL = "SELECT 1 FROM parametrizacao WHERE email = ?";
 
-    public boolean existeRegistro(Parametrizacao pa){
+        Connection conn = SingletonDB.getConexao().getConnect();
 
-        String email = pa.getEmail();
-
-        String SQL =  "SELECT * FROM parametrizacao where email = ?";
-
-        try{
-            Connection conn = SingletonDB.getConexao().getConnect();
-
-            PreparedStatement stmt = conn.prepareStatement(SQL);
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setString(1, pa.getEmail());
-
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
-
-        }catch(Exception e){
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void gravar(Parametrizacao pa) {
@@ -39,8 +31,10 @@ public class ParametrizacaoDAO {
                 "razao_social, nome_fantasia, telefone, site, email, rua, bairro, cidade, uf, cep, logotipo_small, logotipo_big" +
                 ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = SingletonDB.getConexao().getConnect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        // pega conexão singleton, não fecha
+        Connection conn = SingletonDB.getConexao().getConnect();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (!ExisteEmpresas()) {
                 stmt.setString(1,  pa.getRazaoSocial());
@@ -55,13 +49,13 @@ public class ParametrizacaoDAO {
                 stmt.setString(10, pa.getCep());
                 stmt.setString(11, pa.getLogotipoSmall());
                 stmt.setString(12, pa.getLogotipoBig());
+
                 stmt.executeUpdate();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     public Parametrizacao alterar(Parametrizacao pa) {
         String sql = "UPDATE parametrizacao SET " +
@@ -70,23 +64,27 @@ public class ParametrizacaoDAO {
                 "logotipo_small = ?, logotipo_big = ? " +
                 "WHERE email = ?";
 
-        try (Connection con = SingletonDB.getConexao().getConnect();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        Connection con = SingletonDB.getConexao().getConnect();
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1,  pa.getRazaoSocial());
             stmt.setString(2,  pa.getNomeFantasia());
             stmt.setString(3,  pa.getTelefone());
             stmt.setString(4,  pa.getSite());
-            stmt.setString(5,  pa.getRua());              // ← estava faltando esse índice!
+            stmt.setString(5,  pa.getRua());
             stmt.setString(6,  pa.getBairro());
             stmt.setString(7,  pa.getCidade());
             stmt.setString(8,  pa.getUf());
             stmt.setString(9,  pa.getCep());
             stmt.setString(10, pa.getLogotipoSmall());
             stmt.setString(11, pa.getLogotipoBig());
-            stmt.setString(12, pa.getEmail());            // WHERE email = ?
+            stmt.setString(12, pa.getEmail()); // WHERE email = ?
 
-            if (stmt.executeUpdate() > 0) return pa;
+            int updated = stmt.executeUpdate();
+            if (updated > 0) {
+                return pa;
+            }
             return null;
 
         } catch (Exception e) {
@@ -94,22 +92,20 @@ public class ParametrizacaoDAO {
         }
     }
 
-
-
     public boolean ExisteEmpresas() {
         String SQL = "SELECT COUNT(*) FROM parametrizacao";
 
-        try {
-            Connection con = SingletonDB.getConexao().getConnect();
-            PreparedStatement stmt = con.prepareStatement(SQL);
-            ResultSet rs = stmt.executeQuery();
+        Connection con = SingletonDB.getConexao().getConnect();
+
+        try (PreparedStatement stmt = con.prepareStatement(SQL);
+             ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0;
             }
-
             return false;
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -118,30 +114,35 @@ public class ParametrizacaoDAO {
     public Parametrizacao getRegistroEmail(String email) {
         String SQL = "SELECT * FROM parametrizacao WHERE email = ?";
 
-        try {
-            Connection con = SingletonDB.getConexao().getConnect();
-            PreparedStatement stmt = con.prepareStatement(SQL);
+        Connection con = SingletonDB.getConexao().getConnect();
+
+        try (PreparedStatement stmt = con.prepareStatement(SQL)) {
             stmt.setString(1, email);
 
-            ResultSet rs = stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Parametrizacao pa = new Parametrizacao();
 
-            if (rs.next()) {
-                Parametrizacao pa = new Parametrizacao();
-                pa.setEmail(rs.getString("razao_social"));
-                pa.setNomeFantasia(rs.getString("nome_fantasia"));
-                pa.setTelefone(rs.getString("telefone"));
-                pa.setSite(rs.getString("site"));
-                pa.setRua(rs.getString("rua"));
-                pa.setBairro(rs.getString("bairro"));
-                pa.setCidade(rs.getString("cidade"));
-                pa.setUf(rs.getString("uf"));
-                pa.setCep(rs.getString("cep"));
-                pa.setLogotipoSmall(rs.getString("logotipo_small"));
-                pa.setLogotipoBig(rs.getString("logotipo_big"));
+                    // ⚠️ Aqui tinha bug no seu código:
+                    // você tava fazendo pa.setEmail(rs.getString("razao_social"));
+                    // Isso tá invertido. Arrumei tudo abaixo:
 
-                return pa;
+                    pa.setRazaoSocial(rs.getString("razao_social"));
+                    pa.setNomeFantasia(rs.getString("nome_fantasia"));
+                    pa.setTelefone(rs.getString("telefone"));
+                    pa.setSite(rs.getString("site"));
+                    pa.setEmail(rs.getString("email"));
+                    pa.setRua(rs.getString("rua"));
+                    pa.setBairro(rs.getString("bairro"));
+                    pa.setCidade(rs.getString("cidade"));
+                    pa.setUf(rs.getString("uf"));
+                    pa.setCep(rs.getString("cep"));
+                    pa.setLogotipoSmall(rs.getString("logotipo_small"));
+                    pa.setLogotipoBig(rs.getString("logotipo_big"));
+
+                    return pa;
+                }
             }
-
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar parametrização por email", e);
         }
@@ -149,12 +150,12 @@ public class ParametrizacaoDAO {
         return null;
     }
 
-
     public Parametrizacao getUnicaEmp() {
-        String SQL = "SELECT * FROM parametrizacao LIMIT 1"; // ou TOP 1, dependendo do seu banco
+        String SQL = "SELECT * FROM parametrizacao LIMIT 1";
 
-        try (Connection con = SingletonDB.getConexao().getConnect();
-             PreparedStatement stmt = con.prepareStatement(SQL);
+        Connection con = SingletonDB.getConexao().getConnect();
+
+        try (PreparedStatement stmt = con.prepareStatement(SQL);
              ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
@@ -180,5 +181,4 @@ public class ParametrizacaoDAO {
 
         return null;
     }
-
 }

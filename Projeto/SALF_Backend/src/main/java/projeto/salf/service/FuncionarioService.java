@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
+import projeto.salf.dao.FuncionarioDAO;
 import projeto.salf.model.*;
 import projeto.salf.repository.*;
 
@@ -24,4 +26,9 @@ public class FuncionarioService {
     public Optional<Funcionario> buscarPorCpf(String cpf) { return repository.findById(cpf); }
     public Funcionario salvar(Funcionario f) { return repository.save(f); }
     public void excluir(String cpf) { repository.deleteById(cpf); }
+
+
+    public Funcionario buscaCPF(String cpf) {
+        return funcionarioDAO.buscaCPF(cpf);
+    }
 }

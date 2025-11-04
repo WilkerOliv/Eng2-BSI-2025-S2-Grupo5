@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         method: "GET",
         headers: { "Accept": "application/json" }
       });
-      if (!r.ok) return (existeEmpresaFlag = false);
+      if (!r.ok) 
+        return (existeEmpresaFlag = false);
       const bool = await r.json();
       return (existeEmpresaFlag = !!bool);
     } catch {

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (r.ok) {
         const func = await r.json();
         if (msg) msg.textContent = `Bem-vindo, ${func.funcNome || func.nome || "usuário"}!`;
-        window.location.href = "parametrizacao.html";
+        window.location.href = "empresa.html";
       } else if (r.status === 401) {
         if (err) err.textContent = "Senha incorreta.";
       } else if (r.status === 404) {
