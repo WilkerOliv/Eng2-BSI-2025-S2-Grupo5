@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria-produto.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias-produto.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/registrar-necessidades.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,6 +149,8 @@
       <workItem from="1762210131467" duration="16000" />
       <workItem from="1762214909270" duration="22000" />
       <workItem from="1762364923905" duration="4028000" />
+      <workItem from="1762373455549" duration="2000" />
+      <workItem from="1762373474900" duration="3796000" />
     </task>
     <servers />
   </component>

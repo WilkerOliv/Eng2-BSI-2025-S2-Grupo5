@@ -67,11 +67,11 @@ public class SingletonDB {
                         "postgres"
                 );
                 if (!conectado) {
-                    System.err.println("❌ Falha ao conectar: " + conexao.getMensagemErro());
+                    System.err.println("Falha ao conectar: " + conexao.getMensagemErro());
                     conexao = null;
                     return false;
                 } else {
-                    System.out.println("✅ Banco conectado com sucesso!");
+                    System.out.println("Banco conectado com sucesso!");
                 }
             }
             return true;
@@ -85,7 +85,7 @@ public class SingletonDB {
         if (conexao != null) {
             conexao.close();
             conexao = null;
-            System.out.println("🔒 Conexão fechada (manual)");
+            System.out.println("Conexão fechada");
         }
     }
 

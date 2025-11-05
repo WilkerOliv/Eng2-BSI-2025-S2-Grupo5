@@ -54,6 +54,7 @@ public class Conexao {
         }
     }
 
+
     /** Execuções DML parametrizadas */
     public boolean manipular(String sql, Object... params) {
         try (PreparedStatement ps = connect.prepareStatement(sql)) {
@@ -188,6 +189,21 @@ public class Conexao {
             // ignora
         } finally {
             connect = null;
+        }
+    }
+
+    public int manipularComRetorno(String sql, Object... params) {
+        try (PreparedStatement ps = connect.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
+            }
+            int linhas = ps.executeUpdate();
+            System.out.println("🧱 SQL executado: " + linhas + " linha(s) afetada(s)");
+            return linhas;
+        } catch (SQLException e) {
+            erro = "Erro ao executar manipularComRetorno: " + e;
+            System.err.println(erro);
+            return 0;
         }
     }
 }

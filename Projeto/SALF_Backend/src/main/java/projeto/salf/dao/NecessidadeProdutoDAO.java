@@ -46,8 +46,20 @@ public class NecessidadeProdutoDAO {
         }
     }
 
+//    public boolean deleteById(NecessidadeProdutoId id) {
+//        String sql = "delete from necessidade_produto where pessoa_carente_pc_cpf = ? and produto_prod_cod = ?";
+//        return conexao.manipular(sql, id.getPessoaCpf(), id.getProdutoId());
+//    }
+
     public boolean deleteById(NecessidadeProdutoId id) {
         String sql = "delete from necessidade_produto where pessoa_carente_pc_cpf = ? and produto_prod_cod = ?";
-        return conexao.manipular(sql, id.getPessoaCpf(), id.getProdutoId());
+        try {
+            int afetadas = conexao.manipularComRetorno(sql, id.getPessoaCpf(), id.getProdutoId());
+            System.out.println("Delete: CPF=" + id.getPessoaCpf() + " PROD=" + id.getProdutoId() + " -> " + afetadas + " linha(s) afetada(s)");
+            return afetadas > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

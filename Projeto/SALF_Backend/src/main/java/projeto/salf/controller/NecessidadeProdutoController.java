@@ -54,14 +54,27 @@ public class NecessidadeProdutoController {
         }
     }
 
+//    @DeleteMapping
+//    public ResponseEntity<Void> excluir(@RequestBody NecessidadeProdutoId id) {
+//        try {
+//            abrirConexao();
+//            dao.deleteById(id);
+//            return ResponseEntity.noContent().build();
+//        } finally {
+//            fecharConexao();
+//        }
+//    }
+
     @DeleteMapping
     public ResponseEntity<Void> excluir(@RequestBody NecessidadeProdutoId id) {
         try {
             abrirConexao();
-            dao.deleteById(id);
+            boolean ok = dao.deleteById(id);
+            if (!ok) return ResponseEntity.status(404).build();
             return ResponseEntity.noContent().build();
         } finally {
             fecharConexao();
         }
     }
+
 }
