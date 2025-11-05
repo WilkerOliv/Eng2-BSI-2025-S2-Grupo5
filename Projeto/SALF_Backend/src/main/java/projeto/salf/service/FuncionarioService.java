@@ -7,25 +7,16 @@ import java.util.Optional;
 
 import projeto.salf.dao.FuncionarioDAO;
 import projeto.salf.model.*;
-import projeto.salf.repository.*;
+
 
 @Service
 public class FuncionarioService {
-    private final FuncionarioRepository repository;
-    @Autowired
-    FuncionarioDAO funcionarioDAO;
 
-    public FuncionarioService(FuncionarioRepository repository) {
-        this.repository = repository;
-    }
+    private final FuncionarioDAO funcionarioDAO;
 
-    public Funcionario getFuncionarioPorEmail(String email) {
-        return funcionarioDAO.buscaFuncEmail(email);
+    public FuncionarioService(FuncionarioDAO FuncionarioDAO) {
+        this.funcionarioDAO = FuncionarioDAO;
     }
-    public List<Funcionario> listarTodos() { return repository.findAll(); }
-    public Optional<Funcionario> buscarPorCpf(String cpf) { return repository.findById(cpf); }
-    public Funcionario salvar(Funcionario f) { return repository.save(f); }
-    public void excluir(String cpf) { repository.deleteById(cpf); }
 
 
     public Funcionario buscaCPF(String cpf) {

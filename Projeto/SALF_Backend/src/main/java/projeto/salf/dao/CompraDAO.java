@@ -2,15 +2,20 @@ package projeto.salf.dao;
 
 import org.springframework.stereotype.Repository;
 import projeto.salf.model.Compra;
+import projeto.salf.model.Estoque;
+import projeto.salf.model.ItensCompra;
 import projeto.salf.utils.SingletonDB;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 
 @Repository
 public class CompraDAO {
 
+    EstoqueDAO estoqueDAO = new EstoqueDAO();
     public Integer insereCompra(Compra compra) {
         // Ordem e nomes CERTOS, como estão na sua tabela:
         final String SQL =
@@ -64,4 +69,34 @@ public class CompraDAO {
         }
     }
 
+    public boolean insereItens(ItensCompra itensCompra, LocalDate validadeProd) {
+        final String SQL = "INSERT INTO itens_compra (" +
+                "produto_prod_cod," +
+                "compra_compra_cod," +
+                "valor," +
+                "quantidade" +
+                ") VALUES (?,?,?,?)";
+
+        try (Connection conn = SingletonDB.getConexao().getConnect();
+             PreparedStatement stmt = conn.prepareStatement(SQL)) {
+
+            stmt.setInt(1, itensCompra.getProdutoProdCod());
+            stmt.setInt(2, itensCompra.getCompraCompraCod());
+            stmt.setDouble(3, itensCompra.getValor());
+            stmt.setInt(4, itensCompra.getQuantidade());
+
+            int upd = stmt.executeUpdate(); // <-- INSERT
+            if(upd > 0){
+                boolean ok = estoqueDAO.insereItensEstoque(itensCompra.getQuantidade(),validadeProd ,itensCompra.getProdutoProdCod() );
+
+            }
+
+            return upd > 0;
+
+        } catch (Exception e) {
+            // logue o erro para entender se há FK, etc.
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
