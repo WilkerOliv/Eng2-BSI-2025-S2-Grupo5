@@ -1,126 +1,149 @@
-// Registrar necessidade de produto para pessoa carente
-document.addEventListener("DOMContentLoaded", () => {
-  carregarProdutos();
-  carregarPessoas();
-  carregarNecessidades();
-  document.getElementById("formNecessidade").addEventListener("submit", criarNecessidade);
-});
+// Front/front-Wilker/js/necessidades.js
+const API_URL_NECESSIDADES = "http://localhost:8080/api/necessidades/produtos";
 
-async function carregarProdutos() {
-  const sel = document.getElementById("selProduto");
-  sel.innerHTML = "<option>Carregando...</option>";
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("formNecessidade");
+  const pessoaCpf = document.getElementById("pessoaCpf");
+  const produtoId = document.getElementById("produtoId");
+  const quantidade = document.getElementById("quantidade");
+  const data = document.getElementById("data");
+  const observacao = document.getElementById("observacao");
+  const alertContainer = document.getElementById("alert-container");
+  const tabelaBody = document.querySelector("#tabelaNecessidades tbody");
 
-  try {
-    const produtos = await apiGet("/api/produtos");
-    if (!produtos || produtos.length === 0) {
-      sel.innerHTML = "<option>Nenhum produto</option>";
-      return;
+  const buscar = document.getElementById("buscar");
+  const btnBuscar = document.getElementById("btnBuscar");
+  const btnResetBusca = document.getElementById("btnResetBusca");
+
+  let listaAtual = [];
+
+  async function carregarNecessidades() {
+    try {
+      const res = await fetch(API_URL_NECESSIDADES);
+      if (!res.ok) throw new Error("Erro ao carregar necessidades");
+      listaAtual = await res.json();
+      montarTabela(listaAtual);
+    } catch (e) {
+      Utils.showAlert(alertContainer, "danger", e.message);
     }
-    sel.innerHTML = produtos
-      .map(p => `<option value="${p.prodCod}">${p.prodDescr}</option>`)
-      .join("");
-  } catch {
-    sel.innerHTML = "<option>Erro ao carregar</option>";
   }
-}
 
-async function carregarPessoas() {
-  const sel = document.getElementById("selPessoa");
-  sel.innerHTML = "<option>Carregando...</option>";
-
-  try {
-    const pessoas = await apiGet("/api/pessoas");
-    if (!pessoas || pessoas.length === 0) {
-      sel.innerHTML = "<option>Nenhuma pessoa cadastrada</option>";
-      return;
-    }
-    sel.innerHTML = pessoas
-      .map(p => `<option value="${p.pcCpf}">${p.pcNome} (${p.pcCpf})</option>`)
-      .join("");
-  } catch {
-    sel.innerHTML = "<option>Erro ao carregar</option>";
-  }
-}
-
-async function carregarNecessidades() {
-  const tbody = document.getElementById("tabelaNecessidadesBody");
-  tbody.innerHTML = "<tr><td colspan='5' class='text-center'>Carregando...</td></tr>";
-
-  try {
-    const necessidades = await apiGet("/api/necessidades/produtos");
-    if (!necessidades || necessidades.length === 0) {
-      tbody.innerHTML = "<tr><td colspan='5' class='text-center'>Nenhuma necessidade cadastrada</td></tr>";
-      return;
-    }
-
-    tbody.innerHTML = "";
-    necessidades.forEach(n => {
-      const cpf = n.pessoaCarente?.pcCpf;
-      const produtoNome = n.produto?.prodDescr;
-      const produtoId = n.produto?.prodCod;
-
+  function montarTabela(lista) {
+    tabelaBody.innerHTML = "";
+    lista.forEach(n => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${cpf}</td>
-        <td>${produtoNome || produtoId}</td>
-        <td>${n.quantidade}</td>
-        <td>${n.data || ""}</td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-danger" onclick="deletarNecessidade('${cpf}', ${produtoId})">Excluir</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
+      tr.innerHTML = [
+        "<td>" + (n.pessoaCpf ?? "") + "</td>",
+        "<td>" + (n.produtoId ?? "") + "</td>",
+        "<td>" + (n.data ?? "") + "</td>",
+        "<td>" + (n.quantidade ?? "") + "</td>",
+        "<td>" + (n.observacao ?? "") + "</td>",
+        "<td>" +
+          "<button class=\"btn btn-danger btn-sm btn-small\" data-delete-cpf=\"" + (n.pessoaCpf ?? "") + "\" data-delete-prod=\"" + (n.produtoId ?? "") + "\">Excluir</button>" +
+        "</td>"
+      ].join("");
+      tabelaBody.appendChild(tr);
     });
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan='5' class='text-danger text-center'>Erro: ${err.message}</td></tr>`;
+
+    tabelaBody.querySelectorAll("[data-delete-cpf]").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const cpf = this.getAttribute("data-delete-cpf");
+        const prod = this.getAttribute("data-delete-prod");
+        if (!confirm("Deseja excluir esta necessidade?")) return;
+        try {
+          const res = await fetch(API_URL_NECESSIDADES, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pessoaCpf: cpf, produtoId: Number(prod) })
+          });
+          if (!res.ok) throw new Error("Erro ao excluir necessidade");
+          Utils.showAlert(alertContainer, "success", "Necessidade excluída com sucesso.");
+          await carregarNecessidades();
+        } catch (e) {
+          Utils.showAlert(alertContainer, "danger", e.message);
+        }
+      });
+    });
   }
-}
 
-async function criarNecessidade(ev) {
-  ev.preventDefault();
+  function validarFormulario() {
+    // limpar erros
+    ["pessoaCpfError","produtoIdError","quantidadeError","dataError"].forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
 
-  const pessoaCpf = document.getElementById("selPessoa").value;
-  const produtoId = parseInt(document.getElementById("selProduto").value, 10);
-  const quantidade = parseInt(document.getElementById("quantidadeNecessidade").value, 10);
-  const data = document.getElementById("dataNecessidade").value;
-  const observacao = document.getElementById("obsNecessidade").value || null;
+    let ok = true;
+    let v = Utils.validarObrigatorio(pessoaCpf.value, "CPF da Pessoa");
+    if (v) { document.getElementById("pessoaCpfError").style.display = "block"; document.getElementById("pessoaCpfError").innerText = v; ok = false; }
 
-  if (!pessoaCpf || !produtoId || !quantidade || !data) {
-    alert("Preencha todos os campos obrigatórios!");
-    return;
+    v = Utils.validarObrigatorio(produtoId.value, "ID do Produto");
+    if (v) { document.getElementById("produtoIdError").style.display = "block"; document.getElementById("produtoIdError").innerText = v; ok = false; }
+    else {
+      v = Utils.validarNumeroPositivo(produtoId.value, "ID do Produto");
+      if (v) { document.getElementById("produtoIdError").style.display = "block"; document.getElementById("produtoIdError").innerText = v; ok = false; }
+    }
+
+    v = Utils.validarObrigatorio(quantidade.value, "Quantidade");
+    if (v) { document.getElementById("quantidadeError").style.display = "block"; document.getElementById("quantidadeError").innerText = v; ok = false; }
+    else {
+      v = Utils.validarNumeroPositivo(quantidade.value, "Quantidade");
+      if (v) { document.getElementById("quantidadeError").style.display = "block"; document.getElementById("quantidadeError").innerText = v; ok = false; }
+    }
+
+    v = Utils.validarObrigatorio(data.value, "Data");
+    if (v) { document.getElementById("dataError").style.display = "block"; document.getElementById("dataError").innerText = v; ok = false; }
+    else {
+      v = Utils.validarDataNaoPassada(data.value, "Data");
+      if (v) { document.getElementById("dataError").style.display = "block"; document.getElementById("dataError").innerText = v; ok = false; }
+    }
+
+    return ok;
   }
 
-  const payload = {
-    pessoaCarente: { pcCpf: pessoaCpf },
-    produto: { prodCod: produtoId },
-    quantidade,
-    data,
-    observacao
-  };
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!validarFormulario()) return;
+    const payload = {
+      pessoaCpf: pessoaCpf.value.trim(),
+      produtoId: Number(produtoId.value),
+      data: data.value,
+      quantidade: Number(quantidade.value),
+      observacao: observacao.value.trim()
+    };
 
-  try {
-    await apiPost("/api/necessidades/produtos", payload);
-    alert("Necessidade registrada com sucesso!");
-    document.getElementById("formNecessidade").reset();
-    await carregarNecessidades();
-  } catch (err) {
-    alert("Erro ao registrar necessidade: " + err.message);
-  }
-}
+    try {
+      const res = await fetch(API_URL_NECESSIDADES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Erro ao salvar necessidade");
+      Utils.showAlert(alertContainer, "success", "Necessidade salva com sucesso.");
+      form.reset();
+      await carregarNecessidades();
+    } catch (err) {
+      Utils.showAlert(alertContainer, "danger", err.message);
+    }
+  });
 
-async function deletarNecessidade(cpf, produtoId) {
-  if (!confirm("Deseja realmente excluir esta necessidade?")) return;
+  document.getElementById("btnLimpar").addEventListener("click", function () {
+    form.reset();
+  });
 
-  const idObj = {
-    pessoaCarentePcCpf: cpf,
-    produtoProdCod: produtoId
-  };
+  btnBuscar.addEventListener("click", function () {
+    const termo = buscar.value || "";
+    // filtramos por cpf ou observação automaticamente
+    const filtrado = listaAtual.filter(item => {
+      return Utils.matchesPattern(item.pessoaCpf || "", termo) || Utils.matchesPattern(item.observacao || "", termo);
+    });
+    montarTabela(filtrado);
+  });
 
-  try {
-    await apiDelete("/api/necessidades/produtos", idObj);
-    alert("Necessidade excluída com sucesso!");
-    await carregarNecessidades();
-  } catch (err) {
-    alert("Erro ao excluir necessidade: " + err.message);
-  }
-}
+  btnResetBusca.addEventListener("click", function () {
+    buscar.value = "";
+    montarTabela(listaAtual);
+  });
+
+  // init
+  carregarNecessidades();
+});

@@ -1,0 +1,79 @@
+<!-- Front/front-Wilker/listas.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Listas de Compras - SALF</title>
+  <link href="../css/style-wilker.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container-wilker">
+    <div class="wilker-card">
+      <h3>Criar / Gerenciar Listas de Compras</h3>
+      <div id="alert-container"></div>
+
+      <form id="formLista" class="row g-3">
+        <input type="hidden" id="lcCod">
+        <div class="col-md-4">
+          <label for="funcionarioCpf" class="form-label form-label-required">CPF do Funcionário</label>
+          <input type="text" id="funcionarioCpf" class="form-control" placeholder="00000000000">
+          <div id="funcCpfError" class="field-error" style="display:none;"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="dataCriacao" class="form-label form-label-required">Data</label>
+          <input type="date" id="dataCriacao" class="form-control">
+          <div id="dataError" class="field-error" style="display:none;"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="descricao" class="form-label form-label-required">Descrição</label>
+          <input type="text" id="descricao" class="form-control" placeholder="Descrição da lista">
+          <div id="descError" class="field-error" style="display:none;"></div>
+        </div>
+
+        <div class="col-md-3">
+          <label for="statusAtendimento" class="form-label">Status</label>
+          <input type="number" id="statusAtendimento" class="form-control" value="0" min="0">
+          <div id="statusError" class="field-error" style="display:none;"></div>
+        </div>
+
+        <div class="col-md-9 d-flex align-items-end gap-2">
+          <button id="btnSalvar" class="btn btn-wilker-primary">Salvar</button>
+          <button id="btnLimpar" type="button" class="btn btn-secondary">Limpar</button>
+        </div>
+      </form>
+
+      <hr>
+
+      <div class="search-box">
+        <input id="buscar" class="form-control" placeholder="Buscar por descrição (ex: *palavra*)" />
+        <button id="btnBuscar" class="btn btn-outline-primary btn-small">Buscar</button>
+        <button id="btnResetBusca" class="btn btn-outline-secondary btn-small">Limpar</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-wilker table" id="tabelaListas">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Funcionário (CPF)</th>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <a href="../index.html" class="btn btn-link mt-2">Voltar ao menu</a>
+  </div>
+
+  <script src="./js/utils.js"></script>
+  <script src="./js/listas.js"></script>
+</body>
+</html>

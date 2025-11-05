@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria-produto.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias-produto.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/registrar-necessidades.html" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +67,7 @@
     &quot;Spring Boot.SalfBackendApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Wilker&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Engenharia de software/2/Grupo 5/Front&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Ferramentas computacionais/Segundo bimestre/Projeto BomServico/bomservico_be&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -140,6 +145,12 @@
       <workItem from="1761708868032" duration="2131000" />
       <workItem from="1761755780976" duration="4384000" />
       <workItem from="1761776210884" duration="324000" />
+      <workItem from="1761823357750" duration="2000" />
+      <workItem from="1761844023547" duration="622000" />
+      <workItem from="1762210090297" duration="23000" />
+      <workItem from="1762210131467" duration="16000" />
+      <workItem from="1762214909270" duration="22000" />
+      <workItem from="1762364923905" duration="4028000" />
     </task>
     <servers />
   </component>
