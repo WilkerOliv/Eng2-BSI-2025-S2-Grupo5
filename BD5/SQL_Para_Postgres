@@ -462,3 +462,20 @@ ALTER TABLE parametrizacao
 
 ALTER TABLE lista_compra DROP COLUMN funcionario_func_cpf1;
 
+
+-- -----------------------------------------------------
+-- Tabela adicional para histórico de acertos de estoque
+-- -----------------------------------------------------
+CREATE TABLE acerto_estoque (
+    id_acerto SERIAL PRIMARY KEY,
+    estoque_est_cod INT NOT NULL,
+    quantidade_anterior INT NOT NULL,
+    nova_quantidade INT NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    data_acerto DATE NOT NULL,
+    usuario_responsavel VARCHAR(100) NOT NULL,
+    CONSTRAINT fk_acerto_estoque FOREIGN KEY (estoque_est_cod)
+        REFERENCES estoque(est_cod)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
