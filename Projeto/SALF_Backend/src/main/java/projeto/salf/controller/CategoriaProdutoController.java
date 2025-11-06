@@ -24,11 +24,11 @@ public class CategoriaProdutoController {
         conexao = SingletonDB.getConexao();
 
         if (conexao == null || !conexao.getEstadoConexao()) {
-            out.println("🔄 Nenhuma conexão ativa. Conectando...");
+            out.println("Nenhuma conexão ativa. Conectando...");
             SingletonDB.conectar();
             conexao = SingletonDB.getConexao();
         } else {
-            out.println("✅ Conexão já ativa, reutilizando.");
+            out.println("Conexão já ativa, reutilizando.");
         }
 
         dao = new CategoriaProdutoDAO(conexao);

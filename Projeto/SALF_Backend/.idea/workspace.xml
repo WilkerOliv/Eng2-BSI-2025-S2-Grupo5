@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Front/css/style-wilker.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/css/style-wilker.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,6 +157,8 @@
       <workItem from="1762364923905" duration="4028000" />
       <workItem from="1762373455549" duration="2000" />
       <workItem from="1762373474900" duration="3796000" />
+      <workItem from="1762378204593" duration="91000" />
+      <workItem from="1762438486593" duration="846000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,3 @@
-// Front/front-Wilker/js/listas.js
 const API_URL_LISTAS = "http://localhost:8080/api/listas";
 
 document.addEventListener("DOMContentLoaded", function () {

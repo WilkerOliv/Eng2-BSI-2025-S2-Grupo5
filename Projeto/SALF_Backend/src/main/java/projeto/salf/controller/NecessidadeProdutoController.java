@@ -4,11 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.controller.bd.SingletonDB;
 import projeto.salf.controller.bd.Conexao;
+import projeto.salf.dao.CategoriaProdutoDAO;
 import projeto.salf.dao.NecessidadeProdutoDAO;
 import projeto.salf.model.NecessidadeProduto;
 import projeto.salf.model.NecessidadeProdutoId;
 
 import java.util.List;
+
+import static java.lang.System.out;
 
 @RestController
 @RequestMapping("/api/necessidades/produtos")
@@ -25,6 +28,20 @@ public class NecessidadeProdutoController {
         conexao = SingletonDB.getConexao();
         dao = new NecessidadeProdutoDAO(conexao);
     }
+
+//    private void verificarConexao() {
+//        conexao = SingletonDB.getConexao();
+//
+//        if (conexao == null || !conexao.getEstadoConexao()) {
+//            out.println("Nenhuma conexão ativa. Conectando...");
+//            SingletonDB.conectar();
+//            conexao = SingletonDB.getConexao();
+//        } else {
+//            out.println("Conexão já ativa, reutilizando.");
+//        }
+//
+//        dao = new NecessidadeProdutoDAO(conexao);
+//    }
 
     private void fecharConexao() {
         SingletonDB.close();

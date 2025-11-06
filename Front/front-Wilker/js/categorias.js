@@ -1,4 +1,3 @@
-// Front/front-Wilker/js/categorias.js
 const API_URL_CATEGORIAS = "http://localhost:8080/api/categorias";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -39,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
       ].join("");
       tabelaBody.appendChild(tr);
     });
-    // attach events
     tabelaBody.querySelectorAll("[data-edit]").forEach(btn => {
       btn.addEventListener("click", function () {
         const id = this.getAttribute("data-edit");

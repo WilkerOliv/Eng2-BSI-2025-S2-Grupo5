@@ -162,7 +162,6 @@ public class Conexao {
         }
     }
 
-    /** confirma transação */
     public void commit() {
         try {
             connect.commit();
@@ -171,7 +170,6 @@ public class Conexao {
         }
     }
 
-    /** desfaz transação */
     public void rollback() {
         try {
             connect.rollback();
@@ -198,7 +196,7 @@ public class Conexao {
                 ps.setObject(i + 1, params[i]);
             }
             int linhas = ps.executeUpdate();
-            System.out.println("🧱 SQL executado: " + linhas + " linha(s) afetada(s)");
+            System.out.println("SQL executado: " + linhas + " linha(s) afetada(s)");
             return linhas;
         } catch (SQLException e) {
             erro = "Erro ao executar manipularComRetorno: " + e;

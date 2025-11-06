@@ -1,10 +1,6 @@
-/* Front/css/style-wilker.css
-   Estilos específicos para as funcionalidades de Wilker
-   Mantém cores e tipografia do projeto principal (assume style.css já carregado)
-*/
 
 :root{
-  --primary-color:#0d6efd; /* fallback, será sobrescrito pelo style.css do projeto se necessário */
+  --primary-color:#0d6efd; 
   --success-color:#198754;
   --danger-color:#dc3545;
   --card-bg:#ffffff;

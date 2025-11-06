@@ -1,13 +1,5 @@
-/* ==========================================================
-   utils.js – Funções globais de validação e mensagens
-   Usado nas funcionalidades de Wilker (RF-B2, RF-F5, RF-F10)
-   ========================================================== */
 
-/* ---------------------- Funções Globais ---------------------- */
-
-/**
- * Valida se um campo obrigatório foi preenchido.
- */
+//  Valida se um campo obrigatório foi preenchido.
 function validarCampoObrigatorio(campo, nome) {
   const valor = campo.value.trim();
   if (valor === "") {
@@ -18,9 +10,7 @@ function validarCampoObrigatorio(campo, nome) {
   return true;
 }
 
-/**
- * Valida se um número é positivo (não negativo e não nulo).
- */
+// Valida se um número é positivo ou não nulo.
 function validarNumeroPositivo(valor, nomeCampo) {
   const numero = parseFloat(valor);
   if (isNaN(numero) || numero <= 0) {
@@ -30,9 +20,7 @@ function validarNumeroPositivo(valor, nomeCampo) {
   return true;
 }
 
-/**
- * Impede datas antigas – só permite hoje ou futuras.
- */
+// Impede datas antigas
 function validarDataFutura(campo) {
   const valor = campo.value;
   if (!valor) return false;
@@ -49,9 +37,7 @@ function validarDataFutura(campo) {
   return true;
 }
 
-/**
- * Exibe mensagens visuais de sucesso, erro ou informação.
- */
+ // Exibe mensagens visuais de sucesso, erro ou informação.
 function exibirMensagem(tipo, texto) {
   let classe = "alert-info";
   if (tipo === "success") classe = "alert-success";
@@ -77,9 +63,7 @@ function exibirMensagem(tipo, texto) {
   setTimeout(() => alerta.remove(), 4000);
 }
 
-/**
- * Limpa o container de mensagens.
- */
+// Limpa o container de mensagens.
 function limparMensagens() {
   const container = document.getElementById("mensagem-container");
   if (container) container.innerHTML = "";

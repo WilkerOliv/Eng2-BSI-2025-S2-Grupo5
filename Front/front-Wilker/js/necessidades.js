@@ -1,4 +1,3 @@
-// Front/front-Wilker/js/necessidades.js
 const API_URL_NECESSIDADES = "http://localhost:8080/api/necessidades/produtos";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -132,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   btnBuscar.addEventListener("click", function () {
     const termo = buscar.value || "";
-    // filtramos por cpf ou observação automaticamente
+    // filtro por cpf ou observação
     const filtrado = listaAtual.filter(item => {
       return Utils.matchesPattern(item.pessoaCpf || "", termo) || Utils.matchesPattern(item.observacao || "", termo);
     });
