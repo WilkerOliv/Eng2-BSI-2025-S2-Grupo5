@@ -1,0 +1,144 @@
+/* Layout geral da página */
+body {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar herdando o vermelho do sistema */
+.salf-navbar {
+  background-color: var(--salf-red, #a10000);
+  color: #fff;
+}
+
+/* Branding na navbar */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.navbar-brand img.logo {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+}
+
+.navbar-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* Info no canto direito da navbar */
+.navbar-date {
+  font-size: 0.8rem;
+}
+
+.navbar-user {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Container principal da página */
+.page-wrapper {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header das cards */
+.card-header-flex {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Campos obrigatórios */
+.required::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Tabela de itens */
+.table thead {
+  background-color: #efefef;
+}
+
+/* Caixa de totais */
+.totais-box {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.totais-box span {
+  font-weight: 700;
+  color: #198754;
+}
+
+/* Bloco de lote / validade */
+.lote-fields {
+  background-color: #fdfdfd;
+  border-left: 4px solid #ced4da;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.lote-hint {
+  font-size: 0.75rem;
+}
+
+/* Footer fixo visualmente */
+.footer-info {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #555;
+  padding: 1rem 0;
+  border-top: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/* Subtítulo abaixo do título principal da página */
+.page-subtitle {
+  font-size: 0.9rem;
+}
+
+/* Responsividade na navbar (celular) */
+@media (max-width: 576px) {
+  .navbar-brand div div:first-child {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .navbar-subtitle {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* ✅ NOVO: garante espaço para a barra de ações */
+.page-wrapper {
+  padding-bottom: 6.5rem;
+}
+
+/* ✅ NOVO: barra de ações sempre visível */
+.actions-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1040;
+  background: #fff;
+  padding: 12px 16px;
+  margin: 0 -0.5rem 0;
+  box-shadow: 0 -6px 16px rgba(0,0,0,.08);
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+@media (max-width: 576px) {
+  .page-wrapper { padding-bottom: 7.5rem; }
+}
