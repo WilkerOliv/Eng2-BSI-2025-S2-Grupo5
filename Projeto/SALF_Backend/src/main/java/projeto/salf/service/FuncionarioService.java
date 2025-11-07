@@ -18,6 +18,10 @@ public class FuncionarioService {
         this.funcionarioDAO = FuncionarioDAO;
     }
 
+    public Funcionario getFuncionarioPorEmail(String email) {
+        return funcionarioDAO.buscaFuncEmail(email);
+    }
+
 
     public Funcionario buscaCPF(String cpf) {
         return funcionarioDAO.buscaCPF(cpf);
