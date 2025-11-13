@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SALF - Entrada de Produtos Doados</title>
+
+  <!-- Bootstrap / Ícones -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+
+  <!-- Estilos globais do sistema -->
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="principal.css" rel="stylesheet"/>
+  <link href="entrada-doacao.css" rel="stylesheet"/>
+
+  <!-- Ajustes rápidos de responsividade desta página -->
+  <style>
+    /* Evita que o rodapé cubra a barra de ações e dá espaço ao final */
+    .content .card:last-of-type { margin-bottom: 5rem; }
+
+    /* Barra de ações sempre visível no mobile */
+    @media (max-width: 576px) {
+      .actions-bar {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: .75rem;
+        background: #ffffff;
+        box-shadow: 0 -4px 12px rgba(0,0,0,.06);
+        z-index: 20;
+      }
+      .actions-bar .btn {
+        width: 100%;
+      }
+      .actions-bar { gap: .5rem !important; justify-content: stretch !important; }
+    }
+
+    @media (min-width: 577px) {
+      .actions-bar { padding: .5rem 0; }
+    }
+
+    .page-wrapper { padding-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar salf-navbar">
+    <div class="container-fluid">
+      <span class="navbar-brand">
+        <img src="larSantaFilomena.png" alt="Logo Lar Santa Filomena" class="logo"/>
+        <div>
+          <div>SALF - Lar Santa Filomena</div>
+          <div class="navbar-subtitle">Sistema Integrado de Gestão</div>
+        </div>
+      </span>
+
+      <div class="text-white d-flex flex-column align-items-end">
+        <div class="navbar-date">
+          <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+        </div>
+        <div class="navbar-user">
+          <i class="bi bi-person-badge"></i> Operador
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Layout com menu lateral -->
+  <div class="main-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h5><i class="bi bi-grid-3x3-gap"></i> Módulos do Sistema</h5>
+
+      <a class="nav-btn" id="btn-home" href="index.html">
+        <i class="bi bi-house-heart"></i> Dashboard
+      </a>
+
+      <div class="module-divider">
+        <small><i class="bi bi-box"></i> CONTROLE DE ESTOQUE</small>
+      </div>
+
+      <a class="nav-btn active" id="btn-entrada" href="entrada-doacao.html">
+        <i class="bi bi-box-arrow-in-down"></i> Entrada de Doações
+      </a>
+
+      <a class="nav-btn" id="btn-entrada-compra" href="entrada-compra.html">
+        <i class="bi bi-pencil-square"></i> Entrada de Compr
+      <a class="nav-btn" id="btn-saida" href="saida-carente.html">
+        <i class="bi bi-box-arrow-up"></i> Saída para Carentes
+      </a>
+
+      <a class="nav-btn" id="btn-lista-entrada" href="historico-entradas.html">
+        <i class="bi bi-list-check"></i> Histórico Entradas
+      </a>
+
+      <a class="nav-btn" id="btn-lista-saida" href="historico-saidas.html">
+        <i class="bi bi-list-ul"></i> Histórico Saídas
+      </a>
+
+      <div class="module-development">
+        <small><i class="bi bi-cart3"></i> EM DESENVOLVIMENTO</small>
+      </div>
+
+      <button class="nav-btn" onclick="alert('Módulo em desenvolvimento')" style="opacity:.6;">
+        <i class="bi bi-currency-dollar"></i> Cotações
+      </button>
+
+      <button class="nav-btn" onclick="alert('Módulo em desenvolvimento')" style="opacity:.6;">
+        <i class="bi bi-basket3"></i> Cestas Básicas
+      </button>
+
+      <button class="nav-btn" onclick="alert('Módulo em desenvolvimento')" style="opacity:.6;">
+        <i class="bi bi-people"></i> Cadastro Pessoas
+      </button>
+
+      <button class="nav-btn" onclick="alert('Módulo em desenvolvimento')" style="opacity:.6;">
+        <i class="bi bi-graph-up"></i> Relatórios
+      </button>
+
+      <hr style="margin: 2rem 0; border-color: var(--salf-red);"/>
+
+      <div class="stats-card">
+        <h6><i class="bi bi-shield-check"></i> Sistema SALF</h6>
+        <small>Versão 1.0 Beta</small><br/>
+        <small><i class="bi bi-circle-fill text-success"></i> Operacional</small><br/>
+        <small style="margin-top:.5rem; display:block;">
+          <i class="bi bi-clock"></i> <span id="last-update">Atualizado hoje</span>
+        </small>
+      </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="content">
+      <main class="page-wrapper">
+
+        <!-- Mensagens -->
+        <div id="mensagens" class="mb-3"></div>
+
+        <!-- Título -->
+        <div class="mb-3">
+          <h2 class="mb-1"><i class="bi bi-gift"></i> Entrada de Produtos Doados</h2>
+          <div class="page-subtitle text-muted">Registre a entrada de itens doados e os respectivos lotes/validades.</div>
+        </div>
+
+        <!-- Card: Cabeçalho -->
+        <div class="card mb-3 shadow-sm">
+          <div class="card-header">
+            <div class="card-header-flex">
+              <i class="bi bi-clipboard2-plus"></i> Dados da Doação
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-sm-4">
+                <label for="dataDoacao" class="form-label required">Data</label>
+                <input type="date" id="dataDoacao" class="form-control"/>
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <label for="funcionarioCpf" class="form-label required">CPF do Funcionário</label>
+                <div class="input-group">
+                  <input type="text" id="funcionarioCpf" class="form-control" placeholder="000.000.000-00"/>
+                  <button class="btn btn-outline-primary" id="btnBuscarFuncionario">
+                    <i class="bi bi-search"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <label for="funcionarioNome" class="form-label">Funcionário</label>
+                <input type="text" id="funcionarioNome" class="form-control" placeholder="—" disabled/>
+              </div>
+
+              <div class="col-12">
+                <label for="observacao" class="form-label">Observação</label>
+                <textarea id="observacao" class="form-control" rows="2"
+                  placeholder="Ex.: Campanha de Inverno, doador, etc."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Itens -->
+        <div class="card mb-3 shadow-sm">
+          <div class="card-header">
+            <div class="card-header-flex">
+              <i class="bi bi-box-seam"></i> Itens doados
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="row g-3 align-items-end">
+              <div class="col-12 col-md-5">
+                <label class="form-label required">Produto</label>
+
+                <input type="text" id="buscaProduto"
+                  class="form-control mb-2"
+                  placeholder="🔍 Buscar produto..."
+                />
+
+                <select id="listaProdutos" class="form-select">
+                  <option value="" disabled selected>Carregando...</option>
+                </select>
+              </div>
+
+              <div class="col-6 col-md-2">
+                <label for="quantidade" class="form-label required">Quantidade</label>
+                <input type="number" id="quantidade" min="1"
+                  class="form-control text-end" placeholder="0"/>
+              </div>
+
+              <div class="col-6 col-md-3">
+                <label for="validade" class="form-label required">Validade do lote</label>
+                <input type="date" id="validade" class="form-control"/>
+                <div class="lote-hint text-muted mt-1">Obrigatório.</div>
+              </div>
+
+              <div class="col-12 col-md-2 d-grid">
+                <button id="btnAddItem" class="btn btn-primary">
+                  <i class="bi bi-plus-circle"></i> Adicionar
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+              <table id="tabelaItens" class="table table-sm table-striped align-middle">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th class="text-end">Qtd</th>
+                    <th>Validade</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+      <!-- CARD: DOAÇÕES REALIZADAS -->
+<div class="card mb-3 shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header-flex">
+      <i class="bi bi-journal-check"></i> Doações realizadas
+    </div>
+
+    <button id="btnApagarTodasDoacoes" class="btn btn-danger btn-sm">
+      <i class="bi bi-trash3"></i> Apagar Tudo
+    </button>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Busca por data -->
+    <div class="row mb-3">
+      <div class="col-12 col-md-4">
+        <label class="form-label">Filtrar por data</label>
+        <input type="date" id="filtroData" class="form-control">
+      </div>
+
+      <div class="col-12 col-md-4 mt-3 mt-md-4">
+        <button id="btnFiltrarData" class="btn btn-primary w-100">
+          <i class="bi bi-search"></i> Filtrar
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-striped" id="tabelaDoacoes">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Data</th>
+            <th>Funcionário</th>
+            <th>Observação</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- preenchido via JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<!-- FIM DO CARD -->
+
+
+
+        <!-- Barra de Ações -->
+        <div class="actions-bar d-flex gap-2 justify-content-end">
+          <button id="btnLimparTudo" class="btn btn-outline-secondary">
+            <i class="bi bi-eraser"></i> Limpar
+          </button>
+          <button id="btnSalvar" class="btn btn-success">
+            <i class="bi bi-check2-circle"></i> Registrar Doação
+          </button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <div class="footer-info">
+    <i class="bi bi-heart-fill"></i> SALF v1.0 © 2025 | Lar Santa Filomena
+  </div>
+
+  <!-- Scripts -->
+  <script src="entrada-doacao.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById('current-date').textContent =
+      new Date().toLocaleDateString('pt-BR');
+
+    (function () {
+      const path = location.pathname.split('/').pop();
+      const map = {
+        'index.html': 'btn-home',
+        'entrada-doacao.html': 'btn-entrada',
+        'entrada-compra.html': 'btn-entrada-compra',
+        'saida-carente.html': 'btn-saida',
+        'historico-entradas.html': 'btn-lista-entrada',
+        'historico-saidas.html': 'btn-lista-saida'
+      };
+      const id = map[path] || null;
+      if (id) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.add('active');
+      }
+    })();
+  </script>
+
+</body>
+</html>

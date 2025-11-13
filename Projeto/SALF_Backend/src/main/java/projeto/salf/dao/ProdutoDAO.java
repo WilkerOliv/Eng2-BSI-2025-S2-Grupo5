@@ -15,7 +15,7 @@ import java.util.List;
 public class ProdutoDAO {
 
     public List<Produto> getListaAll(){
-        String SQL = "SELECT prod_cod, prod_descr FROM produto";
+        String SQL = "SELECT prod_cod, prod_descr FROM produto order by prod_descr asc";
         List<Produto> listaProduto = new ArrayList<>();
         try {
             Connection conn = SingletonDB.getConexao().getConnect();

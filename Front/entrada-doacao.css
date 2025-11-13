@@ -1,0 +1,82 @@
+/* ========= Entrada de Doações (page-specific) ========= */
+
+/* Mantém o container de mensagens visível e com espaçamento */
+#mensagens {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+/* Título da página */
+.page-subtitle {
+  margin-top: .25rem;
+}
+
+/* Cards */
+.card {
+  border: 1px solid rgba(0,0,0,.075);
+}
+.card-header {
+  background: #fff;
+}
+.card-header-flex i {
+  color: var(--salf-red, #a10000);
+}
+
+/* Campos obrigatórios (reaproveita .required do modelo) */
+.required::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: 700;
+}
+
+/* Área de dicas de lote/validade */
+.lote-hint {
+  font-size: .8rem;
+}
+
+/* Tabela */
+#tabelaItens thead {
+  background-color: #efefef; /* alinhado ao modelo */
+}
+#tabelaItens th,
+#tabelaItens td {
+  vertical-align: middle;
+}
+#tabelaItens td .btn {
+  min-width: 92px;
+}
+
+/* Inputs numéricos alinhados */
+input[type="number"].text-end {
+  text-align: end;
+}
+
+/* Barra de ações (usa .actions-bar do seu modelo) */
+.actions-bar .btn {
+  min-width: 180px;
+}
+
+/* Navbar: garante contraste do texto/ícones */
+.salf-navbar .navbar-brand,
+.salf-navbar .navbar-brand * {
+  color: #fff;
+}
+.salf-navbar .navbar-subtitle,
+.salf-navbar .navbar-date,
+.salf-navbar .navbar-user {
+  color: #fff;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  #tabelaItens td .btn {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .actions-bar .btn {
+    min-width: 100%;
+  }
+}

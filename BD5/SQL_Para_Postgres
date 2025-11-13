@@ -462,3 +462,5 @@ ALTER TABLE parametrizacao
 
 ALTER TABLE lista_compra DROP COLUMN funcionario_func_cpf1;
 
+ALTER TABLE doacao_produto
+ADD COLUMN doa_prod_qtd INT NOT NULL DEFAULT 0;

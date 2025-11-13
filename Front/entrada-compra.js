@@ -13,17 +13,95 @@ const cacheFornecPorCotacao = new Map(); // cotacaoId (String) -> Array<Forneced
 // =====================================================
 const el = (sel) => document.querySelector(sel);
 
-function msg(texto, tipo) {
+/* ===== Datas (ISO local) ===== */
+function hojeISO() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10); // yyyy-MM-dd (local)
+}
+function compareISO(a, b) {
+  // retorna -1 se a<b, 0 se igual, 1 se a>b (datas no formato yyyy-MM-dd)
+  if (a === b) return 0;
+  return a < b ? -1 : 1;
+}
+function isPastDate(dateISO) {
+  return compareISO(dateISO, hojeISO()) < 0;
+}
+function isFutureDate(dateISO) {
+  return compareISO(dateISO, hojeISO()) > 0;
+}
+
+/* =====================================================
+   Alerts com auto-remoção, pausa no hover e limite de pilha
+   Uso: msg('texto', 'success'|'info'|'warning'|'danger', { timeoutMs, sticky, max })
+   ===================================================== */
+function msg(texto, tipo = "danger", opts = {}) {
+  const tempoPadrao = { danger: 7000, warning: 6000, info: 5000, success: 3500 };
+  const timeoutMs = Number.isFinite(opts.timeoutMs) ? opts.timeoutMs : (tempoPadrao[tipo] ?? 5000);
+  const sticky = !!opts.sticky;
+  const maxVisiveis = opts.max ?? 4;
+
   const box = el('#mensagens');
   if (!box) return;
+
+  // Limita a pilha: remove os mais antigos quando passar do limite
+  const existentes = Array.from(box.querySelectorAll('.alert'));
+  if (existentes.length >= maxVisiveis) {
+    const excedente = existentes.length - maxVisiveis + 1;
+    existentes.slice(0, excedente).forEach(a => fecharAlert(a));
+  }
+
   const div = document.createElement('div');
   div.className = `alert alert-${tipo} alert-dismissible fade show`;
-  div.role = 'alert';
+  div.role = "alert";
+  div.style.marginBottom = "0.5rem";
   div.innerHTML = `
     ${texto}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
   `;
+
   box.appendChild(div);
+  box.dataset.hasAlerts = "1";
+
+  function fecharAlert(node = div) {
+    if (!node || node.dataset.closing === "1") return;
+    node.dataset.closing = "1";
+    node.classList.remove('show');
+    setTimeout(() => node.remove(), 180);
+  }
+
+  // Timer com pausa ao passar o mouse
+  if (!sticky && timeoutMs > 0) {
+    let restante = timeoutMs;
+    let start = Date.now();
+    let timer = setTimeout(() => fecharAlert(), restante);
+
+    const pausa = () => {
+      clearTimeout(timer);
+      restante -= (Date.now() - start);
+    };
+    const retoma = () => {
+      start = Date.now();
+      clearTimeout(timer);
+      timer = setTimeout(() => fecharAlert(), Math.max(0, restante));
+    };
+
+    div.addEventListener('mouseenter', pausa);
+    div.addEventListener('mouseleave', retoma);
+  }
+
+  // Garantia de remoção ao clicar no X
+  div.addEventListener('closed.bs.alert', () => div.remove());
+
+  // Se o container estiver fora de vista, rola até ele
+  try {
+    const rect = box.getBoundingClientRect();
+    if (rect.top < 0 || rect.top > window.innerHeight - 80) {
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  } catch {}
+
+  return div;
 }
 
 function fmt(valor) {
@@ -64,6 +142,9 @@ async function carregarProdutos() {
     if (select) select.innerHTML = `<option value="" selected disabled>(falha ao carregar)</option>`;
   }
 }
+
+
+
 
 async function carregarCotacoes() {
   if (cacheCotacoes) {
@@ -193,6 +274,59 @@ function atualizarTotal() {
 }
 
 // =====================================================
+// Mescla / Upsert de itens iguais (prodCod + validade)
+// =====================================================
+function chaveItem(it) {
+  return `${String(it.prodCod)}|${it.validade}`;
+}
+
+/** Insere/mescla item na lista (soma qtd e faz média ponderada do valorUnit) */
+function upsertItem(novo) {
+  const key = chaveItem(novo);
+  const idx = itensDaCompra.findIndex(x => chaveItem(x) === key);
+  if (idx === -1) {
+    itensDaCompra.push({ ...novo });
+  } else {
+    const existente = itensDaCompra[idx];
+    const q1 = Number(existente.qtd) || 0;
+    const v1 = Number(existente.valorUnit) || 0;
+    const q2 = Number(novo.qtd) || 0;
+    const v2 = Number(novo.valorUnit) || 0;
+    const qtdTotal = q1 + q2;
+
+    // média ponderada do valor unitário
+    const novoValorUnit = qtdTotal > 0 ? ((q1 * v1) + (q2 * v2)) / qtdTotal : 0;
+
+    itensDaCompra[idx] = {
+      ...existente,
+      qtd: qtdTotal,
+      valorUnit: Number(novoValorUnit.toFixed(6)) // precisão interna melhor
+    };
+  }
+}
+
+/** Passa um pente fino pra garantir nenhuma duplicidade restante */
+function mesclarDuplicados() {
+  const mapa = new Map();
+  for (const it of itensDaCompra) {
+    const key = chaveItem(it);
+    if (!mapa.has(key)) {
+      mapa.set(key, { ...it });
+    } else {
+      const agg = mapa.get(key);
+      const q1 = Number(agg.qtd) || 0;
+      const v1 = Number(agg.valorUnit) || 0;
+      const q2 = Number(it.qtd) || 0;
+      const v2 = Number(it.valorUnit) || 0;
+      const qtdTotal = q1 + q2;
+      const vMedio = qtdTotal > 0 ? ((q1 * v1) + (q2 * v2)) / qtdTotal : 0;
+      mapa.set(key, { ...agg, qtd: qtdTotal, valorUnit: Number(vMedio.toFixed(6)) });
+    }
+  }
+  itensDaCompra = Array.from(mapa.values());
+}
+
+// =====================================================
 // Tabela de itens
 // =====================================================
 function redesenharTabela() {
@@ -271,7 +405,13 @@ function adicionarItem() {
 
   if (!prodCod || !qtd || !valorUnit || !validade) return msg('Preencha produto, quantidade, valor e validade.', 'danger');
 
-  itensDaCompra.push({ prodCod, descrProduto: prodDescr, qtd, valorUnit, validade });
+  // Bloqueio: validade não pode ser vencida
+  if (isPastDate(validade)) {
+    return msg('Validade inválida: não é permitido cadastrar lote vencido.', 'danger');
+  }
+
+  // Insere mesclando (mesmo produto + mesma validade => soma quantidades e média ponderada)
+  upsertItem({ prodCod, descrProduto: prodDescr, qtd, valorUnit, validade });
   indiceEditando = null;
 
   redesenharTabela();
@@ -280,8 +420,6 @@ function adicionarItem() {
   qtdEl.value = '';
   valEl.value = '';
   valData.value = '';
-
- 
 }
 
 function entrarEdicao(idx) { indiceEditando = idx; redesenharTabela(); }
@@ -301,7 +439,17 @@ function salvarEdicao(idx) {
   if (isNaN(novoValUnit) || novoValUnit < 0) return msg('Valor inválido.', 'danger');
   if (!novaValidade) return msg('Informe a validade.', 'danger');
 
+  // Bloqueio: validade não pode ser vencida
+  if (isPastDate(novaValidade)) {
+    return msg('Validade inválida: não é permitido cadastrar lote vencido.', 'danger');
+  }
+
+  // Aplica a edição
   Object.assign(itensDaCompra[idx], { qtd: novaQtd, valorUnit: novoValUnit, validade: novaValidade });
+
+  // Se com a edição ficou igual a outro item (mesmo produto + mesma validade), mescla
+  mesclarDuplicados();
+
   indiceEditando = null;
   redesenharTabela();
   msg('Item atualizado.', 'success');
@@ -383,13 +531,8 @@ function limparTudo() {
   atualizarOrigem();
 
   redesenharTabela();
-  msg('Formulário limpo.', 'warning');
+  msg('Formulário limpo.', 'warning', { timeoutMs: 2500 });
 }
-
-// =====================================================
-// SALVAR ITENS — envia 1 POST por item para /api/itens_compra/
-// =====================================================
-
 
 // =====================================================
 // Salvar (validações básicas) – CABEÇALHO + ITENS
@@ -404,8 +547,20 @@ async function salvarCompra() {
 
   const dataCompra = el('#dataCompra')?.value || '';
   const funcCpf    = el('#funcionarioCpf')?.value || '';
-  if (!dataCompra) { msg('Informe a data da compra.', 'danger'); return; }
+
+  if (!localhostCompra) { msg('Informe a data da compra.', 'danger'); return; }
   if (!funcCpf)    { msg('Informe o funcionário.', 'danger');   return; }
+
+  // Bloqueio: data da compra não pode ser no futuro
+  if (isFutureDate(dataCompra)) {
+    return msg('Data da compra inválida: não é permitido cadastrar no futuro.', 'danger');
+  }
+
+  // Sanidade extra: garantir que não ficou nenhum item vencido (por segurança)
+  const vencido = itensDaCompra.find(it => isPastDate(it.validade));
+  if (vencido) {
+    return msg(`Há item com validade vencida (${vencido.descrProduto} - ${vencido.validade}). Remova/ajuste antes de salvar.`, 'danger');
+  }
 
   const origem = document.querySelector('input[name="origemCompra"]:checked')?.value || 'direta';
 
@@ -442,54 +597,50 @@ async function salvarCompra() {
     body.fornecCotacaoFornecedorId = forn;
   }
 
-
   try {
-// 1) Salva CABEÇALHO
-const resp = await fetch('http://localhost:8080/api/compra', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(body)
-});
+    // 1) Salva CABEÇALHO
+    const resp = await fetch('http://localhost:8080/api/compra', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
 
-if (!resp.ok) { msg('Erro ao salvar a compra (cabeçalho).', 'danger'); return; }
+    if (!resp.ok) { msg('Erro ao salvar a compra (cabeçalho).', 'danger'); return; }
 
-// === CAPTURA ROBUSTA DO compra_cod ===
-let compraCod = null;
-const ct = (resp.headers.get('content-type') || '').toLowerCase();
+    // === CAPTURA ROBUSTA DO compra_cod ===
+    let compraCod = null;
+    const ct = (resp.headers.get('content-type') || '').toLowerCase();
 
-try {
-  if (ct.includes('application/json')) {
-    const data = await resp.json();
-    // pode vir número puro (ex.: 123) ou objeto (se você mudar o controller futuramente)
-    compraCod = (typeof data === 'number')
-      ? data
-      : (data.compra_cod ?? data.compraCod ?? data.id ?? data.compraId ?? null);
-  } else {
-    const txt = (await resp.text()).trim(); // ex.: text/plain "123"
-    const n = Number(txt);
-    if (Number.isInteger(n)) compraCod = n;
-  }
-} catch (e) {
-  console.error('Falha ao interpretar resposta do cabeçalho:', e);
-}
+    try {
+      if (ct.includes('application/json')) {
+        const data = await resp.json();
+        compraCod = (typeof data === 'number')
+          ? data
+          : (data.compra_cod ?? data.compraCod ?? data.id ?? data.compraId ?? null);
+      } else {
+        const txt = (await resp.text()).trim();
+        const n = Number(txt);
+        if (Number.isInteger(n)) compraCod = n;
+      }
+    } catch (e) {
+      console.error('Falha ao interpretar resposta do cabeçalho:', e);
+    }
 
-if (!compraCod) {
-  msg('Cabeçalho salvo, mas não consegui ler o número da compra (compra_cod).', 'warning');
-  return;
-}
+    if (!compraCod) {
+      msg('Cabeçalho salvo, mas não consegui ler o número da compra (compra_cod).', 'warning');
+      return;
+    }
 
-window.compra_cod = compraCod;
-msg(`Cabeçalho da compra salvo. Nº ${compraCod}.`, 'success');
-console.log('compra_cod:', compraCod, 'payload_enviado:', body);
+    window.compra_cod = compraCod;
+    msg(`Cabeçalho da compra salvo. Nº ${compraCod}.`, 'success');
 
-// 2) Salva ITENS
-const okItens = await salvarItensCompra(compraCod);
-if (!okItens) return;
+    // 2) Salva ITENS
+    const okItens = await salvarItensCompra(compraCod);
+    if (!okItens) return;
 
-// 3) Finalização
-msg('Compra concluída com sucesso!', 'success');
-limparTudo();
-
+    // 3) Finalização
+    msg('Compra concluída com sucesso!', 'success');
+    limparTudo();
 
   } catch (e) {
     console.error(e);
@@ -534,12 +685,11 @@ async function salvarItensCompra(compraCod) {
       }
 
       okCount++;
-     
 
     } catch (e) {
       console.error(`Falha no item ${i + 1}:`, e);
       msg(`Erro ao inserir item ${i + 1}/${total}: ${e.message}`, 'danger');
-      // Se quiser abortar no primeiro erro:
+      // Se quiser abortar no primeiro erro, descomente abaixo:
       // el('#btnSalvar')?.removeAttribute('disabled');
       // return false;
     }
@@ -558,8 +708,6 @@ async function salvarItensCompra(compraCod) {
     return false;
   }
 }
-
-
 
 // =====================================================
 // Eventos

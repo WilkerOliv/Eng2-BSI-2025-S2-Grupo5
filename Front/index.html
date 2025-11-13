@@ -46,10 +46,6 @@
       <small><i class="bi bi-box"></i> CONTROLE DE ESTOQUE</small>
     </div>
 
-    <button class="nav-btn" id="btn-entrada" onclick="showTab('entrada')">
-      <i class="bi bi-box-arrow-in-down"></i> Entrada de Doações
-    </button>
-
     <button class="nav-btn" id="btn-saida" onclick="showTab('saida')">
       <i class="bi bi-box-arrow-up"></i> Saída para Carentes
     </button>
@@ -65,6 +61,10 @@
     <!-- Agora é um link que abre outra página dedicada -->
     <a class="nav-btn" id="btn-entrada-compra" href="entrada-compra.html">
       <i class="bi bi-pencil-square"></i> Entrada de Compras
+    </a>
+    <!-- antes: <button class="nav-btn" id="btn-entrada" onclick="showTab('entrada')"> -->
+    <a class="nav-btn" id="btn-entrada" href="entrada-doacao.html">
+      <i class="bi bi-box-arrow-in-down"></i> Entrada de Doações
     </a>
 
     <div class="module-development">
@@ -260,6 +260,25 @@
       correspondingBtn.classList.add('active');
     }
   }
+
+  // === NOVO: marca automaticamente o item ativo quando for navegação por página ===
+  (function () {
+    const path = location.pathname.split('/').pop();
+    const map = {
+      'index.html': 'btn-home',
+      'entrada-doacao.html': 'btn-entrada',
+      'entrada-compra.html': 'btn-entrada-compra',
+      'saida-carente.html': 'btn-saida',
+      'historico-entradas.html': 'btn-lista-entrada',
+      'historico-saidas.html': 'btn-lista-saida'
+    };
+    const id = map[path] || null;
+    if (id) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById(id);
+      if (btn) btn.classList.add('active');
+    }
+  })();
 </script>
 
 </body>

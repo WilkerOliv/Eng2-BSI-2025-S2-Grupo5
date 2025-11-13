@@ -8,6 +8,9 @@ import java.io.Serializable;
 @IdClass(DoacaoProdutoId.class)
 public class DoacaoProduto implements Serializable {
 
+
+
+
     @Id
     @Column(name = "doacao_doa_cod")
     private Integer doacaoDoaCod;
