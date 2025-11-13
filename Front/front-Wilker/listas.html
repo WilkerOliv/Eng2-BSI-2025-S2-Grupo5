@@ -1,78 +1,217 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Listas de Compras - SALF</title>
-  <link href="../css/style-wilker.css" rel="stylesheet">
-  <link href="../css/style.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="../css/style-wilker.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body class="bg-light">
-  <div class="container-wilker">
-    <div class="wilker-card">
-      <h3>Criar / Gerenciar Listas de Compras</h3>
-      <div id="alert-container"></div>
+<div class="container-wilker">
 
-      <form id="formLista" class="row g-3">
-        <input type="hidden" id="lcCod">
-        <div class="col-md-4">
-          <label for="funcionarioCpf" class="form-label form-label-required">CPF do Funcionário</label>
-          <input type="text" id="funcionarioCpf" class="form-control" placeholder="00000000000">
-          <div id="funcCpfError" class="field-error" style="display:none;"></div>
-        </div>
+  <!-- CARD PRINCIPAL -->
+  <div class="wilker-card">
+    <h3 class="mb-3">Listas de Compras</h3>
 
-        <div class="col-md-4">
-          <label for="dataCriacao" class="form-label form-label-required">Data</label>
-          <input type="date" id="dataCriacao" class="form-control">
-          <div id="dataError" class="field-error" style="display:none;"></div>
-        </div>
+    <!-- ALERTAS -->
+    <div id="alert-container"></div>
 
-        <div class="col-md-4">
-          <label for="descricao" class="form-label form-label-required">Descrição</label>
-          <input type="text" id="descricao" class="form-control" placeholder="Descrição da lista">
-          <div id="descError" class="field-error" style="display:none;"></div>
-        </div>
+    <!-- FORM LISTA -->
+    <form id="formLista" class="row g-3">
+      <input type="hidden" id="lcCod" />
 
-        <div class="col-md-3">
-          <label for="statusAtendimento" class="form-label">Status</label>
-          <input type="number" id="statusAtendimento" class="form-control" value="1" min="0" max="1">
-          <div id="statusError" class="field-error" style="display:none;"></div>
-        </div>
-
-        <div class="col-md-9 d-flex align-items-end gap-2">
-          <button id="btnSalvar" class="btn btn-wilker-primary">Salvar</button>
-          <button id="btnLimpar" type="button" class="btn btn-secondary">Limpar</button>
-        </div>
-      </form>
-
-      <hr>
-
-      <div class="search-box">
-        <input id="buscar" class="form-control" placeholder="Buscar por descrição (ex: *Mensal*)" />
-        <button id="btnBuscar" class="btn btn-outline-primary btn-small">Buscar</button>
-        <button id="btnResetBusca" class="btn btn-outline-secondary btn-small">Limpar</button>
+      <!-- FUNCIONÁRIO -->
+      <div class="col-md-6 position-relative">
+        <label class="form-label form-label-required">Buscar Funcionário (CPF ou Nome)</label>
+        <input type="text" id="funcSearch" class="form-control" placeholder="Digite para buscar..." />
+        <div id="funcAutocomplete" class="autocomplete-box"></div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table-wilker table" id="tabelaListas">
+      <div class="col-md-3">
+        <label class="form-label">CPF Selecionado</label>
+        <input type="text" id="funcionarioCpf" class="form-control" readonly />
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Data</label>
+        <input type="date" id="dataCriacao" class="form-control" />
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Status</label>
+        <select id="statusAtendimento" class="form-select">
+          <option value="0">ABERTA</option>
+          <option value="1">EM ANDAMENTO</option>
+          <option value="2">CONCLUÍDA</option>
+        </select>
+      </div>
+
+      <div class="col-md-8">
+        <label class="form-label form-label-required">Descrição</label>
+        <input type="text" id="descricao" class="form-control" />
+      </div>
+
+      <div class="col-md-12 d-flex gap-2">
+        <button class="btn-wilker-primary" id="btnSalvar" type="submit">Salvar Lista</button>
+        <button class="btn btn-secondary" id="btnLimpar" type="button">Limpar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- CARD ITENS DA LISTA -->
+  <div class="wilker-card">
+    <h4 class="mb-3">Itens da Lista</h4>
+
+    <div id="areaItens">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" id="categoriaItem"></select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Produto</label>
+          <select class="form-select" id="produtoItem"></select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Quantidade</label>
+          <input type="number" id="qtItem" class="form-control" min="1" />
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-success" id="btnAddItem" type="button">Adicionar</button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table-wilker" id="tabelaItens">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Funcionário (CPF)</th>
-              <th>Data</th>
-              <th>Descrição</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
+          <tr>
+            <th>ID Produto</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
-    <a href="../index.html" class="btn btn-link mt-2">Voltar ao menu</a>
   </div>
+  <!-- CARD BUSCA + TABELA LISTAS -->
+  <div class="wilker-card">
 
-  <script src="./js/utils.js"></script>
-  <script src="./js/listas.js"></script>
+    <!-- BUSCA LISTAS -->
+    <div class="row g-3 mb-2">
+      <div class="col-md-3">
+        <label class="form-label">Buscar por</label>
+        <select id="tipoBusca" class="form-select">
+          <option value="descricao">Descrição</option>
+          <option value="cpf">CPF Funcionário</option>
+          <option value="nome">Nome Funcionário</option>
+        </select>
+      </div>
+
+      <div class="col-md-5">
+        <label class="form-label">Termo</label>
+        <input type="text" id="buscar" class="form-control" placeholder="Digite para buscar" />
+      </div>
+
+      <div class="col-md-4 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" id="btnBuscar" type="button">Buscar</button>
+        <button class="btn btn-outline-secondary" id="btnResetBusca" type="button">Limpar</button>
+      </div>
+    </div>
+
+    <!-- TABELA LISTAS -->
+    <div class="table-responsive">
+      <table class="table-wilker" id="tabelaListas">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Funcionário</th>
+          <th>CPF</th>
+          <th>Data</th>
+          <th>Descrição</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- AÇÕES RÁPIDAS -->
+      <div class="wilker-card mt-3 d-flex gap-2">
+        <a href="../index.html" class="btn btn-outline-primary">Voltar para o inicio</a>
+        <a href="../produtos/produtos.html" class="btn btn-outline-primary">Cadastrar Produto</a>
+        <a href="../categorias/categorias.html" class="btn btn-outline-primary">Cadastrar Categoria</a>
+        <a href="../funcionarios/funcionarios.html" class="btn btn-outline-primary">Cadastrar Funcionário</a>
+      </div>
+
+</div>
+
+<!-- MODAL VISUALIZAR LISTA -->
+<div class="modal fade modal-admin" id="modalViewLista" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Visualizar Lista de Compras</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="info-block">
+          <div class="info-title">Funcionário</div>
+          <div class="info-value" id="vFunc"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Descrição</div>
+          <div class="info-value" id="vDesc"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Data</div>
+          <div class="info-value" id="vData"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Status</div>
+          <div class="info-value" id="vStatus"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Itens da Lista</div>
+          <div class="table-responsive">
+            <table class="table table-wilker">
+              <thead>
+              <tr>
+                <th>ID Produto</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+              </tr>
+              </thead>
+              <tbody id="vItens"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      
+
+    </div>
+  </div>
+</div>
+
+<script src="./js/utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./js/listas.js"></script>
 </body>
 </html>

@@ -8,12 +8,6 @@ import projeto.salf.controller.bd.SingletonDB;
 public class SalfBackendApplication {
 
     public static void main(String[] args) {
-
-        if (!SingletonDB.conectar()) {
-            System.err.println("Falha crítica ao conectar com o banco. Finalizando.");
-            return;
-        }
-
         SpringApplication.run(SalfBackendApplication.class, args);
     }
 

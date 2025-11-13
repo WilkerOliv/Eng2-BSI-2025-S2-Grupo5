@@ -1,82 +1,164 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Registrar Necessidades - SALF</title>
-  <link href="../css/style-wilker.css" rel="stylesheet">
-  <link href="../css/style.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="../css/style-wilker.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    .autocomplete-box{
+      border:1px solid #ccc;
+      background:#fff;
+      max-height:200px;
+      overflow-y:auto;
+      position:absolute;
+      width:100%;
+      z-index:2000;
+    }
+    .autocomplete-item{
+      padding:5px 10px;
+      cursor:pointer;
+    }
+    .autocomplete-item:hover{
+      background:#e9ecef;
+    }
+  </style>
 </head>
 <body class="bg-light">
-  <div class="container-wilker">
-    <div class="wilker-card">
-      <h3>Registrar Necessidades de Pessoas Carentes</h3>
-      <div id="alert-container"></div>
+<div class="container-wilker">
+  <div class="wilker-card">
+    <h3 class="mb-3">Registrar Necessidade de Produtos</h3>
 
-      <form id="formNecessidade" class="row g-3">
-        <div class="col-md-3">
-          <label for="pessoaCpf" class="form-label form-label-required">CPF da Pessoa</label>
-          <input type="text" id="pessoaCpf" class="form-control" placeholder="00000000000">
-          <div id="pessoaCpfError" class="field-error" style="display:none;"></div>
-        </div>
+    <div id="alert-container"></div>
 
-        <div class="col-md-3">
-          <label for="produtoId" class="form-label form-label-required">ID do Produto</label>
-          <input type="number" id="produtoId" class="form-control" min="0">
-          <div id="produtoIdError" class="field-error" style="display:none;"></div>
-        </div>
-
-        <div class="col-md-2">
-          <label for="quantidade" class="form-label form-label-required">Quantidade</label>
-          <input type="number" id="quantidade" class="form-control" min="1" value="1">
-          <div id="quantidadeError" class="field-error" style="display:none;"></div>
-        </div>
-
-        <div class="col-md-2">
-          <label for="data" class="form-label form-label-required">Data</label>
-          <input type="date" id="data" class="form-control">
-          <div id="dataError" class="field-error" style="display:none;"></div>
-        </div>
-
-        <div class="col-md-10">
-          <label for="observacao" class="form-label">Observação</label>
-          <input type="text" id="observacao" class="form-control" placeholder="Observação (opcional)">
-        </div>
-
-        <div class="col-md-2 d-flex align-items-end gap-2">
-          <button id="btnSalvar" class="btn btn-wilker-primary">Salvar</button>
-          <button id="btnLimpar" type="button" class="btn btn-secondary">Limpar</button>
-        </div>
-      </form>
-
-      <hr>
-
-      <div class="search-box">
-        <input id="buscar" class="form-control" placeholder="Buscar por CPF ou observação (ex: *Alimentos*)" />
-        <button id="btnBuscar" class="btn btn-outline-primary btn-small">Buscar</button>
-        <button id="btnResetBusca" class="btn btn-outline-secondary btn-small">Limpar</button>
+    <form id="formNec" class="row g-3">
+      <!-- Pessoa Carente -->
+      <div class="col-md-6 position-relative">
+        <label class="form-label form-label-required">Buscar Pessoa Carente (CPF ou Nome)</label>
+        <input type="text" id="pcSearch" class="form-control" placeholder="Digite para buscar..." />
+        <div id="pcAutocomplete" class="autocomplete-box"></div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table-wilker table" id="tabelaNecessidades">
-          <thead>
-            <tr>
-              <th>CPF Pessoa</th>
-              <th>Produto ID</th>
-              <th>Data</th>
-              <th>Quantidade</th>
-              <th>Observação</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div class="col-md-3">
+        <label class="form-label">CPF Selecionado</label>
+        <input type="text" id="pcCpf" class="form-control" readonly />
       </div>
-    </div>
-    <a href="../index.html" class="btn btn-link mt-2">Voltar ao menu</a>
+
+      <div class="col-md-3">
+        <label class="form-label">Data</label>
+        <input type="date" id="data" class="form-control" readonly />
+      </div>
+
+      <!-- Produto -->
+      <div class="col-md-4">
+        <label class="form-label">Categoria</label>
+        <select id="categoria" class="form-select"></select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label form-label-required">Produto</label>
+        <select id="produto" class="form-select"></select>
+      </div>
+
+      <div class="col-md-2">
+        <label class="form-label form-label-required">Quantidade</label>
+        <input type="number" id="quantidade" class="form-control" min="1" />
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">Observação</label>
+        <input type="text" id="observacao" class="form-control" />
+      </div>
+
+      <div class="col-md-12 d-flex gap-2">
+        <button type="submit" class="btn-wilker-primary">Registrar</button>
+        <button type="button" id="btnLimpar" class="btn btn-secondary">Limpar</button>
+      </div>
+    </form>
   </div>
 
-  <script src="./js/utils.js"></script>
-  <script src="./js/necessidades.js"></script>
+  <div class="wilker-card">
+    <!-- BUSCA -->
+    <div class="search-box">
+      <input type="text" id="buscar" class="form-control" placeholder="Buscar por CPF, nome, produto ou observação" />
+      <button class="btn btn-outline-primary" id="btnBuscar">Buscar</button>
+      <button class="btn btn-outline-secondary" id="btnResetBusca">Limpar</button>
+    </div>
+
+    <!-- TABELA -->
+    <div class="table-responsive">
+      <table class="table-wilker" id="tabelaNec">
+        <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Data</th>
+          <th>Obs</th>
+          <th>Ação</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- AÇÕES RÁPIDAS -->
+<div class="wilker-card mt-3 d-flex flex-wrap gap-2">
+  <a href="../index.html" class="btn btn-outline-primary">Voltar para o inicio</a>
+  <a href="../pessoas/pessoas-carentes.html" class="btn btn-outline-primary">Cadastrar Pessoa Carente</a>
+  <a href="../produtos/produtos.html" class="btn btn-outline-primary">Cadastrar Produto</a>
+  <a href="../categorias/categorias.html" class="btn btn-outline-primary">Cadastrar Categoria</a>
+</div>
+
+</div>
+
+<!-- MODAL VISUALIZAR NECESSIDADE -->
+<div class="modal fade modal-admin" id="modalViewNec" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Visualizar Necessidade</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="info-block">
+          <div class="info-title">Pessoa</div>
+          <div class="info-value" id="vnPessoa"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Produto</div>
+          <div class="info-value" id="vnProd"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Quantidade</div>
+          <div class="info-value" id="vnQtd"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Data</div>
+          <div class="info-value" id="vnData"></div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-title">Observação</div>
+          <div class="info-value" id="vnObs"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="./js/utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./js/necessidades.js"></script>
 </body>
 </html>

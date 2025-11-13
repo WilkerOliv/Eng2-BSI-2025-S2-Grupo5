@@ -3,8 +3,6 @@ package projeto.salf.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.controller.bd.SingletonDB;
-import projeto.salf.controller.bd.Conexao;
-import projeto.salf.dao.ProdutoDAO;
 import projeto.salf.model.Produto;
 
 import java.util.List;
@@ -14,66 +12,43 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ProdutoController {
 
-    private Conexao conexao;
-    private ProdutoDAO dao;
-
-    private void abrirConexao() {
-        if (SingletonDB.getConexao() == null || !SingletonDB.getConexao().getEstadoConexao()) {
-            SingletonDB.conectar();
-        }
-        conexao = SingletonDB.getConexao();
-        dao = new ProdutoDAO(conexao);
+    private void garantirConexao() {
+        SingletonDB.getConexao();
     }
 
-    private void fecharConexao() {
-        SingletonDB.close();
-        conexao = null;
-        dao = null;
-    }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> listarTodos() {
+    public ResponseEntity<List<Produto>> listarProdutos(
+            @RequestParam(name = "categoria", required = false) Integer categoria,
+            @RequestParam(name = "termo", required = false) String termo) {
         try {
-            abrirConexao();
-            return ResponseEntity.ok(dao.findAll());
-        } finally {
-            fecharConexao();
+            garantirConexao();
+
+            List<Produto> lista;
+            if (categoria != null) {
+                lista = Produto.buscarPorCategoriaEDescricao(categoria, termo);
+            } else if (termo != null && !termo.isBlank()) {
+                lista = Produto.buscarPorDescricao(termo);
+            } else {
+                lista = Produto.listarTodos();
+            }
+
+            return ResponseEntity.ok(lista);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Produto> salvar(@RequestBody Produto produto) {
+    // Busca produto pelo ID (para uso interno do sistema).
+    @GetMapping("/{id}")
+    public ResponseEntity<Produto> buscarPorId(@PathVariable Integer id) {
         try {
-            abrirConexao();
-            boolean ok = dao.save(produto);
-            if (!ok) return ResponseEntity.status(500).build();
-            return ResponseEntity.ok(produto);
-        } finally {
-            fecharConexao();
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Integer id, @RequestBody Produto produto) {
-        try {
-            abrirConexao();
-            produto.setProdCod(id);
-            boolean ok = dao.save(produto);
-            if (!ok) return ResponseEntity.status(500).build();
-            return ResponseEntity.ok(produto);
-        } finally {
-            fecharConexao();
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
-        try {
-            abrirConexao();
-            dao.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } finally {
-            fecharConexao();
+            garantirConexao();
+            Produto p = Produto.buscarPorId(id);
+            if (p == null) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(p);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
         }
     }
 }

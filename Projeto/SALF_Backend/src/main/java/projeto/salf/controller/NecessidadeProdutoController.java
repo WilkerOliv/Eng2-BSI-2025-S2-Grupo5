@@ -3,95 +3,82 @@ package projeto.salf.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.controller.bd.SingletonDB;
-import projeto.salf.controller.bd.Conexao;
-import projeto.salf.dao.CategoriaProdutoDAO;
-import projeto.salf.dao.NecessidadeProdutoDAO;
 import projeto.salf.model.NecessidadeProduto;
-import projeto.salf.model.NecessidadeProdutoId;
 
+import java.time.LocalDate;
 import java.util.List;
-
-import static java.lang.System.out;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/necessidades/produtos")
 @CrossOrigin(origins = "*")
 public class NecessidadeProdutoController {
 
-    private Conexao conexao;
-    private NecessidadeProdutoDAO dao;
-
-    private void abrirConexao() {
-        if (SingletonDB.getConexao() == null || !SingletonDB.getConexao().getEstadoConexao()) {
-            SingletonDB.conectar();
-        }
-        conexao = SingletonDB.getConexao();
-        dao = new NecessidadeProdutoDAO(conexao);
-    }
-
-//    private void verificarConexao() {
-//        conexao = SingletonDB.getConexao();
-//
-//        if (conexao == null || !conexao.getEstadoConexao()) {
-//            out.println("Nenhuma conexão ativa. Conectando...");
-//            SingletonDB.conectar();
-//            conexao = SingletonDB.getConexao();
-//        } else {
-//            out.println("Conexão já ativa, reutilizando.");
-//        }
-//
-//        dao = new NecessidadeProdutoDAO(conexao);
-//    }
-
-    private void fecharConexao() {
-        SingletonDB.close();
-        conexao = null;
-        dao = null;
+    private void garantirConexao() {
+        SingletonDB.getConexao();
     }
 
     @GetMapping
-    public ResponseEntity<List<NecessidadeProduto>> listarTodas() {
+    public ResponseEntity<List<NecessidadeProduto>> listar(
+            @RequestParam(name = "cpf", required = false) String cpf,
+            @RequestParam(name = "termo", required = false) String termo) {
         try {
-            abrirConexao();
-            return ResponseEntity.ok(dao.findAll());
-        } finally {
-            fecharConexao();
+            garantirConexao();
+
+            List<NecessidadeProduto> lista;
+            if (cpf != null && !cpf.isBlank()) {
+                lista = NecessidadeProduto.listarPorPessoa(cpf);
+            } else if (termo != null && !termo.isBlank()) {
+                lista = NecessidadeProduto.buscarPorTermo(termo);
+            } else {
+                lista = NecessidadeProduto.listarTodas();
+            }
+
+            return ResponseEntity.ok(lista);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<NecessidadeProduto> salvar(@RequestBody NecessidadeProduto necessidade) {
+    public ResponseEntity<?> salvar(@RequestBody NecessidadeProduto necessidade) {
         try {
-            abrirConexao();
-            boolean ok = dao.save(necessidade);
-            if (!ok) return ResponseEntity.status(500).build();
+            garantirConexao();
+
+            // converte data se vier nula ou string vazia (no JSON ela pode vir como null)
+            if (necessidade.getData() == null) {
+                necessidade.setData(LocalDate.now());
+            }
+
+            necessidade.salvar();
             return ResponseEntity.ok(necessidade);
-        } finally {
-            fecharConexao();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensagem", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("mensagem", "Erro ao salvar necessidade de produto."));
         }
     }
 
-//    @DeleteMapping
-//    public ResponseEntity<Void> excluir(@RequestBody NecessidadeProdutoId id) {
-//        try {
-//            abrirConexao();
-//            dao.deleteById(id);
-//            return ResponseEntity.noContent().build();
-//        } finally {
-//            fecharConexao();
-//        }
-//    }
+    /**
+     * DTO simples para exclusão.
+     */
+    public static class NecessidadeKeyDTO {
+        public String pessoaCarentePcCpf;
+        public Integer produtoProdCod;
+    }
+
 
     @DeleteMapping
-    public ResponseEntity<Void> excluir(@RequestBody NecessidadeProdutoId id) {
+    public ResponseEntity<?> excluir(@RequestBody NecessidadeKeyDTO dto) {
         try {
-            abrirConexao();
-            boolean ok = dao.deleteById(id);
-            if (!ok) return ResponseEntity.status(404).build();
+            garantirConexao();
+            boolean ok = NecessidadeProduto.excluir(dto.pessoaCarentePcCpf, dto.produtoProdCod);
+            if (!ok) {
+                return ResponseEntity.status(500).body(Map.of("mensagem", "Erro ao excluir necessidade."));
+            }
             return ResponseEntity.noContent().build();
-        } finally {
-            fecharConexao();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("mensagem", "Erro ao excluir necessidade."));
         }
     }
-
 }

@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Front/css/style-wilker.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/css/style-wilker.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +29,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="MatheusFig" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -150,10 +164,24 @@
       <workItem from="1762373474900" duration="3796000" />
       <workItem from="1762378204593" duration="91000" />
       <workItem from="1762438486593" duration="846000" />
+      <workItem from="1763056645941" duration="3639000" />
+      <workItem from="1763064967827" duration="3654000" />
+      <workItem from="1763069801351" duration="667000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
