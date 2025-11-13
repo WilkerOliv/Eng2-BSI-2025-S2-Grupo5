@@ -443,6 +443,9 @@ CREATE TABLE doacao_necessidade_cesta (
         REFERENCES necessidade_cesta(pessoa_carente_pc_cpf, cesta_basica_cb_cod)
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+ALTER TABLE parametrizacao
+    ALTER COLUMN logotipo_small TYPE text,
+    ALTER COLUMN logotipo_big  TYPE text;
 
 -- -----------------------------------------------------
 -- Tabela: doacao_has_necessidade?? (se houver outras tabelas compostas, já tratadas acima)

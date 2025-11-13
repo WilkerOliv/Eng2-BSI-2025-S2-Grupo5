@@ -4,51 +4,77 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.model.Campanha;
+import projeto.salf.model.CampanhaVoluntario;
+import projeto.salf.model.Voluntario;
 import projeto.salf.service.CampanhaService;
+import projeto.salf.utils.Mensagem;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/campanhas")
-@CrossOrigin(origins = {"*"})
+@RequestMapping("/campanha")
 public class CampanhaController {
 
     @Autowired
-    private CampanhaService service;
+    private CampanhaService campanhaService;
+
+    // CRUD Básico de Campanha
+    @PostMapping
+    public ResponseEntity<Mensagem> salvar(@RequestBody Campanha campanha) {
+        Mensagem mensagem = campanhaService.salvar(campanha);
+        if (mensagem.isSucesso()) {
+            return ResponseEntity.ok(mensagem);
+        } else {
+            return ResponseEntity.badRequest().body(mensagem);
+        }
+    }
 
     @GetMapping
-    public List<Campanha> listarTodos() {
-        return service.listarTodos();
+    public ResponseEntity<List<Campanha>> buscarTodos() {
+        List<Campanha> campanhas = campanhaService.buscarTodos();
+        return ResponseEntity.ok(campanhas);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Campanha> buscar(@PathVariable Integer id) {
-        Campanha c = service.buscarPorId(id);
-        return c == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(c);
-    }
-
-    @PostMapping
-    public Campanha salvar(@RequestBody Campanha campanha) {
-        return service.salvar(campanha);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Campanha> atualizar(@PathVariable Integer id, @RequestBody Campanha campanha) {
-        campanha.setIdCampanha(id); // ajuste conforme o nome do getter/setter no teu Model
-        return ResponseEntity.ok(service.salvar(campanha));
+    public ResponseEntity<Campanha> buscarPorId(@PathVariable Long id) {
+        Campanha campanha = campanhaService.buscarPorId(id);
+        if (campanha != null) {
+            return ResponseEntity.ok(campanha);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
-        service.excluir(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Mensagem> inativar(@PathVariable Long id) {
+        Mensagem mensagem = campanhaService.inativar(id);
+        if (mensagem.isSucesso()) {
+            return ResponseEntity.ok(mensagem);
+        } else {
+            return ResponseEntity.badRequest().body(mensagem);
+        }
     }
 
-    // FINALIZAR (lançar resultado)
-    @PutMapping("/{id}/finalizar")
-    public ResponseEntity<Campanha> finalizar(@PathVariable Integer id, @RequestBody Campanha payload) {
-        // usa apenas o campo total (ignora demais, pois a ideia é lançar resultado)
-        Campanha c = service.finalizar(id, payload.getCampanhaTotalArrecadado());
-        return c == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(c);
+    // Endpoints de Voluntários
+    @GetMapping("/voluntarios/ativos")
+    public ResponseEntity<List<Voluntario>> buscarVoluntariosAtivos() {
+        List<Voluntario> voluntarios = campanhaService.buscarVoluntariosAtivos();
+        return ResponseEntity.ok(voluntarios);
+    }
+
+    @PostMapping("/{idCampanha}/voluntarios")
+    public ResponseEntity<Mensagem> vincularVoluntarios(@PathVariable Long idCampanha, @RequestBody List<CampanhaVoluntario> voluntarios) {
+        Mensagem mensagem = campanhaService.vincularVoluntarios(idCampanha, voluntarios);
+        if (mensagem.isSucesso()) {
+            return ResponseEntity.ok(mensagem);
+        } else {
+            return ResponseEntity.badRequest().body(mensagem);
+        }
+    }
+
+    @GetMapping("/{idCampanha}/voluntarios")
+    public ResponseEntity<List<CampanhaVoluntario>> buscarVoluntariosDaCampanha(@PathVariable Long idCampanha) {
+        List<CampanhaVoluntario> voluntarios = campanhaService.buscarVoluntariosDaCampanha(idCampanha);
+        return ResponseEntity.ok(voluntarios);
     }
 }

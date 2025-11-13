@@ -1,0 +1,89 @@
+
+:root{
+  --primary-color:#0d6efd; 
+  --success-color:#198754;
+  --danger-color:#dc3545;
+  --card-bg:#ffffff;
+  --muted:#6c757d;
+  --rounded:8px;
+}
+
+.container-wilker{
+  max-width:1100px;
+  margin:24px auto;
+  padding:16px;
+  background:transparent;
+}
+
+/* Card / painel */
+.wilker-card{
+  background:var(--card-bg);
+  border-radius:var(--rounded);
+  box-shadow:0 6px 14px rgba(16,24,40,0.06);
+  padding:18px;
+  margin-bottom:18px;
+}
+
+/* Form */
+.form-label-required::after{
+  content:" *";
+  color:var(--danger-color);
+  margin-left:4px;
+  font-weight:600;
+}
+
+.table-wilker{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table-wilker thead{
+  background:#0b5ed7;
+  color:white;
+}
+
+.table-wilker th, .table-wilker td{
+  padding:10px 12px;
+  border-bottom:1px solid #e9ecef;
+  text-align:left;
+}
+
+.alert-wilker{
+  margin-bottom:12px;
+  padding:10px 12px;
+  border-radius:6px;
+}
+
+/* Small input helpers */
+.input-inline { display:inline-block; vertical-align:middle; }
+.btn-small { padding:4px 8px; font-size:0.85rem; }
+
+/* Search box */
+.search-box{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+/* Mobile responsive tweaks */
+@media (max-width:768px){
+  .container-wilker{ padding:12px; }
+  .table-wilker th, .table-wilker td { padding:8px; font-size:0.92rem; }
+}
+
+/* Inline validation message */
+.field-error{
+  color:var(--danger-color);
+  font-size:0.88rem;
+  margin-top:6px;
+}
+
+/* Keep same look as project's primary buttons */
+.btn-wilker-primary{
+  background:var(--primary-color);
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+}

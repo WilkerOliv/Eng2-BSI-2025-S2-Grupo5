@@ -1,78 +1,58 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "voluntario")
-public class Voluntario implements Serializable {
+public class Voluntario {
 
-    @Id
-    @Column(name = "vol_cpf", length = 14)
-    private String volCpf;
-
-    @Column(name = "vol_nome", nullable = false, length = 60)
-    private String volNome;
-
-    @Column(name = "vol_telefone", nullable = false, length = 20)
-    private String volTelefone;
-
-    @Column(name = "rua", nullable = false, length = 45)
-    private String rua;
-
-    @Column(name = "bairro", nullable = false, length = 45)
-    private String bairro;
-
-    @Column(name = "cidade", nullable = false, length = 45)
-    private String cidade;
-
-    @Column(name = "email", nullable = false, length = 45)
+    private String cpf; // Chave primária no modelo original
+    private String nome;
+    private String telefone;
     private String email;
-
-    @Column(name = "tipo_acesso", nullable = false)
-    private Integer tipoAcesso;
-
-    @Column(name = "senha", nullable = false, length = 30)
-    private String senha;
-
-    @Column(name = "data_fim_voluntario")
-    private LocalDate dataFimVoluntario;
-
-    @Column(name = "data_inicio_voluntario", nullable = false)
-    private LocalDate dataInicioVoluntario;
-
-    @Column(name = "uf", nullable = false, length = 2)
+    private String rua;
+    private String bairro;
+    private String cidade;
     private String uf;
-
-    @Column(name = "cep", nullable = false, length = 10)
     private String cep;
-
-    @Column(name = "username", nullable = false, length = 20)
+    private Integer tipoAcesso;
+    private String senha;
     private String username;
+    private LocalDate dataInicioVoluntario;
+    private LocalDate dataFimVoluntario; // Indica inatividade se preenchido
 
-    public String getVolCpf() {
-        return volCpf;
+    public Voluntario() {
     }
 
-    public void setVolCpf(String volCpf) {
-        this.volCpf = volCpf;
+    // Getters e Setters (simplificados para o contexto)
+    public String getCpf() {
+        return cpf;
     }
 
-    public String getVolNome() {
-        return volNome;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
-    public void setVolNome(String volNome) {
-        this.volNome = volNome;
+    public String getNome() {
+        return nome;
     }
 
-    public String getVolTelefone() {
-        return volTelefone;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public void setVolTelefone(String volTelefone) {
-        this.volTelefone = volTelefone;
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getRua() {
@@ -99,12 +79,20 @@ public class Voluntario implements Serializable {
         this.cidade = cidade;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUf() {
+        return uf;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public Integer getTipoAcesso() {
@@ -123,12 +111,12 @@ public class Voluntario implements Serializable {
         this.senha = senha;
     }
 
-    public LocalDate getDataFimVoluntario() {
-        return dataFimVoluntario;
+    public String getUsername() {
+        return username;
     }
 
-    public void setDataFimVoluntario(LocalDate dataFimVoluntario) {
-        this.dataFimVoluntario = dataFimVoluntario;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDate getDataInicioVoluntario() {
@@ -139,27 +127,15 @@ public class Voluntario implements Serializable {
         this.dataInicioVoluntario = dataInicioVoluntario;
     }
 
-    public String getUf() {
-        return uf;
+    public LocalDate getDataFimVoluntario() {
+        return dataFimVoluntario;
     }
 
-    public void setUf(String uf) {
-        this.uf = uf;
+    public void setDataFimVoluntario(LocalDate dataFimVoluntario) {
+        this.dataFimVoluntario = dataFimVoluntario;
     }
 
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public boolean isAtivo() {
+        return dataFimVoluntario == null;
     }
 }

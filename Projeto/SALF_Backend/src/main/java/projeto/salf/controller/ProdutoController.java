@@ -1,10 +1,11 @@
 package projeto.salf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import projeto.salf.controller.bd.SingletonDB;
+import projeto.salf.controller.bd.Conexao;
+import projeto.salf.dao.ProdutoDAO;
 import projeto.salf.model.Produto;
-import projeto.salf.service.ProdutoService;
 
 import java.util.List;
 
@@ -12,24 +13,67 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 @CrossOrigin(origins = "*")
 public class ProdutoController {
-    @Autowired
-    private ProdutoService service;
+
+    private Conexao conexao;
+    private ProdutoDAO dao;
+
+    private void abrirConexao() {
+        if (SingletonDB.getConexao() == null || !SingletonDB.getConexao().getEstadoConexao()) {
+            SingletonDB.conectar();
+        }
+        conexao = SingletonDB.getConexao();
+        dao = new ProdutoDAO(conexao);
+    }
+
+    private void fecharConexao() {
+        SingletonDB.close();
+        conexao = null;
+        dao = null;
+    }
 
     @GetMapping
-    public List<Produto> listarTodos() { return service.listarTodos(); }
+    public ResponseEntity<List<Produto>> listarTodos() {
+        try {
+            abrirConexao();
+            return ResponseEntity.ok(dao.findAll());
+        } finally {
+            fecharConexao();
+        }
+    }
 
     @PostMapping
-    public Produto salvar(@RequestBody Produto produto) { return service.salvar(produto); }
+    public ResponseEntity<Produto> salvar(@RequestBody Produto produto) {
+        try {
+            abrirConexao();
+            boolean ok = dao.save(produto);
+            if (!ok) return ResponseEntity.status(500).build();
+            return ResponseEntity.ok(produto);
+        } finally {
+            fecharConexao();
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Produto> atualizar(@PathVariable Integer id, @RequestBody Produto produto) {
-        produto.setProdCod(id);
-        return ResponseEntity.ok(service.salvar(produto));
+        try {
+            abrirConexao();
+            produto.setProdCod(id);
+            boolean ok = dao.save(produto);
+            if (!ok) return ResponseEntity.status(500).build();
+            return ResponseEntity.ok(produto);
+        } finally {
+            fecharConexao();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Integer id) {
-        service.excluir(id);
-        return ResponseEntity.noContent().build();
+        try {
+            abrirConexao();
+            dao.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } finally {
+            fecharConexao();
+        }
     }
 }

@@ -1,56 +1,87 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "campanha")
-public class Campanha implements Serializable {
+public class Campanha {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_campanha")
-    private Integer idCampanha;
-
-    @Column(name = "campanha_descr", nullable = false, length = 100)
-    private String campanhaDescr;
-
-    @Column(name = "campanha_dtini", nullable = false)
-    private LocalDate campanhaDtIni;
-
-    @Column(name = "campanha_dtfim", nullable = false)
-    private LocalDate campanhaDtFim;
-
-    @Column(name = "campanha_total_arrecadado", nullable = false)
-    private Double campanhaTotalArrecadado = 0.0; // evita null
-
-    @Column(name = "observacao", length = 100)
+    private Long id;
+    private String nome; // Descrição da Campanha (campanhaDescr)
+    private LocalDate dataInicio; // Data de Início (campanhaDtIni)
+    private LocalDate dataFim; // Data de Fim (campanhaDtFim)
     private String observacao;
+    private String status; // Ex: "Em Andamento", "Finalizada", "Cancelada"
+    private boolean ativo; // Para exclusão lógica
 
-    @Column(name = "funcionario_func_cpf", length = 14)
-    private String funcionarioFuncCpf;
-
-    public Integer getIdCampanha() { return idCampanha; }
-    public void setIdCampanha(Integer idCampanha) { this.idCampanha = idCampanha; }
-
-    public String getCampanhaDescr() { return campanhaDescr; }
-    public void setCampanhaDescr(String campanhaDescr) { this.campanhaDescr = campanhaDescr; }
-
-    public LocalDate getCampanhaDtIni() { return campanhaDtIni; }
-    public void setCampanhaDtIni(LocalDate campanhaDtIni) { this.campanhaDtIni = campanhaDtIni; }
-
-    public LocalDate getCampanhaDtFim() { return campanhaDtFim; }
-    public void setCampanhaDtFim(LocalDate campanhaDtFim) { this.campanhaDtFim = campanhaDtFim; }
-
-    public Double getCampanhaTotalArrecadado() { return campanhaTotalArrecadado; }
-    public void setCampanhaTotalArrecadado(Double campanhaTotalArrecadado) {
-        this.campanhaTotalArrecadado = (campanhaTotalArrecadado == null ? 0.0 : campanhaTotalArrecadado);
+    public Campanha() {
     }
 
-    public String getObservacao() { return observacao; }
-    public void setObservacao(String observacao) { this.observacao = observacao; }
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
 
-    public String getFuncionarioFuncCpf() { return funcionarioFuncCpf; }
-    public void setFuncionarioFuncCpf(String funcionarioFuncCpf) { this.funcionarioFuncCpf = funcionarioFuncCpf; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    @Override
+    public String toString() {
+        return "Campanha{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", dataInicio=" + dataInicio +
+                ", dataFim=" + dataFim +
+                ", observacao='" + observacao + '\'' +
+                ", status='" + status + '\'' +
+                ", ativo=" + ativo +
+                '}';
+    }
 }

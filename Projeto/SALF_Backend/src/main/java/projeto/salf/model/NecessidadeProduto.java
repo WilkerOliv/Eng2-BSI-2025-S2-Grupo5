@@ -1,27 +1,19 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "necessidade_produto")
-public class NecessidadeProduto implements Serializable {
-
-    @EmbeddedId
-    private NecessidadeProdutoId id;
-
-    @Column(name = "data", nullable = false)
+public class NecessidadeProduto {
+    private String pessoaCpf;
+    private Integer produtoId;
     private LocalDate data;
-
-    @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
-
-    @Column(name = "observacao", length = 100)
     private String observacao;
 
-    public NecessidadeProdutoId getId() { return id; }
-    public void setId(NecessidadeProdutoId id) { this.id = id; }
+    public String getPessoaCpf() { return pessoaCpf; }
+    public void setPessoaCpf(String pessoaCpf) { this.pessoaCpf = pessoaCpf; }
+
+    public Integer getProdutoId() { return produtoId; }
+    public void setProdutoId(Integer produtoId) { this.produtoId = produtoId; }
 
     public LocalDate getData() { return data; }
     public void setData(LocalDate data) { this.data = data; }

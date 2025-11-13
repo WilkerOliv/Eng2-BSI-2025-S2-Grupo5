@@ -1,30 +1,36 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
+public class CampanhaVoluntario {
 
-@Entity
-@Table(name = "campanha_voluntario")
-@IdClass(CampanhaVoluntarioId.class)
-public class CampanhaVoluntario implements Serializable {
+    private Long idCampanha;
+    private String cpfVoluntario; // CPF do Voluntário
+    private String cargoCampanha; // Cargo/Função do voluntário na campanha
 
-    @Id
-    @Column(name = "campanha_id_campanha")
-    private Integer campanhaIdCampanha;
+    public CampanhaVoluntario() {
+    }
 
-    @Id
-    @Column(name = "voluntario_vol_cpf", length = 14)
-    private String voluntarioVolCpf;
+    // Getters e Setters
+    public Long getIdCampanha() {
+        return idCampanha;
+    }
 
-    @Column(name = "cargo_campanha", length = 50)
-    private String cargoCampanha;
+    public void setIdCampanha(Long idCampanha) {
+        this.idCampanha = idCampanha;
+    }
 
-    public Integer getCampanhaIdCampanha() { return campanhaIdCampanha; }
-    public void setCampanhaIdCampanha(Integer campanhaIdCampanha) { this.campanhaIdCampanha = campanhaIdCampanha; }
+    public String getCpfVoluntario() {
+        return cpfVoluntario;
+    }
 
-    public String getVoluntarioVolCpf() { return voluntarioVolCpf; }
-    public void setVoluntarioVolCpf(String voluntarioVolCpf) { this.voluntarioVolCpf = voluntarioVolCpf; }
+    public void setCpfVoluntario(String cpfVoluntario) {
+        this.cpfVoluntario = cpfVoluntario;
+    }
 
-    public String getCargoCampanha() { return cargoCampanha; }
-    public void setCargoCampanha(String cargoCampanha) { this.cargoCampanha = cargoCampanha; }
+    public String getCargoCampanha() {
+        return cargoCampanha;
+    }
+
+    public void setCargoCampanha(String cargoCampanha) {
+        this.cargoCampanha = cargoCampanha;
+    }
 }

@@ -14,6 +14,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Jsp File" />
         <option value="Class" />
       </list>
     </option>
@@ -61,6 +62,7 @@
     &quot;Spring Boot.SalfBackendApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Wilker&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Ferramentas computacionais/Segundo bimestre/Projeto BomServico/bomservico_be&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -71,7 +73,12 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="projeto.salf.controller.bd" />
+      <recent name="projeto.salf.controller" />
       <recent name="projeto.salf.model" />
     </key>
   </component>
@@ -88,8 +95,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -111,6 +118,38 @@
       <workItem from="1760936047239" duration="4989000" />
       <workItem from="1760981644797" duration="2629000" />
       <workItem from="1761009404192" duration="224000" />
+      <workItem from="1761065873634" duration="2736000" />
+      <workItem from="1761085805689" duration="1857000" />
+      <workItem from="1761150600443" duration="1509000" />
+      <workItem from="1761250596085" duration="3865000" />
+      <workItem from="1761254877532" duration="1653000" />
+      <workItem from="1761310290974" duration="1649000" />
+      <workItem from="1761316465530" duration="2101000" />
+      <workItem from="1761319206735" duration="648000" />
+      <workItem from="1761336444375" duration="693000" />
+      <workItem from="1761338112585" duration="3890000" />
+      <workItem from="1761344083472" duration="522000" />
+      <workItem from="1761384168941" duration="754000" />
+      <workItem from="1761392104035" duration="2693000" />
+      <workItem from="1761593785124" duration="2578000" />
+      <workItem from="1761674596360" duration="1061000" />
+      <workItem from="1761685705211" duration="436000" />
+      <workItem from="1761690712485" duration="1995000" />
+      <workItem from="1761698456151" duration="1053000" />
+      <workItem from="1761704095877" duration="611000" />
+      <workItem from="1761708868032" duration="2131000" />
+      <workItem from="1761755780976" duration="4384000" />
+      <workItem from="1761776210884" duration="324000" />
+      <workItem from="1761823357750" duration="2000" />
+      <workItem from="1761844023547" duration="622000" />
+      <workItem from="1762210090297" duration="23000" />
+      <workItem from="1762210131467" duration="16000" />
+      <workItem from="1762214909270" duration="22000" />
+      <workItem from="1762364923905" duration="4028000" />
+      <workItem from="1762373455549" duration="2000" />
+      <workItem from="1762373474900" duration="3796000" />
+      <workItem from="1762378204593" duration="91000" />
+      <workItem from="1762438486593" duration="846000" />
     </task>
     <servers />
   </component>

@@ -1,47 +1,95 @@
 package projeto.salf.model;
 
-import jakarta.persistence.*;
-import java.io.Serializable;
+public class Fornecedor {
 
-@Entity
-@Table(name = "fornecedor")
-public class Fornecedor implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_fornecedor")
-    private Integer idFornecedor;
-
-    @Column(name = "nome", nullable = false, length = 45)
+    private Long id;
     private String nome;
-
-    @Column(name = "email", nullable = false, length = 45)
-    private String email;
-
-    @Column(name = "telefone", nullable = false, length = 20)
+    private String cnpj; // Adicionado para ser um identificador único, comum em fornecedores
     private String telefone;
+    private String email;
+    private String contato; // Pessoa de contato
+    private String descricao; // Descrição ou observações
+    private boolean ativo; // Para inativar/excluir logicamente
 
-    @Column(name = "contato", nullable = false, length = 45)
-    private String contato;
+    public Fornecedor() {
+    }
 
-    @Column(name = "descricao", length = 45)
-    private String descricao;
+    // Getters e Setters
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getIdFornecedor() { return idFornecedor; }
-    public void setIdFornecedor(Integer idFornecedor) { this.idFornecedor = idFornecedor; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getNome() {
+        return nome;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public String getTelefone() { return telefone; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public String getCnpj() {
+        return cnpj;
+    }
 
-    public String getContato() { return contato; }
-    public void setContato(String contato) { this.contato = contato; }
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getContato() {
+        return contato;
+    }
+
+    public void setContato(String contato) {
+        this.contato = contato;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    @Override
+    public String toString() {
+        return "Fornecedor{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cnpj='" + cnpj + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", email='" + email + '\'' +
+                ", contato='" + contato + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", ativo=" + ativo +
+                '}';
+    }
 }
