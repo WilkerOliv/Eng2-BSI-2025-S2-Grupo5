@@ -65,4 +65,8 @@ public class Mensagem {
     public String toString() {
         return "[" + tipo.toUpperCase() + "] " + mensagem + " (código: " + codigo + ")";
     }
+
+
+    public boolean isSucesso() {
+    }
 }

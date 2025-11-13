@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lançar Resultados de Campanha - SALF</title>
+
+  <!-- Bootstrap + Icons + CSS Global -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="principal.css" />
+
+  <style>
+    .resultado-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-salf {
+      background-color: var(--salf-red, #c0392b);
+      border: none;
+      color: white;
+    }
+    .btn-salf:hover {
+      background-color: #a93226;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="resultado-container">
+    <h1 class="mb-4 text-center">Lançar Resultados de Campanha</h1>
+
+    <form id="resultadoForm">
+      
+      <div class="mb-3">
+        <label for="campanhaId" class="form-label">Campanha Finalizada <span class="text-danger">*</span></label>
+        <select class="form-select" id="campanhaId" name="idCampanha" required>
+          <option value="">Selecione uma Campanha</option>
+          <!-- Opções serão carregadas via JavaScript -->
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="valorArrecadado" class="form-label">Valor Arrecadado (R$) <span class="text-danger">*</span></label>
+        <input type="number" step="0.01" min="0" class="form-control" id="valorArrecadado" name="valorArrecadado" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="familiasAtendidas" class="form-label">Famílias Atendidas <span class="text-danger">*</span></label>
+        <input type="number" min="0" class="form-control" id="familiasAtendidas" name="familiasAtendidas" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="produtosArrecadados" class="form-label">Produtos Arrecadados (unidades)</label>
+        <input type="number" min="0" class="form-control" id="produtosArrecadados" name="produtosArrecadados">
+      </div>
+
+      <div class="mb-3">
+        <label for="observacao" class="form-label">Observações sobre o Resultado</label>
+        <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+      </div>
+      
+      <div id="formMessage" class="alert d-none" role="alert"></div>
+      
+      <button type="submit" class="btn btn-salf w-100 mt-3">Registrar Resultado</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/resultado-campanha.js"></script>
+</body>
+</html>

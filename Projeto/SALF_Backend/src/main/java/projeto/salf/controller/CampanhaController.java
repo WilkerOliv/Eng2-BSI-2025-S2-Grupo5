@@ -22,7 +22,7 @@ public class CampanhaController {
     @PostMapping
     public ResponseEntity<Mensagem> salvar(@RequestBody Campanha campanha) {
         Mensagem mensagem = campanhaService.salvar(campanha);
-        if (mensagem.isSucesso()) {
+        if (mensagem.Sucesso()) {
             return ResponseEntity.ok(mensagem);
         } else {
             return ResponseEntity.badRequest().body(mensagem);
