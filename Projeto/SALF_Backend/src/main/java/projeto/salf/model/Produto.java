@@ -1,7 +1,11 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.ProdutoDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
+import java.util.List;
 
 @Entity
 @Table(name = "produto")
@@ -19,6 +23,8 @@ public class Produto implements Serializable {
     @JoinColumn(name = "categoria_produto_cat_cod", nullable = false)
     private CategoriaProduto categoria;
 
+    // getters e setters...
+
     public Integer getProdCod() { return prodCod; }
     public void setProdCod(Integer prodCod) { this.prodCod = prodCod; }
 
@@ -27,4 +33,9 @@ public class Produto implements Serializable {
 
     public CategoriaProduto getCategoria() { return categoria; }
     public void setCategoria(CategoriaProduto categoria) { this.categoria = categoria; }
+
+    public List<Produto> getLista(Connection conn) {
+        ProdutoDAO dao = new ProdutoDAO();
+        return dao.getListaAll(conn);
+    }
 }

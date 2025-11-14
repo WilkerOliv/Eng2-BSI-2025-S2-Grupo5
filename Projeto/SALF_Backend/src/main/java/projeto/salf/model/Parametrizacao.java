@@ -1,7 +1,10 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.ParametrizacaoDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
 
 @Entity
 @Table(name = "parametrizacao")
@@ -44,112 +47,77 @@ public class Parametrizacao implements Serializable {
 
     @Column(name="logotipo_small", columnDefinition="text")
     private String logotipoSmall;
+
     @Column(name="logotipo_big", columnDefinition="text")
     private String logotipoBig;
 
+    public Integer getIdParametrizacao() { return idParametrizacao; }
+    public void setIdParametrizacao(Integer idParametrizacao) { this.idParametrizacao = idParametrizacao; }
 
+    public String getRazaoSocial() { return razaoSocial; }
+    public void setRazaoSocial(String razaoSocial) { this.razaoSocial = razaoSocial; }
 
-    public Integer getIdParametrizacao() {
-        return idParametrizacao;
+    public String getNomeFantasia() { return nomeFantasia; }
+    public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getSite() { return site; }
+    public void setSite(String site) { this.site = site; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getRua() { return rua; }
+    public void setRua(String rua) { this.rua = rua; }
+
+    public String getBairro() { return bairro; }
+    public void setBairro(String bairro) { this.bairro = bairro; }
+
+    public String getCidade() { return cidade; }
+    public void setCidade(String cidade) { this.cidade = cidade; }
+
+    public String getUf() { return uf; }
+    public void setUf(String uf) { this.uf = uf; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
+    public String getLogotipoSmall() { return logotipoSmall; }
+    public void setLogotipoSmall(String logotipoSmall) { this.logotipoSmall = logotipoSmall; }
+
+    public String getLogotipoBig() { return logotipoBig; }
+    public void setLogotipoBig(String logotipoBig) { this.logotipoBig = logotipoBig; }
+
+    // ---------------------------
+    // MÉTODOS DE NEGÓCIO (MODEL)
+    // ---------------------------
+
+    // era o salvarOuAtualizar do service
+    public boolean salvarOuAtualizar(Connection conn) {
+        ParametrizacaoDAO dao = new ParametrizacaoDAO();
+        if (!dao.existeRegistro(this, conn)) {
+            dao.gravar(this, conn);
+            return true;  // novo
+        } else {
+            dao.alterar(this, conn);
+            return false; // atualizado
+        }
     }
 
-    public void setIdParametrizacao(Integer idParametrizacao) {
-        this.idParametrizacao = idParametrizacao;
+    public Parametrizacao getByEmail(String email, Connection conn) {
+        ParametrizacaoDAO dao = new ParametrizacaoDAO();
+        return dao.getRegistroEmail(email, conn);
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
+    public boolean existeEmpresa(Connection conn) {
+        ParametrizacaoDAO dao = new ParametrizacaoDAO();
+        return dao.ExisteEmpresas(conn);
     }
 
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public String getNomeFantasia() {
-        return nomeFantasia;
-    }
-
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRua() {
-        return rua;
-    }
-
-    public void setRua(String rua) {
-        this.rua = rua;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getUf() {
-        return uf;
-    }
-
-    public void setUf(String uf) {
-        this.uf = uf;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getLogotipoSmall() {
-        return logotipoSmall;
-    }
-
-    public void setLogotipoSmall(String logotipoSmall) {
-        this.logotipoSmall = logotipoSmall;
-    }
-
-    public String getLogotipoBig() {
-        return logotipoBig;
-    }
-
-    public void setLogotipoBig(String logotipoBig) {
-        this.logotipoBig = logotipoBig;
+    public Parametrizacao getUnica(Connection conn) {
+        ParametrizacaoDAO dao = new ParametrizacaoDAO();
+        return dao.getUnicaEmp(conn);
     }
 }

@@ -1,7 +1,10 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.FuncionarioDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.List;
 
 @Entity
@@ -47,4 +50,18 @@ public class Funcionario implements Serializable {
 
     public List<ListaCompra> getListasCompra() { return listasCompra; }
     public void setListasCompra(List<ListaCompra> listasCompra) { this.listasCompra = listasCompra; }
+
+    // -----------------------------
+    // MÉTODOS DE NEGÓCIO (MODEL)
+    // -----------------------------
+
+    public Funcionario buscarPorEmail(String email, Connection conn) {
+        FuncionarioDAO dao = new FuncionarioDAO();
+        return dao.buscaFuncEmail(email, conn);
+    }
+
+    public Funcionario buscarPorCPF(String cpf, Connection conn) {
+        FuncionarioDAO dao = new FuncionarioDAO();
+        return dao.buscaCPF(cpf, conn);
+    }
 }

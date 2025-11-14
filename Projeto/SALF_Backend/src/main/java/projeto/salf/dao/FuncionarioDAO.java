@@ -1,60 +1,57 @@
 package projeto.salf.dao;
 
-import org.springframework.stereotype.Repository;
 import projeto.salf.model.Funcionario;
-import projeto.salf.utils.SingletonDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Repository
 public class FuncionarioDAO {
 
-    public Funcionario buscaFuncEmail(String email) {
+    public Funcionario buscaFuncEmail(String email, Connection conn) {
         String SQL = "SELECT func_nome, func_email, func_senha FROM funcionario WHERE func_email = ?";
-        try (Connection con = SingletonDB.getConexao().getConnect();
 
-             PreparedStatement stmt = con.prepareStatement(SQL)) {
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
 
             stmt.setString(1, email.trim());
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Funcionario func = new Funcionario();
                     func.setFuncNome(rs.getString("func_nome"));
                     func.setFuncEmail(rs.getString("func_email"));
+                    // usa func_senha APENAS aqui, como no seu código original, pra validar login
                     func.setFuncSenha(rs.getString("func_senha"));
                     return func;
                 }
             }
+
         } catch (Exception e) {
-            e.printStackTrace(); // ideal: trocar por log
+            e.printStackTrace(); // se quiser, depois troca por log
         }
+
         return null;
     }
 
-    public Funcionario buscaCPF(String cpf) {
-        String SQl = "SELECT func_nome FROM funcionario WHERE func_cpf = ?";
+    public Funcionario buscaCPF(String cpf, Connection conn) {
+        String SQL = "SELECT func_nome FROM funcionario WHERE func_cpf = ?";
 
-        try{
-            Connection con = SingletonDB.getConexao().getConnect();
-            PreparedStatement stmt = con.prepareStatement(SQl);
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+
             stmt.setString(1, cpf.trim());
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Funcionario func = new Funcionario();
                     func.setFuncNome(rs.getString("func_nome"));
                     return func;
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         return null;
     }
-
-
 }

@@ -1,8 +1,12 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.CotacaoDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "cotacao")
@@ -27,4 +31,12 @@ public class Cotacao implements Serializable {
 
     public LocalDate getDataFechamento() { return dataFechamento; }
     public void setDataFechamento(LocalDate dataFechamento) { this.dataFechamento = dataFechamento; }
+
+    // ------------------------------------------
+    //    MÉTODO QUE CHAMA O DAO
+    // ------------------------------------------
+    public List<Cotacao> getListaCotacao(Connection conn) {
+        CotacaoDAO dao = new CotacaoDAO();
+        return dao.getCotacao(conn);
+    }
 }

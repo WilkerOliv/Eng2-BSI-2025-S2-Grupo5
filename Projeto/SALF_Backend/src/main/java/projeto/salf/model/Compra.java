@@ -1,7 +1,10 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.CompraDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
 import java.time.LocalDate;
 
 @Entity
@@ -31,6 +34,8 @@ public class Compra implements Serializable {
     @Column(name = "funcionario_func_cpf", length = 14)
     private String funcionarioFuncCpf;
 
+    // GETTERS & SETTERS -------------------------------------
+
     public Integer getCompraCod() { return compraCod; }
     public void setCompraCod(Integer compraCod) { this.compraCod = compraCod; }
 
@@ -51,4 +56,19 @@ public class Compra implements Serializable {
 
     public String getFuncionarioFuncCpf() { return funcionarioFuncCpf; }
     public void setFuncionarioFuncCpf(String funcionarioFuncCpf) { this.funcionarioFuncCpf = funcionarioFuncCpf; }
+
+
+    // --------------------------------------------------------
+    //     MÉTODOS DE NEGÓCIO (CHAMAM DAO)
+    // --------------------------------------------------------
+
+    public Integer inserirCompra(Connection conn) {
+        CompraDAO dao = new CompraDAO();
+        return dao.insereCompra(this, conn);
+    }
+
+    public boolean inserirItens(ItensCompra itensCompra, LocalDate validade, Connection conn) {
+        CompraDAO dao = new CompraDAO();
+        return dao.insereItens(itensCompra, validade, conn);
+    }
 }

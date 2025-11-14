@@ -1,7 +1,12 @@
 package projeto.salf.model;
 
 import jakarta.persistence.*;
+import projeto.salf.dao.FornecedorDAO;
+
 import java.io.Serializable;
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "fornecedor")
@@ -27,6 +32,7 @@ public class Fornecedor implements Serializable {
     @Column(name = "descricao", length = 45)
     private String descricao;
 
+    // GETTERS E SETTERS
     public Integer getIdFornecedor() { return idFornecedor; }
     public void setIdFornecedor(Integer idFornecedor) { this.idFornecedor = idFornecedor; }
 
@@ -44,4 +50,18 @@ public class Fornecedor implements Serializable {
 
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    // -----------------------------------------
+    //   MÉTODOS DE NEGÓCIO QUE CHAMAM O DAO
+    // -----------------------------------------
+
+    public List<Fornecedor> getListaFornecedores(Connection conn) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.getAll(conn);
+    }
+
+    public Map<Integer, List<Fornecedor>> getListaFornecedoresPorCotacao(Connection conn) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.getListaAllCotacao(conn);
+    }
 }

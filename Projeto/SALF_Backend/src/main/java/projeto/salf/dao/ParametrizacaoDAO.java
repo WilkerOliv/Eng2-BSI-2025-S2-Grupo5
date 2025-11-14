@@ -2,7 +2,6 @@ package projeto.salf.dao;
 
 import org.springframework.stereotype.Repository;
 import projeto.salf.model.Parametrizacao;
-import projeto.salf.utils.SingletonDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,10 +10,8 @@ import java.sql.ResultSet;
 @Repository
 public class ParametrizacaoDAO {
 
-    public boolean existeRegistro(Parametrizacao pa) {
+    public boolean existeRegistro(Parametrizacao pa, Connection conn) {
         String SQL = "SELECT 1 FROM parametrizacao WHERE email = ?";
-
-        Connection conn = SingletonDB.getConexao().getConnect();
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setString(1, pa.getEmail());
@@ -26,17 +23,14 @@ public class ParametrizacaoDAO {
         }
     }
 
-    public void gravar(Parametrizacao pa) {
+    public void gravar(Parametrizacao pa, Connection conn) {
         String sql = "INSERT INTO parametrizacao (" +
                 "razao_social, nome_fantasia, telefone, site, email, rua, bairro, cidade, uf, cep, logotipo_small, logotipo_big" +
                 ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // pega conexão singleton, não fecha
-        Connection conn = SingletonDB.getConexao().getConnect();
-
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            if (!ExisteEmpresas()) {
+            if (!ExisteEmpresas(conn)) {
                 stmt.setString(1,  pa.getRazaoSocial());
                 stmt.setString(2,  pa.getNomeFantasia());
                 stmt.setString(3,  pa.getTelefone());
@@ -57,16 +51,14 @@ public class ParametrizacaoDAO {
         }
     }
 
-    public Parametrizacao alterar(Parametrizacao pa) {
+    public Parametrizacao alterar(Parametrizacao pa, Connection conn) {
         String sql = "UPDATE parametrizacao SET " +
                 "razao_social = ?, nome_fantasia = ?, telefone = ?, site = ?, " +
                 "rua = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, " +
                 "logotipo_small = ?, logotipo_big = ? " +
                 "WHERE email = ?";
 
-        Connection con = SingletonDB.getConexao().getConnect();
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1,  pa.getRazaoSocial());
             stmt.setString(2,  pa.getNomeFantasia());
@@ -79,7 +71,7 @@ public class ParametrizacaoDAO {
             stmt.setString(9,  pa.getCep());
             stmt.setString(10, pa.getLogotipoSmall());
             stmt.setString(11, pa.getLogotipoBig());
-            stmt.setString(12, pa.getEmail()); // WHERE email = ?
+            stmt.setString(12, pa.getEmail());
 
             int updated = stmt.executeUpdate();
             if (updated > 0) {
@@ -92,12 +84,10 @@ public class ParametrizacaoDAO {
         }
     }
 
-    public boolean ExisteEmpresas() {
+    public boolean ExisteEmpresas(Connection conn) {
         String SQL = "SELECT COUNT(*) FROM parametrizacao";
 
-        Connection con = SingletonDB.getConexao().getConnect();
-
-        try (PreparedStatement stmt = con.prepareStatement(SQL);
+        try (PreparedStatement stmt = conn.prepareStatement(SQL);
              ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
@@ -111,21 +101,15 @@ public class ParametrizacaoDAO {
         }
     }
 
-    public Parametrizacao getRegistroEmail(String email) {
+    public Parametrizacao getRegistroEmail(String email, Connection conn) {
         String SQL = "SELECT * FROM parametrizacao WHERE email = ?";
 
-        Connection con = SingletonDB.getConexao().getConnect();
-
-        try (PreparedStatement stmt = con.prepareStatement(SQL)) {
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setString(1, email);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Parametrizacao pa = new Parametrizacao();
-
-                    // ⚠️ Aqui tinha bug no seu código:
-                    // você tava fazendo pa.setEmail(rs.getString("razao_social"));
-                    // Isso tá invertido. Arrumei tudo abaixo:
 
                     pa.setRazaoSocial(rs.getString("razao_social"));
                     pa.setNomeFantasia(rs.getString("nome_fantasia"));
@@ -150,12 +134,10 @@ public class ParametrizacaoDAO {
         return null;
     }
 
-    public Parametrizacao getUnicaEmp() {
+    public Parametrizacao getUnicaEmp(Connection conn) {
         String SQL = "SELECT * FROM parametrizacao LIMIT 1";
 
-        Connection con = SingletonDB.getConexao().getConnect();
-
-        try (PreparedStatement stmt = con.prepareStatement(SQL);
+        try (PreparedStatement stmt = conn.prepareStatement(SQL);
              ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
