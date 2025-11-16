@@ -3,51 +3,77 @@ package projeto.salf.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.salf.controller.bd.SingletonDB;
+import projeto.salf.controller.bd.Conexao;
+import projeto.salf.dao.PessoaCarenteDAO;
 import projeto.salf.model.PessoaCarente;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pessoas-carentes")
+@RequestMapping("/api/pessoas")
 @CrossOrigin(origins = "*")
 public class PessoaCarenteController {
 
-    private void garantirConexao() {
-        SingletonDB.getConexao();
+    private Conexao conexao;
+    private PessoaCarenteDAO dao;
+
+    private void abrirConexao() {
+        if (SingletonDB.getConexao() == null || !SingletonDB.getConexao().getEstadoConexao()) {
+            SingletonDB.conectar();
+        }
+        conexao = SingletonDB.getConexao();
+        dao = new PessoaCarenteDAO(conexao);
+    }
+
+    private void fecharConexao() {
+        SingletonDB.close();
+        conexao = null;
+        dao = null;
     }
 
     @GetMapping
-    public ResponseEntity<List<PessoaCarente>> listarTodos() {
+    public ResponseEntity<List<PessoaCarente>> listarTodas() {
         try {
-            garantirConexao();
-            List<PessoaCarente> lista = PessoaCarente.listarTodos();
-            return ResponseEntity.ok(lista);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            abrirConexao();
+            return ResponseEntity.ok(dao.findAll());
+        } finally {
+            fecharConexao();
         }
     }
 
-    @GetMapping("/{cpf}")
-    public ResponseEntity<PessoaCarente> buscarPorCpf(@PathVariable String cpf) {
+    @PostMapping
+    public ResponseEntity<PessoaCarente> salvar(@RequestBody PessoaCarente pessoa) {
         try {
-            garantirConexao();
-            PessoaCarente p = PessoaCarente.buscarPorCpf(cpf);
-            if (p == null) return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(p);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            abrirConexao();
+            boolean ok = dao.save(pessoa);
+            if (!ok) return ResponseEntity.status(500).build();
+            return ResponseEntity.ok(pessoa);
+        } finally {
+            fecharConexao();
         }
     }
 
-    // Autocomplete para a tela de necessidades.
-    @GetMapping("/busca")
-    public ResponseEntity<List<PessoaCarente>> buscarPorCpfOuNome(@RequestParam("termo") String termo) {
+    @PutMapping("/{cpf}")
+    public ResponseEntity<PessoaCarente> atualizar(@PathVariable String cpf, @RequestBody PessoaCarente pessoa) {
         try {
-            garantirConexao();
-            List<PessoaCarente> lista = PessoaCarente.buscarPorCpfOuNome(termo);
-            return ResponseEntity.ok(lista);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            abrirConexao();
+            pessoa.setPcCpf(cpf);
+            boolean ok = dao.save(pessoa);
+            if (!ok) return ResponseEntity.status(500).build();
+            return ResponseEntity.ok(pessoa);
+        } finally {
+            fecharConexao();
+        }
+    }
+
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Void> excluir(@PathVariable String cpf) {
+        try {
+            abrirConexao();
+            dao.deleteById(cpf);
+            return ResponseEntity.noContent().build();
+        } finally {
+            fecharConexao();
         }
     }
 }
