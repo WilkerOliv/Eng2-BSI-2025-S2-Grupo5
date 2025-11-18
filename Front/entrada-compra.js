@@ -534,6 +534,7 @@ function limparTudo() {
   msg('Formulário limpo.', 'warning', { timeoutMs: 2500 });
 }
 
+
 // =====================================================
 // Salvar (validações básicas) – CABEÇALHO + ITENS
 // =====================================================
@@ -548,7 +549,10 @@ async function salvarCompra() {
   const dataCompra = el('#dataCompra')?.value || '';
   const funcCpf    = el('#funcionarioCpf')?.value || '';
 
-  if (!localhostCompra) { msg('Informe a data da compra.', 'danger'); return; }
+if (!dataCompra) { 
+  msg('Informe a data da compra.', 'danger'); 
+  return; 
+}
   if (!funcCpf)    { msg('Informe o funcionário.', 'danger');   return; }
 
   // Bloqueio: data da compra não pode ser no futuro

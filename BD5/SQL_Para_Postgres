@@ -1,9 +1,6 @@
--- Script PostgreSQL completo gerado a partir do modelo MySQL (versão completa do projeto)
+-- Script PostgreSQL completo gerado a partir do modelo MySQL (versão final ajustada)
 -- Banco alvo: salf_db
--- NOTA: execute conectado ao banco "salf_db" ou crie o banco antes:
--- CREATE DATABASE salf_db;
 
--- Remove schema público existente (ATENÇÃO: isto apagará dados)
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 SET search_path TO public;
@@ -57,17 +54,12 @@ CREATE TABLE lista_compra (
     funcionario_func_cpf VARCHAR(14) NOT NULL,
     data_criacao DATE NOT NULL,
     descricao VARCHAR(45) NOT NULL,
-    status_atendimento INT NOT NULL,
-    funcionario_func_cpf1 VARCHAR(14)
+    status_atendimento INT NOT NULL
 );
 
 ALTER TABLE lista_compra
-ADD CONSTRAINT uq_lista_compra UNIQUE (lc_cod, funcionario_func_cpf);
--- fk depois (para lidar com possíveis ordem): add constraints
-ALTER TABLE lista_compra
     ADD CONSTRAINT fk_listacompra_funcionario FOREIGN KEY (funcionario_func_cpf)
-        REFERENCES funcionario(func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION;
+        REFERENCES funcionario(func_cpf);
 
 -- -----------------------------------------------------
 -- Tabela: estoque
@@ -79,7 +71,6 @@ CREATE TABLE estoque (
     produto_prod_cod INT NOT NULL,
     CONSTRAINT fk_estoque_produto FOREIGN KEY (produto_prod_cod)
         REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
@@ -91,7 +82,7 @@ CREATE TABLE cesta_basica (
 );
 
 -- -----------------------------------------------------
--- Tabela: cesta_basica_produto (antes CestaBasica_has_Produto)
+-- Tabela: cesta_basica_produto
 -- -----------------------------------------------------
 CREATE TABLE cesta_basica_produto (
     cesta_basica_cb_cod INT NOT NULL,
@@ -99,11 +90,9 @@ CREATE TABLE cesta_basica_produto (
     quantidade INT,
     PRIMARY KEY (cesta_basica_cb_cod, produto_prod_cod),
     CONSTRAINT fk_cesta_produto_cesta FOREIGN KEY (cesta_basica_cb_cod)
-        REFERENCES cesta_basica(cb_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES cesta_basica(cb_cod),
     CONSTRAINT fk_cesta_produto_produto FOREIGN KEY (produto_prod_cod)
         REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
@@ -128,7 +117,7 @@ CREATE TABLE cotacao (
 );
 
 -- -----------------------------------------------------
--- Tabela: fornec_cotacao (relacionamento Fornecedor <-> Cotacao)
+-- Tabela: fornec_cotacao
 -- -----------------------------------------------------
 CREATE TABLE fornec_cotacao (
     fornecedor_id INT NOT NULL,
@@ -136,11 +125,9 @@ CREATE TABLE fornec_cotacao (
     status_realizou INT NOT NULL,
     PRIMARY KEY (fornecedor_id, cotacao_id),
     CONSTRAINT fk_fornec_cot_fornecedor FOREIGN KEY (fornecedor_id)
-        REFERENCES fornecedor(id_fornecedor)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES fornecedor(id_fornecedor),
     CONSTRAINT fk_fornec_cot_cotacao FOREIGN KEY (cotacao_id)
         REFERENCES cotacao(id_cotacao)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
@@ -155,14 +142,11 @@ CREATE TABLE compra (
     fornecedor_id INT,
     funcionario_func_cpf VARCHAR(14),
     CONSTRAINT fk_compra_fornecedor FOREIGN KEY (fornecedor_id)
-        REFERENCES fornecedor(id_fornecedor)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES fornecedor(id_fornecedor),
     CONSTRAINT fk_compra_funcionario FOREIGN KEY (funcionario_func_cpf)
-        REFERENCES funcionario(func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES funcionario(func_cpf),
     CONSTRAINT fk_compra_fornec_cotacao FOREIGN KEY (fornec_cotacao_fornecedor_id, fornec_cotacao_cotacao_id)
         REFERENCES fornec_cotacao(fornecedor_id, cotacao_id)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
@@ -181,7 +165,7 @@ CREATE TABLE pessoa_carente (
 );
 
 -- -----------------------------------------------------
--- Tabela: doacao (antes Doação)
+-- Tabela: doacao
 -- -----------------------------------------------------
 CREATE TABLE doacao (
     doa_cod SERIAL PRIMARY KEY,
@@ -190,277 +174,132 @@ CREATE TABLE doacao (
     observacao VARCHAR(100),
     CONSTRAINT fk_doacao_pessoa FOREIGN KEY (pessoa_carente_pc_cpf)
         REFERENCES pessoa_carente(pc_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
--- Tabela: doacao_produto (antes Doação_has_Produto)
+-- Tabela: doacao_produto (AJUSTADA)
 -- -----------------------------------------------------
 CREATE TABLE doacao_produto (
+    dpp_cod SERIAL PRIMARY KEY,
     doacao_doa_cod INT NOT NULL,
     produto_prod_cod INT NOT NULL,
-    PRIMARY KEY (doacao_doa_cod, produto_prod_cod),
+    doa_prod_qtd INT NOT NULL DEFAULT 0,
     CONSTRAINT fk_doacao_produto_doacao FOREIGN KEY (doacao_doa_cod)
-        REFERENCES doacao(doa_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES doacao(doa_cod),
     CONSTRAINT fk_doacao_produto_produto FOREIGN KEY (produto_prod_cod)
         REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
--- Tabela: voluntario
--- -----------------------------------------------------
-CREATE TABLE voluntario (
-    vol_cpf VARCHAR(14) PRIMARY KEY,
-    vol_nome VARCHAR(60) NOT NULL,
-    vol_telefone VARCHAR(20) NOT NULL,
-    rua VARCHAR(45) NOT NULL,
-    bairro VARCHAR(45) NOT NULL,
-    cidade VARCHAR(45) NOT NULL,
-    email VARCHAR(45) NOT NULL,
-    tipo_acesso INT NOT NULL,
-    senha VARCHAR(30) NOT NULL,
-    data_fim_voluntario DATE,
-    data_inicio_voluntario DATE NOT NULL,
-    uf CHAR(2) NOT NULL,
-    cep VARCHAR(10) NOT NULL,
-    username VARCHAR(20) NOT NULL
-);
-
--- -----------------------------------------------------
--- Tabela: campanha
--- -----------------------------------------------------
-CREATE TABLE campanha (
-    id_campanha SERIAL PRIMARY KEY,
-    campanha_descr VARCHAR(100) NOT NULL,
-    campanha_dtini DATE NOT NULL,
-    campanha_dtfim DATE NOT NULL,
-    campanha_total_arrecadado double precision NOT NULL,
-    observacao VARCHAR(100),
-    funcionario_func_cpf VARCHAR(14),
-    CONSTRAINT fk_campanha_funcionario FOREIGN KEY (funcionario_func_cpf)
-        REFERENCES funcionario(func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
--- -----------------------------------------------------
--- Tabela: parametrizacao
--- -----------------------------------------------------
-CREATE TABLE parametrizacao (
-    id_parametrizacao SERIAL PRIMARY KEY,
-    razao_social VARCHAR(90) NOT NULL,
-    nome_fantasia VARCHAR(90) NOT NULL,
-    telefone VARCHAR(20) NOT NULL,
-    site VARCHAR(60) NOT NULL,
-    email VARCHAR(40) NOT NULL,
-    rua VARCHAR(45),
-    bairro VARCHAR(45),
-    cidade VARCHAR(45),
-    uf CHAR(2),
-    cep VARCHAR(10),
-    logotipo_small VARCHAR(255),
-    logotipo_big VARCHAR(255)
-);
-
--- -----------------------------------------------------
--- Tabela: itens_da_lista (antes ItensDaLista)
--- -----------------------------------------------------
-CREATE TABLE itens_da_lista (
-    produto_prod_cod INT NOT NULL,
-    lista_compra_lc_cod INT NOT NULL,
-    lista_compra_funcionario_func_cpf VARCHAR(14) NOT NULL,
-    quantidade INT,
-    PRIMARY KEY (produto_prod_cod, lista_compra_lc_cod, lista_compra_funcionario_func_cpf),
-    CONSTRAINT fk_itens_lista_produto FOREIGN KEY (produto_prod_cod)
-        REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_itens_lista_lista FOREIGN KEY (lista_compra_lc_cod, lista_compra_funcionario_func_cpf)
-        REFERENCES lista_compra(lc_cod, funcionario_func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
--- -----------------------------------------------------
--- Tabela: itens_da_lista_fornec_cotacao (antes ItensDaListaFornecCotacao)
--- -----------------------------------------------------
-CREATE TABLE itens_da_lista_fornec_cotacao (
-    itens_da_lista_produto_prod_cod INT NOT NULL,
-    itens_da_lista_lista_compra_lc_cod INT NOT NULL,
-    itens_da_lista_lista_compra_funcionario_func_cpf VARCHAR(14) NOT NULL,
-    fornec_cotacao_fornecedor_id INT NOT NULL,
-    fornec_cotacao_cotacao_id INT NOT NULL,
-    valor_cotacao double precision NOT NULL,
-    PRIMARY KEY (
-        itens_da_lista_produto_prod_cod,
-        itens_da_lista_lista_compra_lc_cod,
-        itens_da_lista_lista_compra_funcionario_func_cpf,
-        fornec_cotacao_fornecedor_id,
-        fornec_cotacao_cotacao_id
-    ),
-    CONSTRAINT fk_itens_lista_fornec_itens_lista FOREIGN KEY (
-        itens_da_lista_produto_prod_cod,
-        itens_da_lista_lista_compra_lc_cod,
-        itens_da_lista_lista_compra_funcionario_func_cpf
-    ) REFERENCES itens_da_lista(produto_prod_cod, lista_compra_lc_cod, lista_compra_funcionario_func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_itens_lista_fornec_fornec_cot FOREIGN KEY (fornec_cotacao_fornecedor_id, fornec_cotacao_cotacao_id)
-        REFERENCES fornec_cotacao(fornecedor_id, cotacao_id)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
--- -----------------------------------------------------
--- Tabela: itens_compra (antes ItensCompra)
+-- Tabela: itens_compra (AJUSTADA)
 -- -----------------------------------------------------
 CREATE TABLE itens_compra (
+    ic_cod SERIAL PRIMARY KEY,
     produto_prod_cod INT NOT NULL,
     compra_compra_cod INT NOT NULL,
     valor double precision NOT NULL,
     quantidade INT NOT NULL,
-    PRIMARY KEY (produto_prod_cod, compra_compra_cod),
     CONSTRAINT fk_itens_compra_produto FOREIGN KEY (produto_prod_cod)
-        REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        REFERENCES produto(prod_cod),
     CONSTRAINT fk_itens_compra_compra FOREIGN KEY (compra_compra_cod)
         REFERENCES compra(compra_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- -----------------------------------------------------
--- Tabela: saida_refeicao (antes SaidaRefeicao)
+-- Inserts essenciais
 -- -----------------------------------------------------
-CREATE TABLE saida_refeicao (
-    id_saida_refeicao SERIAL PRIMARY KEY,
-    data_registro DATE NOT NULL,
-    funcionario_func_cpf VARCHAR(14) NOT NULL,
-    observacao VARCHAR(100),
-    CONSTRAINT fk_saida_refeicao_funcionario FOREIGN KEY (funcionario_func_cpf)
-        REFERENCES funcionario(func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
+
+-- Funcionário padrão
+INSERT INTO funcionario (
+    func_cpf, func_nome, func_senha, func_email, func_telefone, tipo_acesso,
+    data_admissao, rua, bairro, cidade, username, uf, cep, cargo
+) VALUES (
+    '11111111111', 'Victor', '123', 'victor@salf.com', '18900000000', 1,
+    CURRENT_DATE, 'Rua A', 'Centro', 'Presidente Prudente', 'victor', 'SP', '19000-000', 'Administrador'
 );
 
--- -----------------------------------------------------
--- Tabela: estoque_saida_refeicao (antes EstoqueSaidaRefeicao)
--- -----------------------------------------------------
-CREATE TABLE estoque_saida_refeicao (
-    estoque_est_cod INT NOT NULL,
-    saida_refeicao_id_saida_refeicao INT NOT NULL,
-    quantidade INT NOT NULL,
-    PRIMARY KEY (estoque_est_cod, saida_refeicao_id_saida_refeicao),
-    CONSTRAINT fk_estoque_saida_estoque FOREIGN KEY (estoque_est_cod)
-        REFERENCES estoque(est_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_estoque_saida_saida FOREIGN KEY (saida_refeicao_id_saida_refeicao)
-        REFERENCES saida_refeicao(id_saida_refeicao)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
+-- Categorias
+INSERT INTO categoria_produto (cat_descr) VALUES
+('Alimentos'),
+('Higiene'),
+('Limpeza');
+
+-- Produtos básicos
+INSERT INTO produto (prod_descr, categoria_produto_cat_cod) VALUES
+('Arroz 5kg', 1),
+('Feijão 1kg', 1),
+('Macarrão 500g', 1),
+('Sabonete', 2),
+('Detergente', 3);
+
+-- Fornecedores
+INSERT INTO fornecedor (nome, email, telefone, contato, descricao) VALUES
+('Distribuidora Bom Preço', 'contato@bompreco.com', '18911112222', 'Marcos', 'Fornecedor de alimentos'),
+('Higiclean', 'vendas@higiclean.com', '18922223333', 'Rafaela', 'Fornecedor de higiene'),
+('LimpaTudo', 'atendimento@limpatudo.com', '18933334444', 'Juliana', 'Fornecedor de limpeza');
+
+
+-- COTAÇÃO 1 (atual)
+INSERT INTO cotacao (data_abertura, data_fechamento)
+VALUES ('2025-01-01', '2025-01-10');
+
+-- COTAÇÃO 2 (exemplo)
+INSERT INTO cotacao (data_abertura, data_fechamento)
+VALUES ('2025-02-01', '2025-02-15');
+
+
+-- Cotação 1
+INSERT INTO fornec_cotacao (fornecedor_id, cotacao_id, status_realizou)
+VALUES
+(1, 1, 1),
+(2, 1, 1),
+(3, 1, 0);
+
+-- Cotação 2
+INSERT INTO fornec_cotacao (fornecedor_id, cotacao_id, status_realizou)
+VALUES
+(1, 2, 1),
+(2, 2, 0),
+(3, 2, 1);
+
+
+
+INSERT INTO lista_compra (
+    funcionario_func_cpf,
+    data_criacao,
+    descricao,
+    status_atendimento
+) VALUES (
+    '11111111111',   -- Victor
+    CURRENT_DATE,
+    'Lista de compra inicial',
+    0                -- pendente
 );
 
--- -----------------------------------------------------
--- Tabela: campanha_voluntario (antes Campanha_has_Voluntario)
--- -----------------------------------------------------
-CREATE TABLE campanha_voluntario (
-    campanha_id_campanha INT NOT NULL,
-    voluntario_vol_cpf VARCHAR(14) NOT NULL,
-    cargo_campanha VARCHAR(50),
-    PRIMARY KEY (campanha_id_campanha, voluntario_vol_cpf),
-    CONSTRAINT fk_campanha_voluntario_campanha FOREIGN KEY (campanha_id_campanha)
-        REFERENCES campanha(id_campanha)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_campanha_voluntario_voluntario FOREIGN KEY (voluntario_vol_cpf)
-        REFERENCES voluntario(vol_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
 
--- -----------------------------------------------------
--- Tabela: necessidade_cesta
--- -----------------------------------------------------
-CREATE TABLE necessidade_cesta (
-    pessoa_carente_pc_cpf VARCHAR(14) NOT NULL,
-    cesta_basica_cb_cod INT NOT NULL,
-    data DATE NOT NULL,
-    quantidade INT NOT NULL,
-    observacao VARCHAR(100),
-    funcionario_func_cpf VARCHAR(14) NOT NULL,
-    PRIMARY KEY (pessoa_carente_pc_cpf, cesta_basica_cb_cod),
-    CONSTRAINT fk_necessidade_cesta_pessoa FOREIGN KEY (pessoa_carente_pc_cpf)
-        REFERENCES pessoa_carente(pc_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_necessidade_cesta_cesta FOREIGN KEY (cesta_basica_cb_cod)
-        REFERENCES cesta_basica(cb_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_necessidade_cesta_funcionario FOREIGN KEY (funcionario_func_cpf)
-        REFERENCES funcionario(func_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
+INSERT INTO itens_da_lista (produto_prod_cod, lista_compra_lc_cod, lista_compra_funcionario_func_cpf, quantidade)
+VALUES
+(1, 1, '11111111111', 50),  -- Arroz 5kg
+(2, 1, '11111111111', 30),  -- Feijão 1kg
+(3, 1, '11111111111', 20);  -- Macarrão
 
--- -----------------------------------------------------
--- Tabela: necessidade_produto
--- -----------------------------------------------------
-CREATE TABLE necessidade_produto (
-    pessoa_carente_pc_cpf VARCHAR(14) NOT NULL,
-    produto_prod_cod INT NOT NULL,
-    data DATE NOT NULL,
-    quantidade INT NOT NULL,
-    observacao VARCHAR(100),
-    PRIMARY KEY (pessoa_carente_pc_cpf, produto_prod_cod),
-    CONSTRAINT fk_necessidade_produto_pessoa FOREIGN KEY (pessoa_carente_pc_cpf)
-        REFERENCES pessoa_carente(pc_cpf)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_necessidade_produto_produto FOREIGN KEY (produto_prod_cod)
-        REFERENCES produto(prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
 
--- -----------------------------------------------------
--- Tabela: doacao_necessidade_produto (antes DoaçãoNecessidadeProduto)
--- -----------------------------------------------------
-CREATE TABLE doacao_necessidade_produto (
-    doacao_doa_cod INT NOT NULL,
-    necessidade_produto_pessoa_carente_pc_cpf VARCHAR(14) NOT NULL,
-    necessidade_produto_produto_prod_cod INT NOT NULL,
-    quantidade INT NOT NULL,
-    PRIMARY KEY (doacao_doa_cod, necessidade_produto_pessoa_carente_pc_cpf, necessidade_produto_produto_prod_cod),
-    CONSTRAINT fk_doacao_necessidade_produto_doacao FOREIGN KEY (doacao_doa_cod)
-        REFERENCES doacao(doa_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_doacao_necessidade_produto_necessidade FOREIGN KEY (necessidade_produto_pessoa_carente_pc_cpf, necessidade_produto_produto_prod_cod)
-        REFERENCES necessidade_produto(pessoa_carente_pc_cpf, produto_prod_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
+-- ARROZ – fornecedor 1 e 2
+INSERT INTO itens_da_lista_fornec_cotacao
+(itens_da_lista_produto_prod_cod, itens_da_lista_lista_compra_lc_cod, itens_da_lista_lista_compra_funcionario_func_cpf,
+ fornec_cotacao_fornecedor_id, fornec_cotacao_cotacao_id, valor_cotacao)
+VALUES
+(1, 1, '11111111111', 1, 1, 21.50),
+(1, 1, '11111111111', 2, 1, 20.90);
 
--- -----------------------------------------------------
--- Tabela: doacao_necessidade_cesta (antes DoaçãoNecessidadeCesta)
--- -----------------------------------------------------
-CREATE TABLE doacao_necessidade_cesta (
-    doacao_doa_cod INT NOT NULL,
-    necessidade_cesta_pessoa_carente_pc_cpf VARCHAR(14) NOT NULL,
-    necessidade_cesta_cesta_basica_cb_cod INT NOT NULL,
-    quantidade INT NOT NULL,
-    PRIMARY KEY (doacao_doa_cod, necessidade_cesta_pessoa_carente_pc_cpf, necessidade_cesta_cesta_basica_cb_cod),
-    CONSTRAINT fk_doacao_necessidade_cesta_doacao FOREIGN KEY (doacao_doa_cod)
-        REFERENCES doacao(doa_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_doacao_necessidade_cesta_necessidade FOREIGN KEY (necessidade_cesta_pessoa_carente_pc_cpf, necessidade_cesta_cesta_basica_cb_cod)
-        REFERENCES necessidade_cesta(pessoa_carente_pc_cpf, cesta_basica_cb_cod)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-ALTER TABLE parametrizacao
-    ALTER COLUMN logotipo_small TYPE text,
-    ALTER COLUMN logotipo_big  TYPE text;
+-- FEIJÃO
+INSERT INTO itens_da_lista_fornec_cotacao
+VALUES
+(2, 1, '11111111111', 1, 1, 7.50),
+(2, 1, '11111111111', 2, 1, 7.20);
 
--- -----------------------------------------------------
--- Tabela: doacao_has_necessidade?? (se houver outras tabelas compostas, já tratadas acima)
--- (Não há mais tabelas não convertidas; verifique o modelo caso precise de ajustes)
--- -----------------------------------------------------
-
--- Indices úteis (opcionais; o PostgreSQL cria índices para PKs automaticamente)
--- CREATE INDEX idx_produto_categoria ON produto(categoria_produto_cat_cod);
--- CREATE INDEX idx_listacompra_funcionario ON lista_compra(funcionario_func_cpf);
-
--- ==========================
--- FIM DO SCRIPT
--- ==========================
-
-ALTER TABLE lista_compra DROP COLUMN funcionario_func_cpf1;
-
-ALTER TABLE doacao_produto
-ADD COLUMN doa_prod_qtd INT NOT NULL DEFAULT 0;
+-- MACARRÃO
+INSERT INTO itens_da_lista_fornec_cotacao
+VALUES
+(3, 1, '11111111111', 1, 1, 4.00),
+(3, 1, '11111111111', 2, 1, 3.80);

@@ -15,7 +15,7 @@ const API = {
 let itensDaDoacao = [];
 let indiceEditando = null;
 let listaProdutosCache = [];
-let linhaDetalhesAberta = null; // controla qual linha está expandida
+let linhaDetalhesAberta = null;
 
 // ===============================
 // Helpers
@@ -181,18 +181,15 @@ async function abrirDetalhesDoacao(doaCod, botao) {
   const linha = botao.closest("tr");
   const tabela = document.querySelector("#tabelaDoacoes tbody");
 
-  // Se já existe uma linha aberta → fecha antes
   if (linhaDetalhesAberta) {
     linhaDetalhesAberta.remove();
     linhaDetalhesAberta = null;
   }
 
-  // Se clicou novamente na mesma → apenas fecha
   if (linha.nextSibling && linha.nextSibling.classList.contains("linha-detalhes")) {
     return;
   }
 
-  // Busca itens no backend
   try {
     const resp = await fetch(`http://localhost:8080/api/doacao/${doaCod}/itens`);
     if (!resp.ok) throw new Error("Erro HTTP " + resp.status);
@@ -204,7 +201,6 @@ async function abrirDetalhesDoacao(doaCod, botao) {
       return;
     }
 
-    // Criação da linha expandida
     const trDetalhes = document.createElement("tr");
     trDetalhes.classList.add("linha-detalhes");
 
@@ -261,6 +257,40 @@ function fecharDetalhes() {
 }
 
 // ===============================
+// Mescla / Upsert (NOVO)
+// ===============================
+function chaveItem(it) {
+  return `${String(it.prodCod)}|${it.validade}`;
+}
+
+function upsertItem(novo) {
+  const key = chaveItem(novo);
+  const idx = itensDaDoacao.findIndex(x => chaveItem(x) === key);
+
+  if (idx === -1) {
+    itensDaDoacao.push({ ...novo });
+  } else {
+    itensDaDoacao[idx].qtd += novo.qtd;
+  }
+}
+
+function mesclarDuplicados() {
+  const mapa = new Map();
+  for (const it of itensDaDoacao) {
+    const key = chaveItem(it);
+    if (!mapa.has(key)) {
+      mapa.set(key, { ...it });
+    } else {
+      mapa.set(key, {
+        ...mapa.get(key),
+        qtd: mapa.get(key).qtd + it.qtd
+      });
+    }
+  }
+  itensDaDoacao = Array.from(mapa.values());
+}
+
+// ===============================
 // Buscar Funcionário
 // ===============================
 async function buscarFuncionario() {
@@ -283,7 +313,7 @@ async function buscarFuncionario() {
 }
 
 // ===============================
-// CRUD da Tabela de Itens
+// Tabela de Itens
 // ===============================
 function redesenharTabela() {
   const tbody = el('#tabelaItens tbody');
@@ -318,6 +348,9 @@ function redesenharTabela() {
   });
 }
 
+// ===============================
+// CRUD de Itens
+// ===============================
 function adicionarItem() {
   const selProd = el("#listaProdutos");
   const qtdEl = el("#quantidade");
@@ -331,9 +364,11 @@ function adicionarItem() {
   if (!prodCod || !qtd || !validade) return msg("Preencha produto, quantidade e validade.", "danger");
   if (isPastDate(validade)) return msg("Validade inválida.", "danger");
 
-  itensDaDoacao.push({ prodCod, descrProduto: descr, qtd, validade });
-  indiceEditando = null;
+  // *** ALTERAÇÃO AQUI ***
+  upsertItem({ prodCod, descrProduto: descr, qtd, validade });
+  mesclarDuplicados();
 
+  indiceEditando = null;
   redesenharTabela();
 
   selProd.value = "";
@@ -354,6 +389,9 @@ function salvarEdicao(i) {
   itensDaDoacao[i].qtd = qtd;
   itensDaDoacao[i].validade = validade;
 
+  // *** ALTERAÇÃO AQUI ***
+  mesclarDuplicados();
+
   indiceEditando = null;
   redesenharTabela();
 }
@@ -372,8 +410,6 @@ function limparTudo() {
   indiceEditando = null;
 
   el("#dataDoacao").value = hojeISO();
-  el("#funcionarioCpf").value = "";
-  el("#funcionarioNome").value = "";
   el("#observacao").value = "";
 
   redesenharTabela();
