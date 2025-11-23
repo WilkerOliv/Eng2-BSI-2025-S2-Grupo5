@@ -1,42 +1,58 @@
 package projeto.salf.model;
 
-import java.time.LocalDate;
+import projeto.salf.controller.bd.SingletonDB;
+import projeto.salf.controller.bd.Conexao;
+import projeto.salf.dao.PessoaCarenteDAO;
+
+import java.util.List;
 
 public class PessoaCarente {
+
     private String pcCpf;
     private String pcNome;
-    private LocalDate pcDataNasc;
     private String pcTelefone;
-    private String rua;
-    private String bairro;
-    private String cidade;
-    private String uf;
-    private String cep;
 
-    public String getPcCpf() { return pcCpf; }
-    public void setPcCpf(String pcCpf) { this.pcCpf = pcCpf; }
+    public String getPcCpf() {
+        return pcCpf;
+    }
 
-    public String getPcNome() { return pcNome; }
-    public void setPcNome(String pcNome) { this.pcNome = pcNome; }
+    public void setPcCpf(String pcCpf) {
+        this.pcCpf = pcCpf;
+    }
 
-    public LocalDate getPcDataNasc() { return pcDataNasc; }
-    public void setPcDataNasc(LocalDate pcDataNasc) { this.pcDataNasc = pcDataNasc; }
+    public String getPcNome() {
+        return pcNome;
+    }
 
-    public String getPcTelefone() { return pcTelefone; }
-    public void setPcTelefone(String pcTelefone) { this.pcTelefone = pcTelefone; }
+    public void setPcNome(String pcNome) {
+        this.pcNome = pcNome;
+    }
 
-    public String getRua() { return rua; }
-    public void setRua(String rua) { this.rua = rua; }
+    public String getPcTelefone() {
+        return pcTelefone;
+    }
 
-    public String getBairro() { return bairro; }
-    public void setBairro(String bairro) { this.bairro = bairro; }
+    public void setPcTelefone(String pcTelefone) {
+        this.pcTelefone = pcTelefone;
+    }
 
-    public String getCidade() { return cidade; }
-    public void setCidade(String cidade) { this.cidade = cidade; }
+    // =============== DAO ===============
 
-    public String getUf() { return uf; }
-    public void setUf(String uf) { this.uf = uf; }
+    private static PessoaCarenteDAO getDAO() {
+        return new PessoaCarenteDAO();
+    }
 
-    public String getCep() { return cep; }
-    public void setCep(String cep) { this.cep = cep; }
+    // =============== Buscas ===============
+
+    public static PessoaCarente buscarPorCpf(String cpf, Conexao c) {
+        return getDAO().findByCpf(cpf, c);
+    }
+
+    public static List<PessoaCarente> buscarPorCpfOuNome(String termo, Conexao c) {
+        return getDAO().searchByCpfOrNome(termo, c);
+    }
+
+    public static List<PessoaCarente> listarTodos(Conexao c) {
+        return getDAO().findAll(c);
+    }
 }

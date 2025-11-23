@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../BD5/SQL_Para_Postgres" beforeDir="false" afterPath="$PROJECT_DIR$/../../BD5/SQL_Para_Postgres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/css/style-wilker.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/css/style-wilker.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/categoria.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/categorias.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/listas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/necessidades.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/js/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/listas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../Front/front-Wilker/necessidades.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +72,7 @@
     &quot;Spring Boot.SalfBackendApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Wilker&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Ferramentas computacionais/Segundo bimestre/Projeto BomServico/bomservico_be&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/wilker/Documentos/Faculdade/5 termo/Sistemas operacionais/Trabalhos/Lista e concorrencia&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -150,6 +160,11 @@
       <workItem from="1762373474900" duration="3796000" />
       <workItem from="1762378204593" duration="91000" />
       <workItem from="1762438486593" duration="846000" />
+      <workItem from="1763276870456" duration="155000" />
+      <workItem from="1763304606864" duration="4354000" />
+      <workItem from="1763332943381" duration="8259000" />
+      <workItem from="1763858369592" duration="6546000" />
+      <workItem from="1763895020455" duration="2423000" />
     </task>
     <servers />
   </component>

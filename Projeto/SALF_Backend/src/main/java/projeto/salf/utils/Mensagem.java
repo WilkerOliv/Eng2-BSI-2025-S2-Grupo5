@@ -66,3 +66,5 @@ public class Mensagem {
         return "[" + tipo.toUpperCase() + "] " + mensagem + " (código: " + codigo + ")";
     }
 }
+
+

@@ -1,71 +1,54 @@
 package projeto.salf.dao;
 
-import projeto.salf.model.PessoaCarente;
 import projeto.salf.controller.bd.Conexao;
+import projeto.salf.model.PessoaCarente;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PessoaCarenteDAO {
-    private final Conexao conexao;
 
-    public PessoaCarenteDAO(Conexao conexao) {
-        this.conexao = conexao;
+    public PessoaCarenteDAO() {
     }
 
-    public List<PessoaCarente> findAll() {
-        String sql = "select pc_cpf, pc_nome, pc_data_nasc, pc_telefone, rua, bairro, cidade, uf, cep from pessoa_carente";
+    public List<PessoaCarente> findAll(Conexao conexao) {
+        String sql = "select pc_cpf, pc_nome, pc_telefone " +
+                "from pessoa_carente " +
+                "order by pc_nome";
         List<PessoaCarente> lista = new ArrayList<>();
-        for (Map<String,Object> r : conexao.consultar(sql)) {
-            PessoaCarente p = new PessoaCarente();
-            p.setPcCpf((String) r.get("pc_cpf"));
-            p.setPcNome((String) r.get("pc_nome"));
-            Date d = (Date) r.get("pc_data_nasc");
-            if (d != null) p.setPcDataNasc(d.toLocalDate());
-            p.setPcTelefone((String) r.get("pc_telefone"));
-            p.setRua((String) r.get("rua"));
-            p.setBairro((String) r.get("bairro"));
-            p.setCidade((String) r.get("cidade"));
-            p.setUf((String) r.get("uf"));
-            p.setCep((String) r.get("cep"));
-            lista.add(p);
+        for (Map<String, Object> row : conexao.consultar(sql)) {
+            lista.add(mapRow(row));
         }
         return lista;
     }
 
-    public PessoaCarente findById(String cpf) {
-        String sql = "select pc_cpf, pc_nome, pc_data_nasc, pc_telefone, rua, bairro, cidade, uf, cep from pessoa_carente where pc_cpf = ?";
-        var rows = conexao.consultar(sql, cpf);
-        if (rows.isEmpty()) return null;
-        Map<String,Object> r = rows.get(0);
-        PessoaCarente p = new PessoaCarente();
-        p.setPcCpf((String) r.get("pc_cpf"));
-        p.setPcNome((String) r.get("pc_nome"));
-        Date d = (Date) r.get("pc_data_nasc");
-        if (d != null) p.setPcDataNasc(d.toLocalDate());
-        p.setPcTelefone((String) r.get("pc_telefone"));
-        p.setRua((String) r.get("rua"));
-        p.setBairro((String) r.get("bairro"));
-        p.setCidade((String) r.get("cidade"));
-        p.setUf((String) r.get("uf"));
-        p.setCep((String) r.get("cep"));
-        return p;
+    public PessoaCarente findByCpf(String cpf, Conexao conexao) {
+        String sql = "select pc_cpf, pc_nome, pc_telefone " +
+                "from pessoa_carente where pc_cpf = ?";
+        List<Map<String, Object>> res = conexao.consultar(sql, cpf);
+        if (res.isEmpty()) return null;
+        return mapRow(res.get(0));
     }
 
-    public boolean save(PessoaCarente p) {
-        if (findById(p.getPcCpf()) == null) {
-            String sql = "insert into pessoa_carente(pc_cpf, pc_nome, pc_data_nasc, pc_telefone, rua, bairro, cidade, uf, cep) values (?,?,?,?,?,?,?,?,?)";
-            return conexao.manipular(sql, p.getPcCpf(), p.getPcNome(), Date.valueOf(p.getPcDataNasc()), p.getPcTelefone(), p.getRua(), p.getBairro(), p.getCidade(), p.getUf(), p.getCep());
-        } else {
-            String sql = "update pessoa_carente set pc_nome=?, pc_data_nasc=?, pc_telefone=?, rua=?, bairro=?, cidade=?, uf=?, cep=? where pc_cpf=?";
-            return conexao.manipular(sql, p.getPcNome(), Date.valueOf(p.getPcDataNasc()), p.getPcTelefone(), p.getRua(), p.getBairro(), p.getCidade(), p.getUf(), p.getCep(), p.getPcCpf());
+    public List<PessoaCarente> searchByCpfOrNome(String termo, Conexao conexao) {
+        String like = "%" + termo + "%";
+        String sql = "select pc_cpf, pc_nome, pc_telefone " +
+                "from pessoa_carente " +
+                "where pc_cpf ILIKE ? or pc_nome ILIKE ? " +
+                "order by pc_nome";
+        List<PessoaCarente> lista = new ArrayList<>();
+        for (Map<String, Object> row : conexao.consultar(sql, like, like)) {
+            lista.add(mapRow(row));
         }
+        return lista;
     }
 
-    public boolean deleteById(String cpf) {
-        String sql = "delete from pessoa_carente where pc_cpf = ?";
-        return conexao.manipular(sql, cpf);
+    private PessoaCarente mapRow(Map<String, Object> row) {
+        PessoaCarente p = new PessoaCarente();
+        p.setPcCpf((String) row.get("pc_cpf"));
+        p.setPcNome((String) row.get("pc_nome"));
+        p.setPcTelefone((String) row.get("pc_telefone"));
+        return p;
     }
 }

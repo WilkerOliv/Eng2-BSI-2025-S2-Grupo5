@@ -1,6 +1,9 @@
+
+//categoria.js
+
 const API_URL_CATEGORIAS = "http://localhost:8080/api/categorias";
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formCategoria");
   const catCod = document.getElementById("catCod");
   const catDescr = document.getElementById("catDescr");
@@ -10,114 +13,178 @@ document.addEventListener("DOMContentLoaded", function () {
   const buscar = document.getElementById("buscar");
   const btnBuscar = document.getElementById("btnBuscar");
   const btnResetBusca = document.getElementById("btnResetBusca");
+  const btnLimpar = document.getElementById("btnLimpar");
+  const btnSalvar = document.getElementById("btnSalvar");
 
   let listaAtual = [];
 
+  // ==========================================
+  // CARREGAR
+  // ==========================================
   async function carregarCategorias() {
     try {
       const res = await fetch(API_URL_CATEGORIAS);
-      if (!res.ok) throw new Error("Erro ao carregar categorias");
+      if (!res.ok) throw new Error("Erro ao carregar categorias.");
       listaAtual = await res.json();
       montarTabela(listaAtual);
-    } catch (e) {
-      Utils.showAlert(alertContainer, "danger", e.message);
+    } catch (err) {
+      Utils.showAlert(alertContainer, "danger", err.message);
     }
   }
 
+  // ==========================================
+  // MONTAR TABELA
+  // ==========================================
   function montarTabela(lista) {
     tabelaBody.innerHTML = "";
+
     lista.forEach(cat => {
       const tr = document.createElement("tr");
-      tr.innerHTML = [
-        "<td>" + (cat.catCod ?? "") + "</td>",
-        "<td>" + (cat.catDescr ?? "") + "</td>",
-        "<td>" +
-          "<button class=\"btn btn-warning btn-sm btn-small me-1\" data-edit=\"" + (cat.catCod ?? "") + "\">Editar</button>" +
-          "<button class=\"btn btn-danger btn-sm btn-small\" data-delete=\"" + (cat.catCod ?? "") + "\">Excluir</button>" +
-        "</td>"
-      ].join("");
+
+      tr.innerHTML = `
+        <td>${cat.catCod ?? ""}</td>
+        <td>${cat.catDescr ?? ""}</td>
+        <td>
+          <button class="btn-visualizar" data-view="${cat.catCod}" title="Visualizar">&#128065;</button>
+          <button class="btn btn-warning btn-sm" data-ed="${cat.catCod}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-del="${cat.catCod}">Excluir</button>
+        </td>
+      `;
+
       tabelaBody.appendChild(tr);
     });
-    tabelaBody.querySelectorAll("[data-edit]").forEach(btn => {
-      btn.addEventListener("click", function () {
-        const id = this.getAttribute("data-edit");
+
+    // VISUALIZAR
+    tabelaBody.querySelectorAll("[data-view]").forEach(btn => {
+      btn.addEventListener("click", () => visualizarCat(btn.dataset.view));
+    });
+
+    // EDITAR
+    tabelaBody.querySelectorAll("[data-ed]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.ed;
         const item = listaAtual.find(x => String(x.catCod) === String(id));
         if (item) {
-          catCod.value = item.catCod;
-          catDescr.value = item.catDescr;
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          catCod.value = item.catCod ?? "";
+          catDescr.value = item.catDescr ?? "";
+          catDescr.focus();
         }
       });
     });
-    tabelaBody.querySelectorAll("[data-delete]").forEach(btn => {
-      btn.addEventListener("click", async function () {
-        const id = this.getAttribute("data-delete");
-        if (!confirm("Deseja excluir esta categoria?")) return;
+
+    // EXCLUIR
+    tabelaBody.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.del;
+
+        if (!confirm("Deseja realmente excluir esta categoria?")) return;
+
         try {
-          const res = await fetch(API_URL_CATEGORIAS + "/" + id, { method: "DELETE" });
-          if (!res.ok) throw new Error("Erro ao excluir categoria");
+          const res = await fetch(`${API_URL_CATEGORIAS}/${id}`, { method: "DELETE" });
+          if (!res.ok) throw new Error("Erro ao excluir categoria.");
+
           Utils.showAlert(alertContainer, "success", "Categoria excluída com sucesso.");
-          await carregarCategorias();
-        } catch (e) {
-          Utils.showAlert(alertContainer, "danger", e.message);
+          carregarCategorias();
+
+        } catch (err) {
+          Utils.showAlert(alertContainer, "danger", err.message);
         }
       });
     });
   }
 
-  function validarFormulario() {
-    catDescrError.style.display = "none";
-    const vObrig = Utils.validarObrigatorio(catDescr.value, "Descrição");
-    if (vObrig) {
-      catDescrError.style.display = "block";
-      catDescrError.innerText = vObrig;
-      return false;
-    }
-    return true;
-  }
-
-  form.addEventListener("submit", async function (e) {
+  // ==========================================
+  // SALVAR
+  // ==========================================
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!validarFormulario()) return;
+
+    if (!Utils.validarObrigatorio(catDescr, catDescrError, "Descrição")) return;
+
     const payload = {
-      catCod: catCod.value ? parseInt(catCod.value) : null,
       catDescr: catDescr.value.trim()
     };
+
+    const id = catCod.value ? Number(catCod.value) : null;
+    let url = API_URL_CATEGORIAS;
+    let method = "POST";
+
+    if (id) {
+      url = `${API_URL_CATEGORIAS}/${id}`;
+      method = "PUT";
+      payload.catCod = id;
+    }
+
     try {
-      const method = payload.catCod ? "PUT" : "POST";
-      const url = payload.catCod ? API_URL_CATEGORIAS + "/" + payload.catCod : API_URL_CATEGORIAS;
       const res = await fetch(url, {
-        method: method,
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      if (!res.ok) throw new Error("Erro ao salvar categoria");
+
+      if (!res.ok) {
+        let msg = "Erro ao salvar categoria.";
+        try {
+          const erro = await res.json();
+          if (erro.mensagem) msg = erro.mensagem;
+        } catch (_) {}
+        throw new Error(msg);
+      }
+
       Utils.showAlert(alertContainer, "success", "Categoria salva com sucesso.");
-      form.reset();
-      catCod.value = "";
-      await carregarCategorias();
+      limparFormulario();
+      carregarCategorias();
+
     } catch (err) {
       Utils.showAlert(alertContainer, "danger", err.message);
     }
   });
 
-  document.getElementById("btnLimpar").addEventListener("click", function () {
+  function limparFormulario() {
     form.reset();
     catCod.value = "";
+    catDescrError.innerText = "";
     catDescrError.style.display = "none";
-  });
+  }
 
-  btnBuscar.addEventListener("click", function () {
-    const termo = buscar.value || "";
+  btnLimpar.addEventListener("click", limparFormulario);
+
+  // ==========================================
+  // BUSCA
+  // ==========================================
+  btnBuscar.addEventListener("click", () => {
+    const termo = buscar.value.trim();
     const filtrado = Utils.filtrarPorNome(listaAtual, "catDescr", termo);
     montarTabela(filtrado);
   });
 
-  btnResetBusca.addEventListener("click", function () {
+  btnResetBusca.addEventListener("click", () => {
     buscar.value = "";
     montarTabela(listaAtual);
   });
 
-  // init
+  // ==========================================
+  // VISUALIZAR CATEGORIA (MODAL)
+  // ==========================================
+  async function visualizarCat(id) {
+    const res = await fetch(API_URL_CATEGORIAS + "/" + id);
+    if (!res.ok) {
+      Utils.showAlert(alertContainer, "danger", "Erro ao carregar categoria.");
+      return;
+    }
+    const cat = await res.json();
+
+    document.getElementById("vcCod").innerText = cat.catCod ?? "";
+    document.getElementById("vcDesc").innerText = cat.catDescr ?? "";
+
+    const modal = new bootstrap.Modal(document.getElementById("modalViewCat"));
+    modal.show();
+  }
+
+  // ==========================================
+  // INIT
+  // ==========================================
   carregarCategorias();
 });
+
+
