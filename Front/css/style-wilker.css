@@ -210,3 +210,58 @@
         opacity: 1;
     }
 }
+
+
+.autocomplete-item:active {
+    background: #ffd2d6;
+}
+
+/* ================================
+   AUTOCOMPLETE MODERNO SALF
+================================ */
+.autocomplete-box {
+    position: absolute;
+    background: #ffffff;
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 4px;
+
+    /* sombra elegante */
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+
+    border: 1px solid #e4e4e4;
+
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 5000;
+
+    animation: fadeIn 0.15s ease-in-out;
+}
+
+.autocomplete-item {
+    padding: 10px 14px;
+    cursor: pointer;
+
+    /* fonte clean */
+    font-size: 0.95rem;
+    color: #333;
+
+    border-bottom: 1px solid #f1f1f1;
+    transition: background 0.2s ease, padding-left 0.2s ease;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+/* Hover moderno */
+.autocomplete-item:hover {
+    background: #f8d7da33;        /* leve tom vermelho claro */
+    padding-left: 18px;
+}
+
+/* Foco do input harmonizando com o sistema */
+input.form-control:focus {
+    border-color: var(--salf-red);
+    box-shadow: 0 0 0 0.20rem rgba(220, 53, 69, 0.25);
+}
