@@ -265,3 +265,73 @@ input.form-control:focus {
     border-color: var(--salf-red);
     box-shadow: 0 0 0 0.20rem rgba(220, 53, 69, 0.25);
 }
+
+
+/* ============================
+   BOTÕES DE AÇÃO PADRONIZADOS
+   ============================ */
+
+.btn-acao {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+}
+
+/* Visualizar */
+.btn-acao-view {
+    background: #ffffff;
+    border: 2px solid var(--salf-red);
+    color: var(--salf-red);
+}
+.btn-acao-view:hover {
+    background: var(--salf-red-light);
+}
+
+/* Editar */
+.btn-acao-edit {
+    background: #ffc107;
+    color: #000;
+}
+.btn-acao-edit:hover {
+    background: #e0a800;
+}
+
+/* Excluir */
+.btn-acao-delete {
+    background: var(--salf-red);
+    color: #fff;
+}
+.btn-acao-delete:hover {
+    background: var(--salf-red-dark);
+}
+
+/* Ícone do olho padronizado */
+.btn-icon-eye {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+.btn-acao-view:hover .btn-icon-eye {
+    opacity: 1;
+}
+
+/* ============================
+   TABELA – Linhas alternadas
+   ============================ */
+.table-wilker tbody tr:nth-child(odd) {
+    background: #fafafa;
+}
+
+.table-wilker tbody tr:nth-child(even) {
+    background: #fff;
+}
+
+.table-wilker tbody tr:hover {
+    background: #ffe6e9 !important;
+    transition: 0.2s;
+}
