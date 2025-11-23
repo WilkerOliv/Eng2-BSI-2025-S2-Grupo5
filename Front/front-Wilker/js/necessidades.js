@@ -151,7 +151,8 @@ function setupBotoes() {
         const qtd = Number(document.getElementById("quantidade").value);
 
         if (!prodCod || qtd < 1) {
-            alerta("Informe produto e quantidade válida!", "danger");
+            Utils.toast("danger", "Informe produto e quantidade válida");
+            // alerta("Informe produto e quantidade válida!", "danger");
             return;
         }
 
@@ -223,7 +224,8 @@ async function salvarLista() {
     const obs = document.getElementById("observacaoGeral").value;
 
     if (!cpf || itensPendentes.length === 0) {
-        alerta("Selecione pessoa e adicione ao menos 1 item.", "danger");
+        Utils.toast("danger", "Selecione pessoa e adicione ao menos 1 item");
+        // alerta("Selecione pessoa e adicione ao menos 1 item.", "danger");
         return;
     }
 
@@ -243,10 +245,10 @@ async function salvarLista() {
         body: JSON.stringify(body)
     });
 
-    if (!resp.ok) return alerta("Erro ao registrar lista!", "danger");
+    if (!resp.ok) return Utils.toast("danger", "Erro ao registrar lista!"); //alerta("Erro ao registrar lista!", "danger");
 
-    alerta("Lista registrada!", "success");
-
+    //alerta("Lista registrada!", "success");
+    Utils.toast("success", "Lista registrada!");
     itensPendentes = [];
     atualizarTabelaPendentes();
     carregarNecessidades();
@@ -437,7 +439,8 @@ document.getElementById("eBtnAdd").onclick = () => {
     const qtd = Number(document.getElementById("eQtd").value);
 
     if (!prodCod || qtd < 1) {
-        alerta("Quantidade inválida!", "danger");
+        Utils.toast("danger", "Quantidade inválida!");
+        // alerta("Quantidade inválida!", "danger");
         return;
     }
 
@@ -491,11 +494,13 @@ async function salvarEdicao() {
     });
 
     if (resp.ok) {
-        alerta("Lista atualizada!", "success");
+        //alerta("Lista atualizada!", "success");
+        Utils.toast("success", "Lista atualizada!");
         modalEditarLista.hide();
         carregarNecessidades();
     } else {
-        alerta("Erro ao atualizar lista!", "danger");
+        Utils.toast("danger", "Erro ao atualizar lista!");
+        // alerta("Erro ao atualizar lista!", "danger");
     }
 }
 
@@ -510,7 +515,8 @@ async function excluirLista(necId) {
     const resp = await fetch(`${API_NEC}/lista/${necId}`, { method:"DELETE" });
 
     if (resp.ok) {
-        alerta("Lista excluída!", "success");
+        //alerta("Lista excluída!", "success");
+        Utils.toast("success", "Lista excluída!");
         carregarNecessidades();
     }
 }

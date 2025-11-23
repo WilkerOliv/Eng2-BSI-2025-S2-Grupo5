@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       listaAtual = await res.json();
       montarTabela(listaAtual);
     } catch (err) {
-      Utils.showAlert(alertContainer, "danger", err.message);
+      Utils.toast("danger", err.message);
     }
   }
 
@@ -83,11 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const res = await fetch(`${API_URL_CATEGORIAS}/${id}`, { method: "DELETE" });
           if (!res.ok) throw new Error("Erro ao excluir categoria.");
 
-          Utils.showAlert(alertContainer, "success", "Categoria excluída com sucesso.");
+          Utils.toast("success", "Categoria excluída com sucesso.");
           carregarCategorias();
 
         } catch (err) {
-          Utils.showAlert(alertContainer, "danger", err.message);
+          Utils.toast("danger", err.message);
         }
       });
     });
@@ -131,12 +131,12 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(msg);
       }
 
-      Utils.showAlert(alertContainer, "success", "Categoria salva com sucesso.");
+      Utils.toast("success", "Categoria salva com sucesso.");
       limparFormulario();
       carregarCategorias();
 
     } catch (err) {
-      Utils.showAlert(alertContainer, "danger", err.message);
+      Utils.toast("danger", err.message);
     }
   });
 
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function visualizarCat(id) {
     const res = await fetch(API_URL_CATEGORIAS + "/" + id);
     if (!res.ok) {
-      Utils.showAlert(alertContainer, "danger", "Erro ao carregar categoria.");
+      Utils.toast("danger", "Erro ao carregar categoria.");
       return;
     }
     const cat = await res.json();

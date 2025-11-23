@@ -155,3 +155,58 @@
   transform: scale(1.1);
 }
 
+
+
+
+
+
+/* ============================
+   TOAST MODERNO COMPACTO SALF
+   ============================ */
+
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast-salf {
+    min-width: 260px;
+    max-width: 340px;
+    padding: 12px 18px;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    animation: slideIn 0.35s ease-out;
+    opacity: 0.95;
+}
+
+.toast-success {
+    background: linear-gradient(90deg, #28a745, #1e7e34);
+}
+
+.toast-danger {
+    background: linear-gradient(90deg, #dc3545, #b02a37);
+}
+
+.toast-warning {
+    background: linear-gradient(90deg, #ffca2c, #d39e00);
+    color: #000;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

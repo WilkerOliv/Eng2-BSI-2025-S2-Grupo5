@@ -128,7 +128,7 @@ async function visualizarLista(id) {
   ]);
 
   if (!r1.ok || !r2.ok) {
-    Utils.showAlert(alertBox, "danger", "Erro ao visualizar.");
+    Utils.toast("danger", "Erro ao visualizar.");
     return;
   }
 
@@ -180,7 +180,7 @@ async function editarLista(id) {
     bloquearCampos(l.statusAtendimento);
 
   } catch (err) {
-    Utils.showAlert(alertBox, "danger", err.message);
+    Utils.toast("danger", err.message);
   }
 }
 
@@ -198,8 +198,8 @@ document.getElementById("formLista").addEventListener("submit", async (e) => {
     statusAtendimento: Number(statusAtendimento.value)
   };
 
-  if (!obj.funcionarioFuncCpf) return Utils.showAlert(alertBox, "warning", "Selecione um funcionário!");
-  if (!obj.descricao.trim()) return Utils.showAlert(alertBox, "warning", "Descrição é obrigatória!");
+  if (!obj.funcionarioFuncCpf) return Utils.toast("warning", "Selecione um funcionário!");
+  if (!obj.descricao.trim()) return Utils.toast("warning", "Descrição é obrigatória!");
 
   let nova = lcCod.value === "";
   let res;
@@ -219,7 +219,7 @@ document.getElementById("formLista").addEventListener("submit", async (e) => {
   }
 
   if (!res.ok) {
-    Utils.showAlert(alertBox, "danger", "Erro ao salvar lista.");
+    Utils.toast("danger", "Erro ao salvar lista.");
     return;
   }
 
@@ -240,7 +240,7 @@ document.getElementById("formLista").addEventListener("submit", async (e) => {
     }
   }
 
-  Utils.showAlert(alertBox, "success", "Lista salva!");
+  Utils.toast("success", "Lista salva!");
   limparForm();
   carregarListas();
 });
@@ -252,9 +252,9 @@ async function excluirLista(id) {
   if (!confirm("Excluir lista?")) return;
 
   const res = await fetch(API_LISTAS + "/" + id, { method: "DELETE" });
-  if (!res.ok) return Utils.showAlert(alertBox, "danger", "Erro ao excluir.");
+  if (!res.ok) return Utils.toast("danger", "Erro ao excluir.");
 
-  Utils.showAlert(alertBox, "success", "Lista excluída!");
+  Utils.toast("success", "Lista excluída!");
   carregarListas();
 }
 
@@ -334,11 +334,11 @@ async function removerItem(id, prod) {
   });
 
   if (!res.ok) {
-    Utils.showAlert(alertBox, "danger", "Erro ao remover item.");
+    Utils.toast("danger", "Erro ao remover item.");
     return;
   }
 
-  Utils.showAlert(alertBox, "success", "Item removido!");
+  Utils.toast("success", "Item removido!");
   carregarItensExistentes(id);
 }
 
@@ -350,8 +350,8 @@ document.getElementById("btnAddItem").onclick = async () => {
   const prodDescr = produtoItem.options[produtoItem.selectedIndex]?.text;
   const qt = Number(qtItem.value);
 
-  if (!prodCod) return Utils.showAlert(alertBox, "warning", "Selecione um produto.");
-  if (!qt || qt <= 0) return Utils.showAlert(alertBox, "warning", "Quantidade inválida.");
+  if (!prodCod) return Utils.toast("warning", "Selecione um produto.");
+  if (!qt || qt <= 0) return Utils.toast("warning", "Quantidade inválida.");
 
   // -----------------------------
   // NOVA LISTA → itensPendentes
@@ -383,11 +383,11 @@ document.getElementById("btnAddItem").onclick = async () => {
   });
 
   if (!res.ok) {
-    Utils.showAlert(alertBox, "danger", "Erro ao salvar item.");
+    Utils.toast("danger", "Erro ao salvar item.");
     return;
   }
 
-  Utils.showAlert(alertBox, "success", "Item salvo.");
+  Utils.toast("success", "Item salvo.");
   carregarItensExistentes(lcCod.value);
   qtItem.value = "";
 };
@@ -461,8 +461,7 @@ function bloquearCampos(status) {
 
   if (status === 1) {
     // ========== LISTA EM ANDAMENTO ==========
-    Utils.showAlert(alertBox, "warning",
-      "Listas EM ANDAMENTO só permitem alterar descrição e status.");
+    Utils.toast("warning", "Listas EM ANDAMENTO só permitem alterar descrição e status.");
 
     funcSearch.disabled = true;
     funcionarioCpf.disabled = true;
@@ -483,8 +482,8 @@ function bloquearCampos(status) {
 
   if (status === 2) {
     // ========== LISTA CONCLUÍDA ==========
-    Utils.showAlert(alertBox, "warning",
-      "Listas CONCLUÍDAS não podem ser alteradas.");
+    Utils.toast("warning", "Listas CONCLUÍDAS não podem ser alteradas.");
+      
 
     // BLOQUEIA TUDO
     funcSearch.disabled = true;

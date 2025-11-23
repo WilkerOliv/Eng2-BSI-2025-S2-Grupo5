@@ -107,3 +107,35 @@ const Utils = (function () {
     filtrarPorNome
   };
 })();
+
+
+
+
+
+
+
+// =============================================================
+// TOAST MODERNO COMPACTO SALF
+// =============================================================
+function toast(tipo, mensagem, duracao = 4000) {
+    let container = document.getElementById("toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toast-container";
+        document.body.appendChild(container);
+    }
+
+    const div = document.createElement("div");
+    div.className = `toast-salf toast-${tipo}`;
+    div.innerText = mensagem;
+
+    container.appendChild(div);
+
+    setTimeout(() => {
+        div.style.transition = "opacity 0.4s";
+        div.style.opacity = "0";
+        setTimeout(() => div.remove(), 400);
+    }, duracao);
+}
+
+Utils.toast = toast;
