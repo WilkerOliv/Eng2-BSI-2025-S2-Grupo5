@@ -426,6 +426,8 @@ function limparForm() {
   dataCriacao.value = hoje;
   itensPendentes = [];
   tabelaItens.innerHTML = "";
+
+  desbloquearCampos();
 }
 
 // =========================
@@ -436,6 +438,23 @@ document.getElementById("btnResetBusca").onclick = () => {
   document.getElementById("buscar").value = "";
   carregarListas();
 };
+
+function desbloquearCampos() {
+  funcSearch.disabled = false;
+  funcionarioCpf.disabled = false;
+  dataCriacao.disabled = false;
+  descricao.disabled = false;
+  statusAtendimento.disabled = false;
+
+  categoriaItem.disabled = false;
+  produtoItem.disabled = false;
+  qtItem.disabled = false;
+  document.getElementById("btnAddItem").disabled = false;
+
+  // reativa botões de remover itens
+  const botoesRemover = document.querySelectorAll("#tabelaItens button[data-rm]");
+  botoesRemover.forEach(b => b.disabled = false);
+}
 
 function bloquearCampos(status) {
 
