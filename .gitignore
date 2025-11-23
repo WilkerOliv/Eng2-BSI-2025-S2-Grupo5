@@ -1,5 +1,6 @@
 # IntelliJ / WebStorm
 .idea/
+Projeto/SALF_Backend/.idea/workspace.xml
 *.iml
 out/
 
