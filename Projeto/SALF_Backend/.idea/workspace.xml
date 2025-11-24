@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/AcertoEstoqueController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/SaidaRefeicaoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/AcertoEstoqueDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/SaidaRefeicaoDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/AcertoEstoque.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/ProdutoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/ProdutoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/ProdutoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/ProdutoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/model/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/Produto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/model/SaidaRefeicao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/SaidaRefeicao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/controller/ProdutoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/controller/ProdutoController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/dao/ProdutoDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/dao/ProdutoDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/model/Produto.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/model/Produto.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,7 +166,7 @@
       <workItem from="1763926347481" duration="552000" />
       <workItem from="1763927189857" duration="2297000" />
       <workItem from="1763934853559" duration="2180000" />
-      <workItem from="1763939608298" duration="2645000" />
+      <workItem from="1763939608298" duration="3168000" />
     </task>
     <servers />
   </component>
