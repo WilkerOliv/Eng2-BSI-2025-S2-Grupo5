@@ -7,6 +7,7 @@ import projeto.salf.controller.bd.SingletonDB;
 import projeto.salf.model.Produto;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -17,36 +18,60 @@ public class ProdutoController {
         return SingletonDB.getConexao();
     }
 
-
     @GetMapping
-    public ResponseEntity<List<Produto>> listarProdutos(
-            @RequestParam(name = "categoria", required = false) Integer categoria,
-            @RequestParam(name = "termo", required = false) String termo) {
+    public ResponseEntity<List<Produto>> listar() {
         try {
-            List<Produto> lista;
-            if (categoria != null) {
-                lista = Produto.buscarPorCategoriaEDescricao(categoria, termo, conexao());
-            } else if (termo != null && !termo.isBlank()) {
-                lista = Produto.buscarPorDescricao(termo, conexao());
-            } else {
-                lista = Produto.listarTodos(conexao());
-            }
-
+            List<Produto> lista = Produto.listarTodos(conexao());
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
-    // Busca produto pelo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<?> buscar(@PathVariable Integer id) {
         try {
             Produto p = Produto.buscarPorId(id, conexao());
             if (p == null) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(p);
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(500).body("Erro ao buscar");
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> inserir(@RequestBody Produto p) {
+        try {
+            p.salvar(conexao());
+            return ResponseEntity.ok(p);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensagem", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao inserir");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody Produto p) {
+        try {
+            p.setProdCod(id);
+            p.salvar(conexao());
+            return ResponseEntity.ok(p);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensagem", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao atualizar");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+        try {
+            boolean ok = Produto.excluir(id, conexao());
+            if (!ok) return ResponseEntity.status(500).body("Erro ao excluir");
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao excluir");
         }
     }
 }

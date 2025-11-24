@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Acerto de Estoque - SALF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="../css/style-wilker.css" rel="stylesheet" />
+    <link href="../css/style.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .autocomplete-box {
+            position: absolute;
+            top: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            width: 100%;
+            z-index: 9999;
+            border-radius: 4px;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-item {
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        .autocomplete-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+<div class="container py-4">
+
+    <div class="wilker-card mb-4">
+        <h3>Acerto de Estoque</h3>
+        <p class="text-muted">Selecione um lote e ajuste sua quantidade.</p>
+
+        <div id="alert-area"></div>
+
+        <div class="row g-3">
+
+            <!-- CPF -->
+            <div class="col-md-4">
+                <label class="form-label-required">CPF Funcionário</label>
+                <input type="text" id="cpf" class="form-control" placeholder="000.000.000-00">
+            </div>
+
+            <!-- BUSCAR ITEM -->
+            <div class="col-md-8 position-relative">
+                <label class="form-label-required">Buscar Item</label>
+                <input type="text" id="buscarItem" class="form-control" placeholder="Digite nome ou ID">
+                <div id="autoItem" class="autocomplete-box" style="display:none;"></div>
+            </div>
+
+            <!-- Selecionar lote -->
+            <div class="col-md-4">
+                <label class="form-label-required">Lotes disponíveis</label>
+                <select id="selectLote" class="form-select"></select>
+            </div>
+
+            <!-- Quantidade atual -->
+            <div class="col-md-2">
+                <label class="form-label-required">Qtd atual</label>
+                <input type="number" id="qtdAtual" class="form-control" disabled>
+            </div>
+
+            <!-- Nova Quantidade -->
+            <div class="col-md-3">
+                <label class="form-label-required">Nova quantidade</label>
+                <input type="number" id="novaQtd" class="form-control" min="0">
+            </div>
+
+            <!-- Motivo -->
+            <div class="col-md-3">
+                <label class="form-label-required">Motivo</label>
+                <input type="text" id="motivo" class="form-control">
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+                <button id="btnAdd" class="btn btn-primary">Adicionar Acerto</button>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <h5>Acertos Pendentes</h5>
+
+        <table class="table table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>Lote</th>
+                <th>Produto</th>
+                <th>Anterior</th>
+                <th>Novo</th>
+                <th>Validade</th>
+                <th>Motivo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="tbAcertos"></tbody>
+        </table>
+
+        <div class="text-end">
+            <button id="btnSalvar" class="btn btn-success">Confirmar Acertos</button>
+        </div>
+
+    </div>
+
+    <a href="../index.html" class="btn btn-link">Voltar ao menu</a>
+
+</div>
+
+<script src="../front-Wilker/js/utils.js"></script>
+<script src="./js/acerto-estoque.js"></script>
+
+</body>
+</html>
