@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="" />
+    <list default="true" id="294abb69-0fe1-4f9e-8901-aff6743cdcc0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/AcertoEstoqueController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/SaidaRefeicaoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/AcertoEstoqueDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/SaidaRefeicaoDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/AcertoEstoque.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/ProdutoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/controller/ProdutoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/ProdutoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/dao/ProdutoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/model/Produto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/Produto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/projeto/salf/model/SaidaRefeicao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/projeto/salf/model/SaidaRefeicao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/controller/ProdutoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/controller/ProdutoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/dao/ProdutoDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/dao/ProdutoDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/projeto/salf/model/Produto.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/projeto/salf/model/Produto.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,6 +50,9 @@
     &quot;accountId&quot;: &quot;5c80e946-5f09-41ee-8495-2465525c75b7&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/projeto/salf/controller/bd/SaidaRefeicaoController.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -60,9 +79,9 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SalfBackendApplication.executor": "Run",
-    "git-widget-placeholder": "Wilker",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/wilker/Documentos/Faculdade/5 termo/Sistemas operacionais/Trabalhos/Lista e concorrencia",
+    "last_opened_file_path": "C:/Users/MatheusPC/Eng2-BSI-2025-S2-Grupo5/Projeto/SALF_Backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -95,8 +114,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
@@ -155,10 +174,22 @@
       <workItem from="1763332943381" duration="8259000" />
       <workItem from="1763858369592" duration="6546000" />
       <workItem from="1763895020455" duration="2423000" />
+      <workItem from="1763925872167" duration="19000" />
+      <workItem from="1763925911579" duration="79000" />
+      <workItem from="1763926029658" duration="276000" />
+      <workItem from="1763926347481" duration="552000" />
+      <workItem from="1763927189857" duration="2297000" />
+      <workItem from="1763934853559" duration="2180000" />
+      <workItem from="1763939608298" duration="2645000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
   </component>
 </project>

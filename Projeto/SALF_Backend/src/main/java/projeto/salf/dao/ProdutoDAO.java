@@ -9,73 +9,71 @@ import java.util.Map;
 
 public class ProdutoDAO {
 
-    public ProdutoDAO() {
-    }
+    public List<Produto> findAll(Conexao c) {
+        String sql = """
+            SELECT p.prod_cod, p.prod_descr, p.categoria_produto_cat_cod,
+                   cat.cat_descr AS categoria
+            FROM produto p
+            JOIN categoria_produto cat
+                ON cat.cat_cod = p.categoria_produto_cat_cod
+            ORDER BY p.prod_descr;
+        """;
 
-    public List<Produto> findAll(Conexao conexao) {
-        String sql = "select prod_cod, prod_descr, categoria_produto_cat_cod " +
-                "from produto " +
-                "order by prod_descr";
         List<Produto> lista = new ArrayList<>();
-        for (Map<String, Object> row : conexao.consultar(sql)) {
-            lista.add(mapRow(row));
+        for (Map<String,Object> r : c.consultar(sql)) {
+
+            Produto p = new Produto();
+            p.setProdCod((Integer) r.get("prod_cod"));
+            p.setProdDescr((String) r.get("prod_descr"));
+            p.setCategoriaCod((Integer) r.get("categoria_produto_cat_cod"));
+            p.setCategoriaDescr((String) r.get("categoria"));
+
+            lista.add(p);
         }
         return lista;
     }
 
-    public Produto findById(Integer id, Conexao conexao) {
-        String sql = "select prod_cod, prod_descr, categoria_produto_cat_cod " +
-                "from produto where prod_cod = ?";
-        List<Map<String, Object>> res = conexao.consultar(sql, id);
+    public Produto findById(Integer id, Conexao c) {
+        String sql = """
+            SELECT p.prod_cod, p.prod_descr, p.categoria_produto_cat_cod,
+                   cat.cat_descr AS categoria
+            FROM produto p
+            JOIN categoria_produto cat
+                ON cat.cat_cod = p.categoria_produto_cat_cod
+            WHERE prod_cod = ?
+        """;
+
+        List<Map<String,Object>> res = c.consultar(sql, id);
         if (res.isEmpty()) return null;
-        return mapRow(res.get(0));
-    }
 
-    public List<Produto> searchByDescricao(String termo, Conexao conexao) {
-        String like = "%" + termo + "%";
-        String sql = "select prod_cod, prod_descr, categoria_produto_cat_cod " +
-                "from produto " +
-                "where prod_descr ILIKE ? " +
-                "order by prod_descr";
-        List<Produto> lista = new ArrayList<>();
-        for (Map<String, Object> row : conexao.consultar(sql, like)) {
-            lista.add(mapRow(row));
-        }
-        return lista;
-    }
-
-    public List<Produto> searchByCategoriaAndDescricao(Integer catCod, String termo, Conexao conexao) {
-        String sql;
-        List<Map<String, Object>> res;
-
-        if (termo == null || termo.trim().isEmpty()) {
-            sql = "select prod_cod, prod_descr, categoria_produto_cat_cod " +
-                    "from produto " +
-                    "where categoria_produto_cat_cod = ? " +
-                    "order by prod_descr";
-            res = conexao.consultar(sql, catCod);
-        } else {
-            String like = "%" + termo + "%";
-            sql = "select prod_cod, prod_descr, categoria_produto_cat_cod " +
-                    "from produto " +
-                    "where categoria_produto_cat_cod = ? " +
-                    "  and prod_descr ILIKE ? " +
-                    "order by prod_descr";
-            res = conexao.consultar(sql, catCod, like);
-        }
-
-        List<Produto> lista = new ArrayList<>();
-        for (Map<String, Object> row : res) {
-            lista.add(mapRow(row));
-        }
-        return lista;
-    }
-
-    private Produto mapRow(Map<String, Object> row) {
+        Map<String,Object> r = res.get(0);
         Produto p = new Produto();
-        p.setProdCod((Integer) row.get("prod_cod"));
-        p.setProdDescr((String) row.get("prod_descr"));
-        p.setCategoriaProdCod((Integer) row.get("categoria_produto_cat_cod"));
+        p.setProdCod(id);
+        p.setProdDescr((String) r.get("prod_descr"));
+        p.setCategoriaCod((Integer) r.get("categoria_produto_cat_cod"));
+        p.setCategoriaDescr((String) r.get("categoria"));
+
         return p;
+    }
+
+    public boolean save(Produto p, Conexao c) {
+        if (p.getProdCod() == null) {
+            // inserir
+            return c.manipular("""
+                INSERT INTO produto (prod_descr, categoria_produto_cat_cod)
+                VALUES (?, ?)
+            """, p.getProdDescr(), p.getCategoriaCod());
+        } else {
+            // atualizar
+            return c.manipular("""
+                UPDATE produto
+                SET prod_descr = ?, categoria_produto_cat_cod = ?
+                WHERE prod_cod = ?
+            """, p.getProdDescr(), p.getCategoriaCod(), p.getProdCod());
+        }
+    }
+
+    public boolean delete(Integer id, Conexao c) {
+        return c.manipular("DELETE FROM produto WHERE prod_cod = ?", id);
     }
 }
