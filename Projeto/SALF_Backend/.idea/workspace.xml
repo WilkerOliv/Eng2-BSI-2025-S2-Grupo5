@@ -20,6 +20,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -60,7 +65,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.SalfBackendApplication.executor": "Run",
-    "git-widget-placeholder": "Wilker",
+    "git-widget-placeholder": "MatheusFig",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/wilker/Documentos/Faculdade/5 termo/Sistemas operacionais/Trabalhos/Lista e concorrencia",
     "node.js.detected.package.eslint": "true",
@@ -155,6 +160,7 @@
       <workItem from="1763332943381" duration="8259000" />
       <workItem from="1763858369592" duration="6546000" />
       <workItem from="1763895020455" duration="2423000" />
+      <workItem from="1763925519590" duration="447000" />
     </task>
     <servers />
   </component>
