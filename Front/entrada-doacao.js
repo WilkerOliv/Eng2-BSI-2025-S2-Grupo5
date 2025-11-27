@@ -163,10 +163,17 @@ function renderizarDoacoes(lista) {
       <td>${item.funcionarioCPF ?? "—"}</td>
       <td>${item.observacao ?? ""}</td>
       <td class="text-center">
-        <button class="btn btn-sm btn-outline-primary" onclick="abrirDetalhesDoacao(${item.doaCod}, this)">
-          <i class="bi bi-eye"></i> Ver
-        </button>
-      </td>
+      <button class="btn btn-sm btn-outline-primary me-1"
+              onclick="abrirDetalhesDoacao(${item.doaCod}, this)">
+        <i class="bi bi-eye"></i> Ver
+      </button>
+
+      <button class="btn btn-sm btn-outline-danger"
+              onclick="excluirDoacao(${item.doaCod})">
+        <i class="bi bi-trash"></i>
+      </button>
+    </td>
+
     `;
 
     tbody.appendChild(tr);
@@ -176,78 +183,120 @@ function renderizarDoacoes(lista) {
 // ===============================
 // EXPANSÃO: Itens da doação
 // ===============================
-async function abrirDetalhesDoacao(doaCod, botao) {
+// ===============================================================
+//   MODAL — Detalhes da Doação (padrão profissional igual compras)
+// ===============================================================
+async function abrirDetalhesDoacao(doaCod) {
+  if (!doaCod) return msg("Código inválido da doação.", "danger");
 
-  const linha = botao.closest("tr");
-  const tabela = document.querySelector("#tabelaDoacoes tbody");
-
-  if (linhaDetalhesAberta) {
-    linhaDetalhesAberta.remove();
-    linhaDetalhesAberta = null;
-  }
-
-  if (linha.nextSibling && linha.nextSibling.classList.contains("linha-detalhes")) {
-    return;
-  }
+  // Remove modal antigo, se existir
+  const old = document.getElementById("modalDetalhesDoacao");
+  if (old) old.remove();
 
   try {
     const resp = await fetch(`http://localhost:8080/api/doacao/${doaCod}/itens`);
-    if (!resp.ok) throw new Error("Erro HTTP " + resp.status);
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
 
     const itens = await resp.json();
-
     if (!Array.isArray(itens) || itens.length === 0) {
-      msg("Nenhum item vinculado a esta doação.", "warning");
-      return;
+      return msg("Nenhum item encontrado para esta doação.", "warning");
     }
 
-    const trDetalhes = document.createElement("tr");
-    trDetalhes.classList.add("linha-detalhes");
-
-    let htmlTabela = `
-      <td colspan="5">
-        <div class="p-3" style="background:#f7f7f7; border-radius:6px;">
-          <h6 class="mb-3"><i class="bi bi-box"></i> Itens da Doação ${doaCod}</h6>
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Produto</th>
-                <th class="text-end">Quantidade</th>
-              </tr>
-            </thead>
-            <tbody>
-    `;
+    // Montar linhas da tabela
+    let linhas = "";
+    let totalQtd = 0;
 
     itens.forEach(it => {
-      htmlTabela += `
+      const qtd = Number(it.quantidade ?? it.qtd ?? 0);
+      totalQtd += qtd;
+
+      linhas += `
         <tr>
           <td>${it.produto}</td>
-          <td class="text-end">${it.quantidade}</td>
+          <td class="text-end">${qtd}</td>
         </tr>
       `;
     });
 
-    htmlTabela += `
-            </tbody>
-          </table>
-          <button class="btn btn-secondary btn-sm" onclick="fecharDetalhes()">
-            <i class="bi bi-chevron-up"></i> Fechar
-          </button>
+    // Criar modal
+    const modalHTML = `
+<div class="modal fade" id="modalDetalhesDoacao" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-box-seam"></i> Detalhes da Doação #${doaCod}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <table class="table table-sm table-bordered align-middle">
+          <thead class="table-danger">
+            <tr>
+              <th>Produto</th>
+              <th class="text-end">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${linhas}
+          </tbody>
+        </table>
+
+        <div class="text-end fw-bold mt-2">
+          Total de Itens: ${totalQtd}
         </div>
-      </td>
-    `;
 
-    trDetalhes.innerHTML = htmlTabela;
+      </div>
 
-    tabela.insertBefore(trDetalhes, linha.nextSibling);
-    linhaDetalhesAberta = trDetalhes;
-    msg("Itens carregados!", "success", { timeoutMs: 1500 });
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle"></i> Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+`;
+
+    // Inserir na página
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    // Abrir modal
+    const modal = new bootstrap.Modal(document.getElementById("modalDetalhesDoacao"));
+    modal.show();
 
   } catch (e) {
     console.error(e);
     msg("Erro ao carregar itens da doação.", "danger");
   }
 }
+
+
+async function excluirDoacao(doaCod) {
+  if (!confirm("Deseja realmente excluir esta doação?")) return;
+
+  try {
+    const resp = await fetch(`http://localhost:8080/api/doacao/${doaCod}`, {
+      method: "DELETE"
+    });
+
+    if (!resp.ok) throw new Error("Erro ao excluir");
+
+    msg("Doação excluída com sucesso!", "success");
+
+    // Atualiza a tabela
+    carregarDoacoes();
+
+  } catch (e) {
+    console.error(e);
+    msg("Erro ao excluir a doação.", "danger");
+  }
+}
+
 
 function fecharDetalhes() {
   if (linhaDetalhesAberta) {

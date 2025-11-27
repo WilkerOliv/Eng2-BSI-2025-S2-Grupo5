@@ -713,6 +713,8 @@ async function salvarItensCompra(compraCod) {
   }
 }
 
+
+
 // =====================================================
 // Eventos
 // =====================================================
@@ -770,3 +772,213 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (acao === 'cancelar-edicao') cancelarEdicao();
   });
 });
+
+// ======================================================================
+//  LISTAR COMPRAS E EXCLUIR COMPRA
+// ======================================================================
+async function carregarCompras() {
+  try {
+    const resp = await fetch("http://localhost:8080/api/compra/listar");
+    const lista = await resp.json();
+    desenharTabelaCompras(lista);
+  } catch (e) {
+    console.error(e);
+    msg("Erro ao carregar compras.", "danger");
+  }
+}
+
+function desenharTabelaCompras(lista) {
+  const tbody = el("#tabelaCompras tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  lista.forEach(compra => {
+
+    const codigo = compra.compra_cod;
+    const data   = compra.data_compra;
+    const func   = compra.funcionario ?? "-";
+
+    // Se quiser mostrar o CPF inteiro:
+    const funcionarioExibicao = func;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${codigo}</td>
+      <td>${data}</td>
+      <td>R$ 0,00</td>  <!-- total não vem do backend ainda -->
+      <td>${funcionarioExibicao}</td>
+
+      <td class="text-center">
+        <button class="btn btn-sm btn-primary me-1"
+                data-acao="ver-compra" data-id="${codigo}">
+          <i class="bi bi-eye"></i> Ver
+        </button>
+
+        <button class="btn btn-sm btn-danger"
+                data-acao="excluir-compra" data-id="${codigo}">
+          <i class="bi bi-trash"></i> Excluir
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+
+// ======================================================================
+//  MODAL — Detalhes da Compra
+// ======================================================================
+async function abrirDetalhesCompra(compraCod) {
+  if (!compraCod) return msg("Código inválido.", "danger");
+
+  // Remove modal antigo se já existir
+  const old = document.getElementById("modalDetalhesCompra");
+  if (old) old.remove();
+
+  try {
+    const resp = await fetch(`http://localhost:8080/api/compra/${compraCod}/itens`);
+    if (!resp.ok) throw new Error("Erro HTTP " + resp.status);
+
+    const itens = await resp.json();
+    if (!Array.isArray(itens) || itens.length === 0) {
+      return msg("Nenhum item encontrado para esta compra.", "warning");
+    }
+
+    let linhas = "";
+    let totalQtd = 0;
+    let totalValor = 0;
+
+    itens.forEach(it => {
+      const qtd = Number(it.quantidade ?? 0);
+      const val = Number(it.valorUnit ?? it.valor ?? 0);
+      const prod = it.produto ?? it.descricao ?? "Produto";
+
+      totalQtd += qtd;
+      totalValor += qtd * val;
+
+      linhas += `
+        <tr>
+          <td>${prod}</td>
+          <td class="text-end">${qtd}</td>
+          <td class="text-end">R$ ${fmt(val)}</td>
+          <td class="text-end">R$ ${fmt(qtd * val)}</td>
+        </tr>
+      `;
+    });
+
+    const modalHTML = `
+<div class="modal fade" id="modalDetalhesCompra" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-receipt"></i> Detalhes da Compra #${compraCod}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <table class="table table-sm table-bordered align-middle">
+          <thead class="table-danger">
+            <tr>
+              <th>Produto</th>
+              <th class="text-end">Qtd</th>
+              <th class="text-end">V. Unit</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${linhas}
+          </tbody>
+        </table>
+
+        <div class="text-end fw-bold mt-2">
+          Total de Itens: ${totalQtd}<br>
+          Total Geral: R$ ${fmt(totalValor)}
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle"></i> Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+`;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    const modal = new bootstrap.Modal(document.getElementById("modalDetalhesCompra"));
+    modal.show();
+
+  } catch (err) {
+    console.error(err);
+    msg("Erro ao carregar itens da compra.", "danger");
+  }
+}
+
+
+// ======================================================================
+//  BOTÃO DE EXCLUIR COMPRA
+// ======================================================================
+async function excluirCompra(id) {
+  if (!id) return msg("ID da compra é inválido.", "danger");
+
+  const confirmar = confirm(`Tem certeza que deseja excluir a compra #${id}?`);
+  if (!confirmar) return;
+
+  try {
+    const resp = await fetch(`http://localhost:8080/api/compra/${id}`, {
+      method: "DELETE"
+    });
+
+    if (resp.ok) {
+      msg(`Compra ${id} excluída com sucesso.`, "success");
+      carregarCompras();
+    } else {
+      msg("Erro ao excluir compra. Ela pode ter itens associados.", "danger");
+    }
+
+  } catch (e) {
+    console.error("Erro ao excluir compra:", e);
+    msg("Falha na comunicação com o backend.", "danger");
+  }
+}
+
+// ======================================================================
+//  EVENTO DA TABELA DE COMPRAS
+// ======================================================================
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Carregar compras ao abrir
+  carregarCompras();
+
+  // Delegação: detectar cliques nos botões da tabela
+el("#tabelaCompras")?.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const acao = btn.dataset.acao;
+  const id   = btn.dataset.id;
+
+  if (acao === "excluir-compra") {
+    excluirCompra(id);
+  }
+
+  if (acao === "ver-compra") {
+    abrirDetalhesCompra(id);
+  }
+});
+
+
+});
+

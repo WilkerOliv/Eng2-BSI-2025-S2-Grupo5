@@ -42,6 +42,121 @@ public class DoacaoDAO {
         }
     }
 
+    public boolean excluirDoacao(int doaCod, Connection conn) {
+
+        try {
+            // -----------------------------
+            // 1) BUSCAR TODOS OS ITENS DA DOAÇÃO
+            // -----------------------------
+            String SQL_ITENS = """
+            SELECT produto_prod_cod, doa_prod_qtd
+            FROM doacao_produto
+            WHERE doacao_doa_cod = ?
+        """;
+
+            PreparedStatement stmtItens = conn.prepareStatement(SQL_ITENS);
+            stmtItens.setInt(1, doaCod);
+            ResultSet rs = stmtItens.executeQuery();
+
+            EstoqueDAO estoqueDAO = new EstoqueDAO();
+
+            // -----------------------------
+            // 2) PARA CADA ITEM → REMOVER DO ESTOQUE
+            // -----------------------------
+            while (rs.next()) {
+                int prodCod = rs.getInt("produto_prod_cod");
+                int qtd = rs.getInt("doa_prod_qtd");
+
+                removerDoEstoque(prodCod, qtd, conn);
+            }
+
+            // -----------------------------
+            // 3) EXCLUIR TODOS OS ITENS DA DOAÇÃO
+            // -----------------------------
+            String SQL_DEL_ITENS = "DELETE FROM doacao_produto WHERE doacao_doa_cod = ?";
+            PreparedStatement stmtDelItens = conn.prepareStatement(SQL_DEL_ITENS);
+            stmtDelItens.setInt(1, doaCod);
+            stmtDelItens.executeUpdate();
+
+            // -----------------------------
+            // 4) EXCLUIR A DOAÇÃO PRINCIPAL
+            // -----------------------------
+            String SQL_DEL_DOACAO = "DELETE FROM doacao WHERE doa_cod = ?";
+            PreparedStatement stmtDelDoa = conn.prepareStatement(SQL_DEL_DOACAO);
+            stmtDelDoa.setInt(1, doaCod);
+
+            return stmtDelDoa.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private void removerDoEstoque(int prodCod, int qtd, Connection conn) {
+
+        try {
+
+            String SQL_SELECT = """
+            SELECT est_prod_quantidade, data_validade
+            FROM estoque
+            WHERE produto_prod_cod = ?
+            ORDER BY data_validade NULLS LAST
+        """;
+
+            PreparedStatement stmt = conn.prepareStatement(SQL_SELECT);
+            stmt.setInt(1, prodCod);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next() && qtd > 0) {
+
+                int qtdEstoque = rs.getInt("est_prod_quantidade");
+                LocalDate validade = rs.getDate("data_validade") != null
+                        ? rs.getDate("data_validade").toLocalDate()
+                        : null;
+
+                int remover = Math.min(qtd, qtdEstoque);
+                int novoValor = qtdEstoque - remover;
+
+                PreparedStatement upd;
+
+                if (validade != null) {
+                    // UPDATE com validade definida
+                    String SQL_UPDATE = """
+                    UPDATE estoque
+                    SET est_prod_quantidade = ?
+                    WHERE produto_prod_cod = ?
+                    AND data_validade = ?
+                """;
+
+                    upd = conn.prepareStatement(SQL_UPDATE);
+                    upd.setInt(1, novoValor);
+                    upd.setInt(2, prodCod);
+                    upd.setDate(3, java.sql.Date.valueOf(validade));
+
+                } else {
+                    // UPDATE quando data_validade é NULL
+                    String SQL_UPDATE = """
+                    UPDATE estoque
+                    SET est_prod_quantidade = ?
+                    WHERE produto_prod_cod = ?
+                    AND data_validade IS NULL
+                """;
+
+                    upd = conn.prepareStatement(SQL_UPDATE);
+                    upd.setInt(1, novoValor);
+                    upd.setInt(2, prodCod);
+                }
+
+                upd.executeUpdate();
+                qtd -= remover;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public List<DoacaoDTO> getAllDoacoes(Connection conn) {
 
         List<DoacaoDTO> lista = new ArrayList<>();

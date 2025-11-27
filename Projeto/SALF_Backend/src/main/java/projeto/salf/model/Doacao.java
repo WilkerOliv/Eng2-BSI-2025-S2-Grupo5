@@ -54,6 +54,12 @@ public class Doacao implements Serializable {
         return dao.getAllDoacoes(conn);
     }
 
+    public boolean excluirDoacao(int doaCod, Connection conn) {
+        DoacaoDAO dao = new DoacaoDAO();
+        return dao.excluirDoacao(doaCod, conn);
+    }
+
+
     public List<ItemDoacaoDTO> getItensDoacao(int idDoacao, Connection conn) {
         DoacaoDAO dao = new DoacaoDAO();
         return dao.getItensPorDoacao(idDoacao, conn);

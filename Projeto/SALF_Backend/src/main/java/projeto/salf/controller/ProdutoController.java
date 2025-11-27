@@ -14,13 +14,15 @@ import java.util.List;
 public class ProdutoController {
 
     @GetMapping("/lista")
-    public ResponseEntity<List<Produto>> getListProdutos() {
+    public ResponseEntity<?> getListProdutos() {
+
+        Connection conn = null;
 
         try {
-            Connection conn = SingletonDB.getConexao().getConnect();
+            conn = SingletonDB.getConexao().getConnect();
+            conn.setAutoCommit(true); // GET NÃO ALTERA BANCO
 
             Produto produto = new Produto();
-
             List<Produto> produtos = produto.getLista(conn);
 
             return ResponseEntity.ok(produtos);
@@ -28,6 +30,14 @@ public class ProdutoController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
+
+        } finally {
+            try {
+                if (conn != null)
+                    conn.setAutoCommit(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

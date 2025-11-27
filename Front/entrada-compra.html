@@ -9,18 +9,37 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
 
-  <!-- Estilos globais do sistema -->
+  <!-- Estilos globais -->
   <link href="css/style.css" rel="stylesheet"/>
   <link href="principal.css" rel="stylesheet"/>
 
-  <!-- Estilo específico da tela de entrada de compras -->
+  <!-- Estilo próprio -->
   <link href="entrada-compra.css" rel="stylesheet"/>
+
+  <style>
+    /* Barra fixa no mobile */
+    @media (max-width: 576px) {
+      .actions-bar {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        box-shadow: 0 -4px 12px rgba(0,0,0,.06);
+        padding: .75rem;
+        z-index: 40;
+        gap: .5rem !important;
+      }
+      .actions-bar .btn { width: 100%; }
+    }
+    .page-wrapper { padding-bottom: 1rem; }
+  </style>
 </head>
+
 <body>
 
+  <!-- NAVBAR -->
   <nav class="navbar salf-navbar">
     <div class="container-fluid justify-content-between">
-      <a class="navbar-brand text-white text-decoration-none" href="index.html">
+      <a class="navbar-brand text-white d-flex align-items-center gap-2 text-decoration-none" href="index.html">
         <img alt="Logo Lar Santa Filomena" class="logo" src="larSantaFilomena.png"/>
         <div>
           <div>SALF - Lar Santa Filomena</div>
@@ -35,63 +54,45 @@
         </div>
         <div class="navbar-user">
           <i class="bi bi-person-badge"></i>
-          <span id="usuario-logado">Fulano da Silva</span>
+          <span id="usuario-logado">Operador</span>
         </div>
       </div>
     </div>
   </nav>
 
   <div class="main-container">
+
+    <!-- SIDEBAR -->
     <div class="sidebar">
       <h5><i class="bi bi-grid-3x3-gap"></i> Módulos do Sistema</h5>
 
-      <button class="nav-btn" id="btn-home" onclick="window.location.href='index.html'">
+      <a class="nav-btn" href="index.html">
         <i class="bi bi-house-heart"></i> Dashboard
-      </button>
+      </a>
 
       <div class="module-divider">
         <small><i class="bi bi-box"></i> CONTROLE DE ESTOQUE</small>
       </div>
 
-      <button class="nav-btn" id="btn-entrada" onclick="window.location.href='index.html#entrada';">
+      <a class="nav-btn" href="entrada-doacao.html">
         <i class="bi bi-box-arrow-in-down"></i> Entrada de Doações
-      </button>
+      </a>
 
-      <button class="nav-btn" id="btn-saida" onclick="window.location.href='index.html#saida';">
-        <i class="bi bi-box-arrow-up"></i> Saída para Carentes
-      </button>
-
-      <button class="nav-btn" id="btn-lista-entrada" onclick="window.location.href='index.html#lista-entrada';">
-        <i class="bi bi-list-check"></i> Histórico Entradas
-      </button>
-
-      <button class="nav-btn" id="btn-lista-saida" onclick="window.location.href='index.html#lista-saida';">
-        <i class="bi bi-list-ul"></i> Histórico Saídas
-      </button>
-
-      <a class="nav-btn active" id="btn-entrada-compra" href="entrada-compra.html">
+      <a class="nav-btn active" href="entrada-compra.html">
         <i class="bi bi-pencil-square"></i> Entrada de Compras
       </a>
 
-      <div class="module-development">
-        <small><i class="bi bi-cart3"></i> EM DESENVOLVIMENTO</small>
-      </div>
+      <a class="nav-btn" href="saida-carente.html">
+        <i class="bi bi-box-arrow-up"></i> Saída para Carentes
+      </a>
 
-      <button class="nav-btn" onclick="mostrarAviso('Módulo em desenvolvimento')" style="opacity: 0.6;">
-        <i class="bi bi-currency-dollar"></i> Cotações
-      </button>
+      <a class="nav-btn" href="historico-entradas.html">
+        <i class="bi bi-list-check"></i> Histórico Entradas
+      </a>
 
-      <button class="nav-btn" onclick="mostrarAviso('Módulo em desenvolvimento')" style="opacity: 0.6;">
-        <i class="bi bi-basket3"></i> Cestas Básicas
-      </button>
-
-      <button class="nav-btn" onclick="mostrarAviso('Módulo em desenvolvimento')" style="opacity: 0.6;">
-        <i class="bi bi-people"></i> Cadastro Pessoas
-      </button>
-
-      <button class="nav-btn" onclick="mostrarAviso('Módulo em desenvolvimento')" style="opacity: 0.6;">
-        <i class="bi bi-graph-up"></i> Relatórios
-      </button>
+      <a class="nav-btn" href="historico-saidas.html">
+        <i class="bi bi-list-ul"></i> Histórico Saídas
+      </a>
 
       <hr style="margin: 2rem 0; border-color: var(--salf-red);"/>
 
@@ -99,164 +100,134 @@
         <h6><i class="bi bi-shield-check"></i> Sistema SALF</h6>
         <small>Versão 1.0 Beta</small><br/>
         <small><i class="bi bi-circle-fill text-success"></i> Operacional</small><br/>
-        <small style="margin-top: 0.5rem; display: block;">
-          <i class="bi bi-clock"></i> <span id="last-update">Atualizado hoje</span>
+        <small style="margin-top:.5rem; display:block;">
+          <i class="bi bi-clock"></i> Atualizado hoje
         </small>
       </div>
     </div>
 
+    <!-- CONTEÚDO -->
     <div class="content">
       <main class="page-wrapper">
 
         <div id="mensagens" class="mb-3"></div>
 
-        <div class="mb-4">
-          <h2 class="h4 mb-1">
-            <i class="bi bi-pencil-square text-danger"></i>
-            Entrada de Compras
-          </h2>
-          <p class="text-muted mb-0 page-subtitle">
-            Informe os itens recebidos e confirme a entrada no estoque.
-          </p>
-        </div>
+        <h2 class="h4 mb-1">
+          <i class="bi bi-pencil-square text-danger"></i>
+          Entrada de Compras
+        </h2>
+        <p class="text-muted mb-4">Informe os itens recebidos e confirme a entrada no estoque.</p>
 
+        <!-- CARD — Dados da Compra -->
         <div class="card mb-4">
           <div class="card-header bg-light card-header-flex">
             <i class="bi bi-receipt-cutoff text-danger"></i>
             <span>Dados da Compra</span>
           </div>
+
           <div class="card-body">
             <div class="row g-3">
 
               <div class="col-md-3">
-                <label for="dataCompra" class="form-label required">Data da Compra</label>
-                <input type="date" class="form-control" id="dataCompra">
+                <label class="form-label required">Data da Compra</label>
+                <input type="date" id="dataCompra" class="form-control"/>
               </div>
 
               <div class="col-md-3">
-                <label for="funcionarioCpf" class="form-label required">Funcionário (CPF / Código)</label>
+                <label class="form-label required">Funcionário (CPF / Código)</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="funcionarioCpf" placeholder="000.000.000-00">
-                  <button class="btn btn-outline-secondary" id="btnBuscarFuncionario" type="button">
+                  <input class="form-control" id="funcionarioCpf" placeholder="000.000.000-00"/>
+                  <button id="btnBuscarFuncionario" class="btn btn-outline-secondary">
                     <i class="bi bi-search"></i>
                   </button>
                 </div>
-                <small class="text-muted">Responsável pelo registro da compra</small>
+                <small class="text-muted">Responsável pelo registro</small>
               </div>
 
               <div class="col-md-3">
-                <label for="funcionarioNome" class="form-label">Nome do Funcionário</label>
-                <input type="text" class="form-control" id="funcionarioNome" placeholder="-" disabled>
+                <label class="form-label">Nome do Funcionário</label>
+                <input class="form-control" id="funcionarioNome" disabled placeholder="—"/>
               </div>
 
               <div class="col-md-3">
-                <label class="form-label required d-block">Origem da Compra</label>
+                <label class="form-label required">Origem da Compra</label>
 
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="origemCompra" id="origemDireta" value="direta" checked>
-                  <label class="form-check-label" for="origemDireta">
-                    Compra direta (sem cotação)
-                  </label>
+                  <input class="form-check-input" type="radio" name="origemCompra" value="direta" checked/>
+                  <label class="form-check-label">Compra direta</label>
                 </div>
 
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="origemCompra" id="origemCotacao" value="cotacao">
-                  <label class="form-check-label" for="origemCotacao">
-                    Compra via cotação
-                  </label>
+                  <input class="form-check-input" type="radio" name="origemCompra" value="cotacao"/>
+                  <label class="form-check-label">Via cotação</label>
                 </div>
               </div>
+
             </div>
 
-            <hr class="my-4"/>
+            <hr/>
 
+            <!-- Compra Direta -->
             <div id="blocoDireta" class="row g-3">
               <div class="col-md-4">
-                <label for="fornecedorDireto" class="form-label required">Fornecedor</label>
-                <select class="form-select" id="fornecedorDireto">
-                  <option value="" selected disabled>Selecione...</option>
+                <label class="form-label required">Fornecedor</label>
+                <select id="fornecedorDireto" class="form-select">
+                  <option selected disabled>Selecione...</option>
                 </select>
-              </div>
-              <div class="col-md-8">
-                <small class="text-muted d-block mt-4">
-                  Compra feita direto com o fornecedor, sem processo formal de cotação.
-                </small>
               </div>
             </div>
 
+            <!-- Compra via Cotação -->
             <div id="blocoCotacao" class="row g-3 d-none">
               <div class="col-md-3">
-                <label for="cotacaoId" class="form-label required">Cotação</label>
-                <select class="form-select" id="cotacaoId"></select>
+                <label class="form-label required">Cotação</label>
+                <select id="cotacaoId" class="form-select"></select>
               </div>
 
               <div class="col-md-4">
-                <label for="fornecedorCotacao" class="form-label required">Fornecedor da Cotação</label>
-                <select class="form-select" id="fornecedorCotacao">
-                  <option value="" selected disabled>Selecione...</option>
-                </select>
-              </div>
-
-              <div class="col-md-5">
-                <small class="text-muted d-block mt-4">
-                  Essa compra será vinculada à proposta desse fornecedor nessa cotação.
-                </small>
+                <label class="form-label required">Fornecedor da Cotação</label>
+                <select id="fornecedorCotacao" class="form-select"></select>
               </div>
             </div>
 
           </div>
         </div>
 
+        <!-- CARD — Itens Recebidos -->
         <div class="card mb-4">
           <div class="card-header bg-light card-header-flex">
             <i class="bi bi-bag-plus text-danger"></i>
             <span>Itens Recebidos</span>
           </div>
+
           <div class="card-body">
+
             <div class="row g-3 align-items-end">
 
               <div class="col-md-4">
-  <label for="listaProdutos" class="form-label required">Produto</label>
+                <label class="form-label required">Produto</label>
 
-  <!-- Campo de busca idêntico do Entrada de Doações -->
-<div class="col-12 col-md-5">
-  <label class="form-label required">Produto</label>
+                <!-- Campo de busca igual o da doação -->
+                <input id="buscaProdutoCompra" class="form-control mb-2" placeholder="🔍 Buscar produto..."/>
 
-  <input type="text" id="buscaProdutoCompra"
-    class="form-control mb-2"
-    placeholder="🔍 Buscar produto..."
-  />
-
-  <select id="listaProdutos" class="form-select">
-    <option disabled selected>Carregando...</option>
-  </select>
-</div>
-
-
-  <select class="form-select mt-2" id="listaProdutos">
-    <option value="" selected disabled>Selecione...</option>
-  </select>
-</div>
-
-
-              <div class="col-md-2">
-                <label for="quantidade" class="form-label required">Qtd</label>
-                <input type="number" min="1" class="form-control" id="quantidade">
+                <select id="listaProdutos" class="form-select">
+                  <option disabled selected>Carregando...</option>
+                </select>
               </div>
 
               <div class="col-md-2">
-                <label for="valorUnit" class="form-label required">Valor Unit (R$)</label>
-                <input type="number" min="0" step="0.01" class="form-control" id="valorUnit">
+                <label class="form-label required">Qtd</label>
+                <input type="number" id="quantidade" min="1" class="form-control text-end"/>
+              </div>
+
+              <div class="col-md-2">
+                <label class="form-label required">Valor Unit (R$)</label>
+                <input type="number" id="valorUnit" min="0" step="0.01" class="form-control text-end"/>
               </div>
 
               <div class="col-md-3">
-                <div class="lote-fields">
-                  <label for="validade" class="form-label required mb-1">Validade do Lote</label>
-                  <input type="date" class="form-control form-control-sm" id="validade">
-                  <small class="text-muted lote-hint">
-                    Obrigatório porque o campo data_validade em estoque é NOT NULL.
-                  </small>
-                </div>
+                <label class="form-label required">Validade</label>
+                <input type="date" id="validade" class="form-control"/>
               </div>
 
               <div class="col-md-1 d-grid">
@@ -264,6 +235,7 @@
                   <i class="bi bi-plus-circle"></i>
                 </button>
               </div>
+
             </div>
 
             <div class="table-responsive mt-4">
@@ -272,10 +244,10 @@
                   <tr>
                     <th>Produto</th>
                     <th class="text-end">Qtd</th>
-                    <th class="text-end">Val.Unit (R$)</th>
-                    <th class="text-end">Subtotal (R$)</th>
+                    <th class="text-end">Val.Unit</th>
+                    <th class="text-end">Subtotal</th>
                     <th>Validade</th>
-                    <th class="text-center" style="width:140px;">Ações</th>
+                    <th class="text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -284,34 +256,60 @@
 
             <div class="d-flex justify-content-end mt-3 flex-column align-items-end">
               <div class="totais-box">
-                Total Geral da Compra: R$ <span id="totalGeralCompra">0,00</span>
+                Total Geral: R$ <span id="totalGeralCompra">0,00</span>
               </div>
-              <small class="text-muted">
-                Este valor será incluído no envio.
-              </small>
             </div>
+
           </div>
         </div>
+        
+    <!-- ============================ -->
+    <!-- LISTA DE COMPRAS REALIZADAS -->
+    <!-- ============================ -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-light card-header-flex">
+        <i class="bi bi-journal-check text-danger"></i>
+        <span>Compras Registradas</span>
+      </div>
 
-        <!-- ✅ ÚNICA ALTERAÇÃO: adição da classe actions-bar -->
-        <div class="actions-bar d-flex flex-wrap gap-2 justify-content-between mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="tabelaCompras" class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Data</th>
+                <th>Total (R$)</th>
+                <th>Funcionário</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+
+        <!-- Barra de ações -->
+        <div class="actions-bar d-flex flex-wrap justify-content-end gap-2 mb-4">
           <a href="index.html" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Voltar ao Painel
+            <i class="bi bi-arrow-left"></i> Voltar
           </a>
 
-          <div class="d-flex flex-wrap gap-2">
-            <button id="btnLimparTudo" class="btn btn-outline-warning">
-              <i class="bi bi-trash"></i> Limpar
-            </button>
+          <button id="btnLimparTudo" class="btn btn-outline-warning">
+            <i class="bi bi-eraser"></i> Limpar
+          </button>
 
-            <button id="btnSalvar" class="btn btn-success">
-              <i class="bi bi-check2-circle"></i> Confirmar Entrada
-            </button>
-          </div>
+          <button id="btnSalvar" class="btn btn-success">
+            <i class="bi bi-check2-circle"></i> Confirmar Entrada
+          </button>
         </div>
 
       </main>
     </div>
+
   </div>
 
   <div class="footer-info">
@@ -325,8 +323,7 @@
   <script>
     document.getElementById('current-date').textContent =
       new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-
-    document.getElementById('usuario-logado').textContent = 'Fulano da Silva';
   </script>
+
 </body>
 </html>

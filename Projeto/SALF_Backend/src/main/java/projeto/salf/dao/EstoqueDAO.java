@@ -79,6 +79,67 @@ public class EstoqueDAO {
         }
     }
 
+    public boolean removerItensEstoque(int quantidade, LocalDate validade, int produtoCod, Connection conn) {
+
+        try {
+            // 1) Verifica estoque existente
+            final String SQL_CHECK =
+                    "SELECT est_prod_quantidade FROM estoque " +
+                            "WHERE produto_prod_cod = ? " +
+                            (validade != null ? "AND data_validade::date = ?" : "AND data_validade IS NULL");
+
+            PreparedStatement check = conn.prepareStatement(SQL_CHECK);
+            check.setInt(1, produtoCod);
+
+            if (validade != null)
+                check.setDate(2, java.sql.Date.valueOf(validade));
+
+            ResultSet rs = check.executeQuery();
+
+            if (!rs.next()) {
+                // Nada para remover
+                return true;
+            }
+
+            int qtdAtual = rs.getInt("est_prod_quantidade");
+
+            int novaQtd = qtdAtual - quantidade;
+            if (novaQtd < 0) novaQtd = 0;
+
+            // 2) Se zerou → excluir linha
+            if (novaQtd == 0) {
+                final String SQL_DEL =
+                        "DELETE FROM estoque WHERE produto_prod_cod = ? " +
+                                (validade != null ? "AND data_validade::date = ?" : "AND data_validade IS NULL");
+
+                PreparedStatement del = conn.prepareStatement(SQL_DEL);
+                del.setInt(1, produtoCod);
+                if (validade != null)
+                    del.setDate(2, java.sql.Date.valueOf(validade));
+
+                return del.executeUpdate() > 0;
+            }
+
+            // 3) Caso contrário → atualizar quantidade
+            final String SQL_UPD =
+                    "UPDATE estoque SET est_prod_quantidade = ? " +
+                            "WHERE produto_prod_cod = ? " +
+                            (validade != null ? "AND data_validade::date = ?" : "AND data_validade IS NULL");
+
+            PreparedStatement upd = conn.prepareStatement(SQL_UPD);
+            upd.setInt(1, novaQtd);
+            upd.setInt(2, produtoCod);
+
+            if (validade != null)
+                upd.setDate(3, java.sql.Date.valueOf(validade));
+
+            return upd.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 

@@ -16,22 +16,46 @@ public class ProdutoDoacaoController {
     @PostMapping
     public ResponseEntity<?> insereProdDoacao(@RequestBody ProdutoDoacaoEstoqueDTO dto) {
 
-        try {
-            Connection conn = SingletonDB.getConexao().getConnect();
+        Connection conn = null;
 
-            DoacaoProduto dp = new DoacaoProduto();  // ← DO JEITO QUE VOCÊ QUER
+        try {
+            conn = SingletonDB.getConexao().getConnect();
+            conn.setAutoCommit(false);
+
+            DoacaoProduto dp = new DoacaoProduto();
 
             int ok = dp.inserirProdDoacao(dto, conn);
 
-            if(ok > 0){
+            conn.commit();
+            conn.setAutoCommit(true);
+
+            if (ok > 0) {
                 return ResponseEntity.ok().build();
             }
 
             return ResponseEntity.badRequest().build();
 
         } catch (Exception e) {
+
             e.printStackTrace();
+
+            try {
+                if (conn != null)
+                    conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             return ResponseEntity.internalServerError().build();
+
+        } finally {
+            try {
+                if (conn != null)
+                    conn.setAutoCommit(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
 }

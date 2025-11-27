@@ -6,6 +6,8 @@ import projeto.salf.dao.CompraDAO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "compra")
@@ -71,4 +73,20 @@ public class Compra implements Serializable {
         CompraDAO dao = new CompraDAO();
         return dao.insereItens(itensCompra, validade, conn);
     }
+
+    public List<Map<String, Object>> listarCompras(Connection conn) {
+        CompraDAO dao = new CompraDAO();
+        return dao.listarCompras(conn);
+    }
+
+    public List<Map<String, Object>> listarItens(int compraCod, Connection conn) {
+        CompraDAO dao = new CompraDAO();
+        return dao.listarItensCompra(compraCod, conn);
+    }
+
+    public boolean excluirCompra(int compraCod, Connection conn) {
+        CompraDAO dao = new CompraDAO();
+        return dao.excluirCompra(compraCod, conn);
+    }
+
 }
