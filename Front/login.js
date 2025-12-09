@@ -1,44 +1,44 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");
-  if (!form) {
-    console.error('Form "#loginForm" não encontrado no DOM.');
-    return;
-  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email")?.value ?? "";
-    const senha = document.getElementById("senha")?.value ?? "";
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value.trim();
 
     const msg = document.getElementById("msg");
     const err = document.getElementById("error");
-    if (msg) msg.textContent = "";
-    if (err) err.textContent = "";
+
+    msg.textContent = "";
+    err.textContent = "";
 
     try {
-      const r = await fetch("http://localhost:8080/api/funcionarios/login", {
+      const resp = await fetch("http://localhost:8080/apis/login", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ email, senha }).toString()
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
       });
 
-      if (r.ok) {
-        const func = await r.json();
-        if (msg) msg.textContent = `Bem-vindo, ${func.funcNome || func.nome || "usuário"}!`;
-        window.location.href = "parametrizacao.html";
-      } else if (r.status === 401) {
-        if (err) err.textContent = "Senha incorreta.";
-      } else if (r.status === 404) {
-        if (err) err.textContent = "Funcionário não encontrado.";
+      const json = await resp.json();
+
+      if (json.sucesso) {
+        msg.textContent = json.mensagem;
+
+        localStorage.setItem("funcionarioCpf", json.func.cpf);
+        localStorage.setItem("funcionarioNome", json.func.nome);
+        localStorage.setItem("tipoAcesso", json.func.tipoAcesso);
+
+        setTimeout(() => {
+          window.location.href = "parametrizacao.html";
+        }, 500);
+
       } else {
-        if (err) err.textContent = "Erro no login.";
+        err.textContent = json.mensagem;
       }
     } catch (e2) {
-      if (err) err.textContent = "Erro de conexão com o servidor.";
       console.error(e2);
+      err.textContent = "Falha ao conectar ao servidor.";
     }
   });
 });
-

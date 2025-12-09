@@ -1,85 +1,132 @@
-// utils.js
+
+//  Valida se um campo obrigatório foi preenchido.
+function validarCampoObrigatorio(campo, nome) {
+  const valor = campo.value.trim();
+  if (valor === "") {
+    exibirMensagem("error", `O campo "${nome}" é obrigatório.`);
+    campo.focus();
+    return false;
+  }
+  return true;
+}
+
+// Valida se um número é positivo ou não nulo.
+function validarNumeroPositivo(valor, nomeCampo) {
+  const numero = parseFloat(valor);
+  if (isNaN(numero) || numero <= 0) {
+    exibirMensagem("error", `O campo "${nomeCampo}" deve ser um número positivo.`);
+    return false;
+  }
+  return true;
+}
+
+// Impede datas antigas
+function validarDataFutura(campo) {
+  const valor = campo.value;
+  if (!valor) return false;
+
+  const hoje = new Date();
+  const dataSelecionada = new Date(valor + "T00:00:00");
+  hoje.setHours(0, 0, 0, 0);
+
+  if (dataSelecionada < hoje) {
+    exibirMensagem("error", "A data informada não pode ser anterior à data atual.");
+    campo.focus();
+    return false;
+  }
+  return true;
+}
+
+ // Exibe mensagens visuais de sucesso, erro ou informação.
+function exibirMensagem(tipo, texto) {
+  let classe = "alert-info";
+  if (tipo === "success") classe = "alert-success";
+  if (tipo === "error") classe = "alert-danger";
+
+  let container = document.getElementById("mensagem-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "mensagem-container";
+    container.style.position = "fixed";
+    container.style.top = "15px";
+    container.style.right = "15px";
+    container.style.zIndex = "9999";
+    document.body.appendChild(container);
+  }
+
+  const alerta = document.createElement("div");
+  alerta.className = `alert ${classe} shadow-sm alert-wilker`;
+  alerta.role = "alert";
+  alerta.textContent = texto;
+
+  container.appendChild(alerta);
+  setTimeout(() => alerta.remove(), 4000);
+}
+
+// Limpa o container de mensagens.
+function limparMensagens() {
+  const container = document.getElementById("mensagem-container");
+  if (container) container.innerHTML = "";
+}
+
+/* ---------------------- Utils Namespace ---------------------- */
 
 const Utils = (function () {
 
-  // Cria alerta Bootstrap dentro de um container
   function showAlert(container, type, message) {
-    if (!container) return;
-
+    // Cria alerta Bootstrap customizado dentro de um container
     const div = document.createElement("div");
     div.className = "alert alert-" + type + " alert-wilker";
     div.setAttribute("role", "alert");
     div.innerText = message;
 
     // Remove alertas anteriores
-    container.querySelectorAll(".alert-wilker").forEach(el => el.remove());
+    const prev = container.querySelectorAll(".alert-wilker");
+    prev.forEach(p => p.remove());
     container.prepend(div);
 
-    // Auto-fechar em 5s
+    // Auto-fechar após 5s
     setTimeout(() => {
-      div.remove();
+      try { div.remove(); } catch (e) {}
     }, 5000);
   }
 
-  function limparErro(errorDiv) {
-    if (!errorDiv) return;
-    errorDiv.style.display = "none";
-    errorDiv.innerText = "";
+  function isEmpty(val) {
+    return val === null || val === undefined || (typeof val === "string" && val.trim() === "");
   }
 
-  function exibirErro(errorDiv, mensagem) {
-    if (!errorDiv) return;
-    errorDiv.style.display = "block";
-    errorDiv.innerText = mensagem;
-  }
-
-  // Campo obrigatório
-  function validarObrigatorio(input, errorDiv, nomeCampo) {
-    limparErro(errorDiv);
-    if (!input) return false;
-    const valor = input.value.trim();
-    if (valor === "") {
-      exibirErro(errorDiv, `O campo "${nomeCampo}" é obrigatório.`);
-      input.focus();
-      return false;
+  function validarObrigatorio(value, fieldName) {
+    if (isEmpty(value)) {
+      return fieldName + " é obrigatório.";
     }
-    return true;
+    return null;
   }
 
-  // Número positivo
-  function validarNumeroPositivo(input, errorDiv, nomeCampo) {
-    limparErro(errorDiv);
-    if (!input) return false;
-    const valor = input.value.trim();
-    const numero = parseFloat(valor);
-    if (isNaN(numero) || numero <= 0) {
-      exibirErro(errorDiv, `O campo "${nomeCampo}" deve ser um número positivo.`);
-      input.focus();
-      return false;
+  function validarNumeroPositivo(value, fieldName) {
+    if (value === null || value === undefined || value === "") return null;
+    const n = Number(value);
+    if (Number.isNaN(n)) return fieldName + " deve ser um número válido.";
+    if (n < 0) return fieldName + " não pode ser negativo.";
+    return null;
+  }
+
+  function validarDataNaoPassada(value, fieldName) {
+    if (isEmpty(value)) return null;
+    const inputDate = new Date(value);
+    inputDate.setHours(0, 0, 0, 0);
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    if (inputDate < hoje) {
+      return fieldName + " não pode ser uma data passada.";
     }
-    return true;
+    return null;
   }
 
-  // Data não vazia (se quiser, pode adaptar para não aceitar data futura/passada)
-  function validarDataNaoVazia(input, errorDiv, nomeCampo) {
-    limparErro(errorDiv);
-    if (!input) return false;
-    const valor = input.value;
-    if (!valor) {
-      exibirErro(errorDiv, `O campo "${nomeCampo}" é obrigatório.`);
-      input.focus();
-      return false;
-    }
-    return true;
-  }
-
-  // Tratamento simples para "wildcards" com asterisco (*)
   function limparAsteriscos(termo) {
     if (!termo) return "";
     return termo.replace(/\*/g, "").trim();
   }
 
-  // Verifica se "text" contém "pattern" (insensível a maiúsc./minúsc.)
   function matchesPattern(text, pattern) {
     if (!pattern) return true;
     const p = limparAsteriscos(pattern).toLowerCase();
@@ -87,14 +134,12 @@ const Utils = (function () {
     return text && text.toLowerCase().includes(p);
   }
 
-  // Filtra uma lista por um campo texto (ex.: "catDescr")
   function filtrarPorNome(lista, campoNome, termo) {
     const clean = limparAsteriscos(termo);
     if (clean === "") return lista.slice();
-    const lower = clean.toLowerCase();
     return lista.filter(item => {
-      const valor = (item[campoNome] || "").toString().toLowerCase();
-      return valor.includes(lower);
+      const val = (item[campoNome] || "").toString();
+      return matchesPattern(val, termo);
     });
   }
 
@@ -102,40 +147,8 @@ const Utils = (function () {
     showAlert,
     validarObrigatorio,
     validarNumeroPositivo,
-    validarDataNaoVazia,
-    matchesPattern,
-    filtrarPorNome
+    validarDataNaoPassada,
+    filtrarPorNome,
+    matchesPattern
   };
 })();
-
-
-
-
-
-
-
-// =============================================================
-// TOAST MODERNO COMPACTO SALF
-// =============================================================
-function toast(tipo, mensagem, duracao = 4000) {
-    let container = document.getElementById("toast-container");
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "toast-container";
-        document.body.appendChild(container);
-    }
-
-    const div = document.createElement("div");
-    div.className = `toast-salf toast-${tipo}`;
-    div.innerText = mensagem;
-
-    container.appendChild(div);
-
-    setTimeout(() => {
-        div.style.transition = "opacity 0.4s";
-        div.style.opacity = "0";
-        setTimeout(() => div.remove(), 400);
-    }, duracao);
-}
-
-Utils.toast = toast;

@@ -1,238 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Registrar Necessidade de Produtos - SALF</title>
-
-  <link href="../css/style-wilker.css" rel="stylesheet" />
-  <link href="../css/style.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-  <style>
-    .autocomplete-box{
-      border:1px solid #ccc;
-      background:#fff;
-      max-height:200px;
-      overflow-y:auto;
-      position:absolute;
-      width:100%;
-      z-index:2000;
-    }
-    .autocomplete-item{
-      padding:5px 10px;
-      cursor:pointer;
-    }
-    .autocomplete-item:hover{
-      background:#e9ecef;
-    }
-
-    .pending-table td {
-      padding: 6px !important;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Registrar Necessidades - SALF</title>
+  <link href="../css/style-wilker.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body class="bg-light">
+  <div class="container-wilker">
+    <div class="wilker-card">
+      <h3>Registrar Necessidades de Pessoas Carentes</h3>
+      <div id="alert-container"></div>
 
-<div class="container-wilker">
+      <form id="formNecessidade" class="row g-3">
+        <div class="col-md-3">
+          <label for="pessoaCpf" class="form-label form-label-required">CPF da Pessoa</label>
+          <input type="text" id="pessoaCpf" class="form-control" placeholder="00000000000">
+          <div id="pessoaCpfError" class="field-error" style="display:none;"></div>
+        </div>
 
-  <!-- ============================
-       CARD: REGISTRAR NOVA LISTA
-       ============================ -->
-  <div class="wilker-card">
-    <h3 class="mb-3">Registrar Lista de Necessidades</h3>
+        <div class="col-md-3">
+          <label for="produtoId" class="form-label form-label-required">ID do Produto</label>
+          <input type="number" id="produtoId" class="form-control" min="0">
+          <div id="produtoIdError" class="field-error" style="display:none;"></div>
+        </div>
 
-    <div id="alert-container"></div>
+        <div class="col-md-2">
+          <label for="quantidade" class="form-label form-label-required">Quantidade</label>
+          <input type="number" id="quantidade" class="form-control" min="1" value="1">
+          <div id="quantidadeError" class="field-error" style="display:none;"></div>
+        </div>
 
-    <!-- FORM PRINCIPAL -->
-    <form id="formNec" class="row g-3">
+        <div class="col-md-2">
+          <label for="data" class="form-label form-label-required">Data</label>
+          <input type="date" id="data" class="form-control">
+          <div id="dataError" class="field-error" style="display:none;"></div>
+        </div>
 
-      <!-- Pessoa Carente -->
-      <div class="col-md-6 position-relative">
-        <label class="form-label form-label-required">Buscar Pessoa Carente (CPF ou Nome)</label>
-        <input type="text" id="pcSearch" class="form-control" placeholder="Digite para buscar..." />
-        <div id="pcAutocomplete" class="autocomplete-box"></div>
+        <div class="col-md-10">
+          <label for="observacao" class="form-label">Observação</label>
+          <input type="text" id="observacao" class="form-control" placeholder="Observação (opcional)">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button id="btnSalvar" class="btn btn-wilker-primary">Salvar</button>
+          <button id="btnLimpar" type="button" class="btn btn-secondary">Limpar</button>
+        </div>
+      </form>
+
+      <hr>
+
+      <div class="search-box">
+        <input id="buscar" class="form-control" placeholder="Buscar por CPF ou observação (ex: *Alimentos*)" />
+        <button id="btnBuscar" class="btn btn-outline-primary btn-small">Buscar</button>
+        <button id="btnResetBusca" class="btn btn-outline-secondary btn-small">Limpar</button>
       </div>
 
-      <div class="col-md-3">
-        <label class="form-label">CPF Selecionado</label>
-        <input type="text" id="pcCpf" class="form-control" readonly />
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label">Data</label>
-        <input type="date" id="data" class="form-control" readonly />
-      </div>
-
-      <!-- OBSERVAÇÃO GERAL -->
-      <div class="col-md-12">
-        <label class="form-label">Observação Geral da Lista</label>
-        <input type="text" id="observacaoGeral" class="form-control" />
-      </div>
-
-      <hr class="mt-4"/>
-
-      <h5>Adicionar Item</h5>
-
-      <!-- Produto -->
-      <div class="col-md-4">
-        <label class="form-label">Categoria</label>
-        <select id="categoria" class="form-select"></select>
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label form-label-required">Produto</label>
-        <select id="produto" class="form-select"></select>
-      </div>
-
-      <div class="col-md-2">
-        <label class="form-label form-label-required">Quantidade</label>
-        <input type="number" id="quantidade" min="1" class="form-control"/>
-      </div>
-
-      <div class="col-md-2 d-flex align-items-end">
-        <button type="button" id="btnAddItem" class="btn btn-success w-100">Adicionar</button>
-      </div>
-
-      <!-- TABELA DE ITENS PENDENTES -->
-      <div class="col-md-12 mt-3" id="pendingBox" style="display:none;">
-        <h5>Itens Pendentes</h5>
-
-        <table class="table table-bordered pending-table" id="pendingTable">
+      <div class="table-responsive">
+        <table class="table-wilker table" id="tabelaNecessidades">
           <thead>
             <tr>
-              <th>Produto</th>
-              <th>Qtd</th>
-              <th>Ação</th>
+              <th>CPF Pessoa</th>
+              <th>Produto ID</th>
+              <th>Data</th>
+              <th>Quantidade</th>
+              <th>Observação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
-
-        <button type="button" id="btnSalvarLista" class="btn-wilker-primary mt-2">Salvar Lista</button>
       </div>
-
-    </form>
-  </div>
-
-  <!-- ============================
-       CARD: LISTAS EXISTENTES
-       ============================ -->
-  <div class="wilker-card">
-    <div class="search-box">
-      <input type="text" id="buscar" class="form-control" placeholder="Buscar (CPF, nome, obs)"/>
-      <button class="btn btn-outline-primary" id="btnBuscar">Buscar</button>
-      <button class="btn btn-outline-secondary" id="btnResetBusca">Limpar</button>
     </div>
-
-    <div class="table-responsive">
-      <table class="table-wilker" id="tabelaNec">
-        <thead>
-        <tr>
-          <th>CPF</th>
-          <th>Nome</th>
-          <th>Data</th>
-          <th>Observação</th>
-          <th>Ação</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <a href="../index.html" class="btn btn-link mt-2">Voltar ao menu</a>
   </div>
 
-  <!-- AÇÕES RÁPIDAS -->
-  <div class="wilker-card mt-3 d-flex flex-wrap gap-2">
-    <a href="../index.html" class="btn btn-outline-primary">Voltar para o início</a>
-    <a href="../pessoas/pessoas-carentes.html" class="btn btn-outline-primary">Cadastrar Pessoa Carente</a>
-    <a href="../produtos/produtos.html" class="btn btn-outline-primary">Cadastrar Produto</a>
-    <a href="categoria.html" class="btn btn-outline-primary">Cadastrar Categoria</a>
-  </div>
-
-</div>
-
-<!-- ================================
-     MODAL VISUALIZAR / EDITAR LISTA
-     ================================ -->
-<div class="modal fade modal-admin" id="modalEditarLista" tabindex="-1">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Editar Lista de Necessidade</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <div class="info-block">
-          <div class="info-title">Pessoa</div>
-          <div class="info-value" id="ePessoa"></div>
-        </div>
-
-        <div class="info-block">
-          <div class="info-title">CPF</div>
-          <div class="info-value" id="eCpf"></div>
-        </div>
-
-        <div class="info-block">
-          <div class="info-title">Observação Geral</div>
-          <input type="text" id="eObs" class="form-control" />
-        </div>
-
-        <h5 class="mt-4">Itens da Lista</h5>
-
-        <table class="table table-bordered" id="eTabelaItens">
-          <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Categoria</th>
-            <th>Quantidade</th>
-            <th>Ação</th>
-          </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-
-        <h5 class="mt-4">Adicionar Novo Produto</h5>
-
-        <div class="row g-3">
-
-          <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <select id="eCat" class="form-select"></select>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Produto</label>
-            <select id="eProd" class="form-select"></select>
-          </div>
-
-          <div class="col-md-2">
-            <label class="form-label">Quantidade</label>
-            <input type="number" id="eQtd" class="form-control" min="1" />
-          </div>
-
-          <div class="col-md-2 d-flex align-items-end">
-            <button id="eBtnAdd" class="btn btn-success w-100">Adicionar</button>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button id="eBtnSalvar" class="btn-wilker-primary">Salvar alterações</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-<div id="toast-container"></div>
-
-<script src="./js/utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./js/necessidades.js"></script>
-
+  <script src="./js/utils.js"></script>
+  <script src="./js/necessidades.js"></script>
 </body>
 </html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SALF - Montagem de Cesta Básica</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="principal.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar salf-navbar">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Montagem de Cesta Básica</span>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <h5 class="card-title">Informações da Cesta</h5>
+
+            <div class="mb-3">
+                <label class="form-label">Descrição da Cesta *</label>
+                <input type="text" id="descricaoCesta" class="form-control" required>
+                <div class="invalid-feedback">A descrição da cesta é obrigatória.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <h5 class="card-title">Adicionar Produto</h5>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Pesquisar produto por nome *</label>
+                    <input type="text" id="buscarProduto" class="form-control" placeholder="Digite parte do nome do produto...">
+                    <div class="invalid-feedback">Informe um nome válido.</div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Quantidade *</label>
+                    <input type="number" id="quantidadeProduto" min="1" class="form-control" required>
+                    <div class="invalid-feedback">Quantidade deve ser maior que zero.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <button class="btn btn-success w-100" onclick="adicionarProduto()">Adicionar</button>
+                </div>
+            </div>
+
+            <div id="listaBusca" class="list-group my-3" style="display:none;"></div>
+
+            <h6 class="mt-4">Produtos Adicionados</h6>
+            <table class="table table-bordered table-striped" id="tabelaItens">
+                <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Ação</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <button class="btn btn-primary mt-3" onclick="registrarCesta()">Registrar Cesta</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <h5 class="card-title">Cestas Registradas</h5>
+
+            <div class="input-group mb-3">
+                <input type="text" id="buscarCesta" class="form-control" placeholder="Buscar por descrição...">
+                <button class="btn btn-outline-primary" onclick="buscarCestas()">Buscar</button>
+            </div>
+
+            <table class="table table-striped" id="tabelaCestas">
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Total Itens</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="modalVisualizar" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes da Cesta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h6><b>Descrição:</b> <span id="visuDescricao"></span></h6>
+                <hr>
+
+                <h6>Produtos da Cesta:</h6>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                    </tr>
+                    </thead>
+                    <tbody id="visuTabelaItens"></tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="js/cesta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

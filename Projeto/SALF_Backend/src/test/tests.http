@@ -1,0 +1,11 @@
+POST http://localhost:8080/apis/doacao_pc/registrar
+Content-Type: application/json
+
+{
+  "funcCpf": "09739787835",
+  "pcCpf": "48080924848",
+  "itens": [
+    { "produtoCod": 1, "quantidade": 2 },
+    { "produtoCod": 2, "quantidade": 1 }
+  ]
+}

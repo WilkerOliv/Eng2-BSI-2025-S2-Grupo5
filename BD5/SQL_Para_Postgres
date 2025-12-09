@@ -479,16 +479,3 @@ CREATE TABLE acerto_estoque (
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-
-
-
-	
-
-ALTER TABLE necessidade_produto
-    ADD COLUMN nec_id INTEGER;
-
-
-CREATE SEQUENCE seq_nec_id START 1;
-
-ALTER TABLE necessidade_produto
-ALTER COLUMN nec_id DROP NOT NULL;

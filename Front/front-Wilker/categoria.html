@@ -1,101 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Gerenciar Categorias de Produtos - SALF</title>
-
-  <link href="../css/style-wilker.css" rel="stylesheet" />
-  <link href="../css/style.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>Gerenciar Categorias - SALF</title>
+  <link href="../css/style-wilker.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-<div class="container-wilker">
-  <div class="wilker-card">
-    <h3 class="mb-3">Categorias de Produtos</h3>
+  <div class="container-wilker">
+    <div class="wilker-card">
+      <h3>Gerenciar Categorias</h3>
+      <div id="alert-container"></div>
 
-    <!-- ALERTAS -->
-    <div id="alert-container"></div>
-
-    <!-- FORMULÁRIO -->
-    <form id="formCategoria" class="row g-3">
-
-      <input type="hidden" id="catCod" />
-
-      <div class="col-md-8">
-        <label class="form-label form-label-required" for="catDescr">Descrição da Categoria</label>
-        <input type="text" id="catDescr" class="form-control" maxlength="100" />
-        <div id="catDescrError" class="field-error" style="display:none;"></div>
-      </div>
-
-      <div class="col-md-4 d-flex align-items-end gap-2">
-        <button type="submit" id="btnSalvar" class="btn-wilker-primary">Salvar</button>
-        <button type="button" id="btnLimpar" class="btn btn-secondary">Limpar</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="wilker-card">
-    <!-- BUSCA -->
-    <div class="search-box">
-      <input type="text" id="buscar" class="form-control" placeholder="Buscar por descrição..." />
-      <button class="btn btn-outline-primary" id="btnBuscar">Buscar</button>
-      <button class="btn btn-outline-secondary" id="btnResetBusca">Limpar</button>
-    </div>
-
-    <!-- TABELA -->
-    <div class="table-responsive">
-      <table class="table-wilker" id="tabelaCategorias">
-        <thead>
-        <tr>
-          <th style="width:10%">ID</th>
-          <th>Descrição</th>
-          <th style="width:22%">Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- preenchido via JS -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-    <!-- AÇÕES RÁPIDAS -->
-<div class="wilker-card mt-3 d-flex flex-wrap gap-2">
-  <a href="../index.html" class="btn btn-outline-primary">Voltar para o inicio</a>
-  <a href="../produtos.html" class="btn btn-outline-primary">Cadastrar Produtos</a>
-</div>
-</div>
-
-<!-- MODAL VISUALIZAR CATEGORIA -->
-<div class="modal fade modal-admin" id="modalViewCat" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Visualizar Categoria</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <div class="info-block">
-          <div class="info-title">Código</div>
-          <div class="info-value" id="vcCod"></div>
+      <form id="formCategoria" class="row g-3">
+        <input type="hidden" id="catCod">
+        <div class="col-md-8">
+          <label for="catDescr" class="form-label form-label-required">Descrição</label>
+          <input type="text" id="catDescr" class="form-control" placeholder="Descrição da categoria">
+          <div id="catDescrError" class="field-error" style="display:none;"></div>
         </div>
 
-        <div class="info-block">
-          <div class="info-title">Descrição</div>
-          <div class="info-value" id="vcDesc"></div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+          <button id="btnSalvar" class="btn btn-wilker-primary">Salvar</button>
+          <button id="btnLimpar" type="button" class="btn btn-secondary">Limpar</button>
         </div>
+      </form>
+
+      <hr>
+
+      <div class="search-box">
+        <input id="buscar" class="form-control" placeholder="Buscar por nome (ex: *Bebidas*)" />
+        <button id="btnBuscar" class="btn btn-outline-primary btn-small">Buscar</button>
+        <button id="btnResetBusca" class="btn btn-outline-secondary btn-small">Limpar</button>
       </div>
 
+      <div class="table-responsive">
+        <table class="table-wilker table" id="tabelaCategorias">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Descrição</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
+    <a href="../index.html" class="btn btn-link mt-2">Voltar ao menu</a>
   </div>
-</div>
-<div id="toast-container"></div>
 
-
-<script src="./js/utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./js/categorias.js"></script>
+  <script src="./js/utils.js"></script>
+  <script src="./js/categorias.js"></script>
 </body>
 </html>

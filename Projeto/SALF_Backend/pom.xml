@@ -16,7 +16,7 @@
     <groupId>Projeto.Salf</groupId>
     <artifactId>SALF_Backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>SALF_Backend</name>
     <description>Sistema de Armazenamento Lar Filomena - Backend (versão JDBC Singleton com JSP MVC Puro)</description>
