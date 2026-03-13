@@ -645,6 +645,7 @@ if (!dataCompra) {
     // 3) Finalização
     msg('Compra concluída com sucesso!', 'success');
     limparTudo();
+    carregarCompras()
 
   } catch (e) {
     console.error(e);
@@ -810,17 +811,20 @@ function desenharTabelaCompras(lista) {
       <td>R$ 0,00</td>  <!-- total não vem do backend ainda -->
       <td>${funcionarioExibicao}</td>
 
-      <td class="text-center">
-        <button class="btn btn-sm btn-primary me-1"
-                data-acao="ver-compra" data-id="${codigo}">
-          <i class="bi bi-eye"></i> Ver
-        </button>
+     <td class="text-center">
 
-        <button class="btn btn-sm btn-danger"
-                data-acao="excluir-compra" data-id="${codigo}">
-          <i class="bi bi-trash"></i> Excluir
-        </button>
-      </td>
+  <button class="btn btn-sm btn-outline-primary me-1"
+          data-acao="ver-compra" data-id="${codigo}">
+    <i class="bi bi-eye"></i> Ver
+  </button>
+
+  <button class="btn btn-sm btn-outline-danger"
+          data-acao="excluir-compra" data-id="${codigo}">
+    <i class="bi bi-trash"></i>
+  </button>
+
+</td>
+
     `;
 
     tbody.appendChild(tr);
@@ -851,23 +855,28 @@ async function abrirDetalhesCompra(compraCod) {
     let totalQtd = 0;
     let totalValor = 0;
 
-    itens.forEach(it => {
-      const qtd = Number(it.quantidade ?? 0);
-      const val = Number(it.valorUnit ?? it.valor ?? 0);
-      const prod = it.produto ?? it.descricao ?? "Produto";
+  itens.forEach(it => {
 
-      totalQtd += qtd;
-      totalValor += qtd * val;
+  const prod = it.produto ?? it.prod_descr ?? "Produto";
+  const qtd = Number(it.quantidade ?? 0);
+  const val = Number(it.valor_unit ?? it.valor ?? 0);
+  const subtotal = Number(it.subtotal ?? (qtd * val));
+  const validade = (it.validade ? String(it.validade).split("T")[0] : "");
+  const estoque = Number(it.estoque ?? 0);
 
-      linhas += `
-        <tr>
-          <td>${prod}</td>
-          <td class="text-end">${qtd}</td>
-          <td class="text-end">R$ ${fmt(val)}</td>
-          <td class="text-end">R$ ${fmt(qtd * val)}</td>
-        </tr>
-      `;
-    });
+  totalQtd += qtd;
+  totalValor += subtotal;
+
+  linhas += `
+    <tr>
+      <td>${prod}</td>
+      <td class="text-end">${qtd}</td>
+      <td class="text-end">R$ ${fmt(val)}</td>
+      <td class="text-end">R$ ${fmt(subtotal)}</td>
+    </tr>
+  `;
+});
+
 
     const modalHTML = `
 <div class="modal fade" id="modalDetalhesCompra" tabindex="-1">
